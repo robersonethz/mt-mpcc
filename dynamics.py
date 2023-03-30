@@ -10,9 +10,9 @@ class dynamics_simulator():
         with open(modelparams) as file:
             params = yaml.load(file, Loader=yaml.FullLoader)
 
-        self.xvars = ['posx', 'posy', 'phi', 'vx',
-                      'vy', 'omega', 'd', 'delta', 'theta']
-        self.uvars = ['ddot', 'deltadot', 'thetadot']
+        self.xvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx',
+                      'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta']
+        self.uvars = ['f_ddot', 'f_deltadot', 'f_thetadot']
 
         # state of system
         self.x = x0
@@ -31,14 +31,14 @@ class dynamics_simulator():
         return self.x
 
     def set_theta(self, theta):
-        self.x[self.xvars.index('theta')] = theta
+        self.x[self.xvars.index('f_theta')] = theta
 
     def wrap_phi(self):
-        if self.x[self.xvars.index('phi')] > 2 * 3.14159:
-            self.x[self.xvars.index('phi')] -= 2 * 3.14159
+        if self.x[self.xvars.index('f_phi')] > 2 * 3.14159:
+            self.x[self.xvars.index('f_phi')] -= 2 * 3.14159
             wrapdir = 1
-        elif self.x[self.xvars.index('phi')] < -2 * 3.14159:
-            self.x[self.xvars.index('phi')] += 2 * 3.14159
+        elif self.x[self.xvars.index('f_phi')] < -2 * 3.14159:
+            self.x[self.xvars.index('f_phi')] += 2 * 3.14159
             wrapdir = -1
         else:
             wrapdir = 0

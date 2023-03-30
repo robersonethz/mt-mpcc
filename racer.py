@@ -77,14 +77,14 @@ class racer():
         # delta = steering angle
         # theta = advancement on track
 
-        self.xvars = ['posx', 'posy', 'phi', 'vx',
-                      'vy', 'omega', 'd', 'delta', 'theta']
-        self.uvars = ['ddot', 'deltadot', 'thetadot']
-        self.pvars = ['xd', 'yd', 'grad_xd', 'grad_yd', 'theta_hat', 'phi_d', 'Q1', 'Q2', 'R1', 'R2',
+        self.xvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx',
+                      'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta']
+        self.uvars = ['f_ddot', 'f_deltadot', 'f_thetadot']
+        self.pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d', 'Q1', 'Q2', 'R1', 'R2',
                       'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
 
-        self.zvars = ['posx', 'posy', 'phi', 'vx', 'vy', 'omega',
-                      'd', 'delta', 'theta', 'ddot', 'deltadot', 'thetadot']
+        self.zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega',
+                      'f_d', 'f_delta', 'f_theta', 'f_ddot', 'f_deltadot', 'f_thetadot']
 
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.theta_current = np.zeros((self.N,))
@@ -113,8 +113,8 @@ class racer():
 
         # arbitrarily set theta values and assign them to z_current
         theta_old = self.zinit[self.zvars.index(
-            'theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
-        self.z_current[:, self.zvars.index('theta')] = theta_old
+            'f_theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
+        self.z_current[:, self.zvars.index('f_theta')] = theta_old
 
         # TODO initialize values on track (x,y,phi=yaw) for first iteration
         # for theta in theta_old:
@@ -172,18 +172,17 @@ class racer():
                 # if key == 'x0':
                 #     pass
                 zsol = output[key]  # TODO verify: each key is a stage
-                usol = zsol[9:12]
                 self.z_current[idx_sol, :] = zsol
                 idx_sol = idx_sol+1
 
-            self.theta_current = self.z_current[:, self.zvars.index('theta')]
+            self.theta_current = self.z_current[:, self.zvars.index('f_theta')]
 
             # # compute difference
             # theta_diff = np.sum(np.abs(self.theta_current-theta_old))
             # print(f": theta init difference: {theta_diff}")
             # print("theta values", self.theta_current)
             theta_old = self.theta_current
-            self.xinit = self.z_current[0, 0:9]
+            self.xinit = self.z_current[0, 0:9]  # TODO Change this
             # self.z_current[0, self.zvars.index('posx')] = xinit[0]
 
             # prepare for plotting
@@ -269,7 +268,7 @@ class racer():
         # copy last state to be the same as antestage
         self.z_current[-1, :] = self.z_current[-2, :]
         # advance the last prediction for theta
-        self.z_current[-1, self.zvars.index('theta')] += 0.1
+        self.z_current[-1, self.zvars.index('f_theta')] += 0.1
 
         # log solution
         # self.z_data[self.simidx, :, :] = self.z_current
@@ -280,7 +279,7 @@ class racer():
         #
 
         # update theta
-        self.theta_current = self.z_current[:, self.zvars.index('theta')]
+        self.theta_current = self.z_current[:, self.zvars.index('f_theta')]
 
         if self.theta_current[0] > self.theta_max/2:
             print("#################################RESET###############################")
@@ -290,7 +289,7 @@ class racer():
             self.z_current[:, self.zvars.index('theta')] = self.theta_current
             wrapdir = self.dynamics.wrap_phi()
             self.z_current[:, self.zvars.index(
-                'phi')] = self.z_current[:, self.zvars.index('phi')] - (wrapdir)*2*3.14159
+                'f_phi')] = self.z_current[:, self.zvars.index('f_phi')] - (wrapdir)*2*3.14159
             self.dynamics.set_theta(self.theta_current[0])
 
         if exitflag == -7:

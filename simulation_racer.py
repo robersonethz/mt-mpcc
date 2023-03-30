@@ -6,7 +6,7 @@ import racer as rc
 racer_agent = rc.racer()
 z_curr = racer_agent.initialize_trajectory(
     xinit=np.array([0.15, -1.05, 0, 1, 0, 0, 0, 0, 0]))
-sim_length = 800
+sim_length = 40
 
 z_output = []
 log_info = []

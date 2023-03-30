@@ -92,7 +92,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     # Define solver options.
     codeoptions = forcespro.CodeOptions('FORCESNLPsolver')
 
-    codeoptions.maxit = 15    # Maximum number of iterations
+    codeoptions.maxit = 20    # Maximum number of iterations
     # codeoptions.solver_timeout = 2 # timeout enabled
     # codeoptions.timeout_estimate_coeff = Ts / 2 # Set timeout to half the sampling time
 

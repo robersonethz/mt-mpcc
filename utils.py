@@ -53,10 +53,10 @@ import math
 import numpy as np
 from casadi import atan, sin, cos
 
-pvars = ['xd', 'yd', 'grad_xd', 'grad_yd', 'theta_hat', 'phi_d', 'Q1', 'Q2', 'R1', 'R2', 'R3',
-         'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
-zvars = ['posx', 'posy', 'phi', 'vx', 'vy', 'omega', 'd',
-         'delta', 'theta', 'ddot', 'deltadot', 'thetadot']
+pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d', 'Q1', 'Q2', 'R1', 'R2',
+         'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
+zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega',
+         'f_d', 'f_delta', 'f_theta', 'f_ddot', 'f_deltadot', 'f_thetadot']
 
 
 def compute_phi(z, s, m):
@@ -88,44 +88,44 @@ def continuous_dynamics(x, u, p):
     Croll = p[pvars.index('Croll')]
 
     # extract states and inputs
-    posx = x[zvars.index('posx')]
-    posy = x[zvars.index('posy')]
-    phi = x[zvars.index('phi')]
-    vx = x[zvars.index('vx')]
-    vy = x[zvars.index('vy')]
-    omega = x[zvars.index('omega')]
-    d = x[zvars.index('d')]
-    delta = x[zvars.index('delta')]
-    theta = x[zvars.index('theta')]
+    f_posx = x[zvars.index('f_posx')]
+    f_posy = x[zvars.index('f_posy')]
+    f_phi = x[zvars.index('f_phi')]
+    f_vx = x[zvars.index('f_vx')]
+    f_vy = x[zvars.index('f_vy')]
+    f_omega = x[zvars.index('f_omega')]
+    f_d = x[zvars.index('f_d')]
+    f_delta = x[zvars.index('f_delta')]
+    f_theta = x[zvars.index('f_theta')]
 
-    ddot = u[0]
-    deltadot = u[1]
-    thetadot = u[2]
+    f_ddot = u[0]
+    f_deltadot = u[1]
+    f_thetadot = u[2]
 
     # build CasADi expressions for dynamic model
     # front lateral tireforce
-    alphaf = -np.arctan2((omega*lf + vy), vx) + delta
-    Ffy = Df*np.sin(Cf*np.arctan(Bf*alphaf))
+    f_alphaf = -np.arctan2((f_omega*lf + f_vy), f_vx) + f_delta
+    f_Ffy = Df*np.sin(Cf*np.arctan(Bf*f_alphaf))
 
     # rear lateral tireforce
-    alphar = np.arctan2((omega*lr - vy), vx)
-    Fry = Dr*np.sin(Cr*np.arctan(Br*alphar))
+    f_alphar = np.arctan2((f_omega*lr - f_vy), f_vx)
+    f_Fry = Dr*np.sin(Cr*np.arctan(Br*f_alphar))
 
     # rear longitudinal forces
-    Frx = (Cm1-Cm2*vx) * d - Croll - Cd*vx*vx
+    f_Frx = (Cm1-Cm2*f_vx) * f_d - Croll - Cd*f_vx*f_vx
 
     # let z = [x, u] = [posx, posy, phi, vx, vy, omega, d, delta, theta, ddot, deltadot, thetadot]
 
     statedot = casadi.vertcat(
-        vx * np.cos(phi) - vy * np.sin(phi),  # posxdot
-        vx * np.sin(phi) + vy * np.cos(phi),  # posydot
-        omega,  # phidot
-        1/m * (Frx - Ffy*np.sin(delta) + m*vy*omega),  # vxdot
-        1/m * (Fry + Ffy*np.cos(delta) - m*vx*omega),  # vydot
-        1/I * (Ffy*lf*np.cos(delta) - Fry*lr),  # omegadot
-        ddot,
-        deltadot,
-        thetadot
+        f_vx * np.cos(f_phi) - f_vy * np.sin(f_phi),  # posxdot
+        f_vx * np.sin(f_phi) + f_vy * np.cos(f_phi),  # posydot
+        f_omega,  # phidot
+        1/m * (f_Frx - f_Ffy*np.sin(f_delta) + m*f_vy*f_omega),  # vxdot
+        1/m * (f_Fry + f_Ffy*np.cos(f_delta) - m*f_vx*f_omega),  # vydot
+        1/I * (f_Ffy*lf*np.cos(f_delta) - f_Fry*lr),  # omegadot
+        f_ddot,
+        f_deltadot,
+        f_thetadot
     )
     return statedot
 
@@ -235,12 +235,12 @@ def cost_function_pacejka(z, p):
 
 def stage_cost(z, p):
     # extract parameters
-    xd = p[pvars.index('xd')]
-    yd = p[pvars.index('yd')]
-    phi_d = p[pvars.index('phi_d')]
+    xd = p[pvars.index('f_xd')]
+    yd = p[pvars.index('f_yd')]
+    phi_d = p[pvars.index('f_phi_d')]
     sin_phit = np.sin(phi_d)
     cos_phit = np.cos(phi_d)
-    theta_hat = p[pvars.index('theta_hat')]
+    theta_hat = p[pvars.index('f_theta_hat')]
     Q1 = p[pvars.index('Q1')]
     Q2 = p[pvars.index('Q2')]
     q = p[pvars.index('q')]
@@ -248,14 +248,14 @@ def stage_cost(z, p):
     R2 = p[pvars.index('R2')]
 
     # extract states
-    posx = z[zvars.index('posx')]
-    posy = z[zvars.index('posy')]
-    theta = z[zvars.index('theta')]
+    posx = z[zvars.index('f_posx')]
+    posy = z[zvars.index('f_posy')]
+    theta = z[zvars.index('f_theta')]
 
     # extract inputs
-    ddot = z[zvars.index('ddot')]
-    deltadot = z[zvars.index('deltadot')]
-    thetadot = z[zvars.index('thetadot')]
+    ddot = z[zvars.index('f_ddot')]
+    deltadot = z[zvars.index('f_deltadot')]
+    thetadot = z[zvars.index('f_thetadot')]
 
     # compute approximate linearized contouring and lag error
     xt_hat = xd + cos_phit * (theta - theta_hat)
@@ -291,12 +291,12 @@ def nonlinear_ineq(z, p):
     # zvars = ['posx', 'posy', 'phi', 'vx', 'vy', 'omega', 'd', 'delta', 'theta', 'ddot', 'deltadot', 'thetadot']
 
     # extract parameters
-    xt = p[pvars.index('xd')]
-    yt = p[pvars.index('yd')]
-    phit = p[pvars.index('phi_d')]
-    sin_phit = np.sin(phit)
-    cos_phit = np.cos(phit)
-    theta_hat = p[pvars.index('theta_hat')]
+    f_xt = p[pvars.index('f_xd')]
+    f_yt = p[pvars.index('f_yd')]
+    f_phit = p[pvars.index('f_phi_d')]
+    f_sin_phit = np.sin(f_phit)
+    f_cos_phit = np.cos(f_phit)
+    f_theta_hat = p[pvars.index('f_theta_hat')]
     half_track_width = 0.46/2  # TODO move to config
     lf = p[pvars.index('lf')]
     lr = p[pvars.index('lr')]
@@ -305,18 +305,19 @@ def nonlinear_ineq(z, p):
     widthcar = lencar/2
 
     # extract relevant states
-    posx = z[zvars.index('posx')]
-    posy = z[zvars.index('posy')]
-    theta = z[zvars.index('theta')]
+    f_posx = z[zvars.index('f_posx')]
+    f_posy = z[zvars.index('f_posy')]
+    f_theta = z[zvars.index('f_theta')]
 
     # compute approximate linearized contouring and lag error
-    xt_hat = xt + cos_phit * (theta - theta_hat)
-    yt_hat = yt + sin_phit * (theta - theta_hat)
+    f_xt_hat = f_xt + f_cos_phit * (f_theta - f_theta_hat)
+    f_yt_hat = f_yt + f_sin_phit * (f_theta - f_theta_hat)
 
     # inside track <=> tval <= 0
-    tval = (xt_hat-posx)**2 + (yt_hat-posy)**2 - (half_track_width-widthcar)**2
+    f_tval = (f_xt_hat-f_posx)**2 + (f_yt_hat-f_posy)**2 - \
+        (half_track_width-widthcar)**2
 
-    return tval
+    return f_tval
 
 
 def inequality_constraint(z, p):
@@ -342,9 +343,9 @@ def get_trackDataIdx_from_theta(theta, arcLength):
 
 
 def wrap_phi(z):
-    if z[zvars.index('phi')] > 2 * 3.14159:
+    if z[zvars.index('f_phi')] > 2 * 3.14159:
         wrapdir = 1
-    elif z[zvars.index('phi')] < -2 * 3.14159:
+    elif z[zvars.index('f_phi')] < -2 * 3.14159:
         wrapdir = -1
     else:
         wrapdir = 0
