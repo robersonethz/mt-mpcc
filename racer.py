@@ -77,14 +77,18 @@ class racer():
         # delta = steering angle
         # theta = advancement on track
 
-        self.xvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx',
-                      'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta']
-        self.uvars = ['f_ddot', 'f_deltadot', 'f_thetadot']
-        self.pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d', 'Q1', 'Q2', 'R1', 'R2',
-                      'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
+        self.xvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
+                      's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta']
 
-        self.zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega',
-                      'f_d', 'f_delta', 'f_theta', 'f_ddot', 'f_deltadot', 'f_thetadot']
+        self.uvars = ['f_ddot', 'f_deltadot', 'f_thetadot',
+                      's_ddot', 's_deltadot', 's_thetadot']
+
+        self.pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d',
+                      's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
+                      'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
+
+        self.zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta', 'f_ddot', 'f_deltadot', 'f_thetadot',
+                      's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta', 's_ddot', 's_deltadot', 's_thetadot']
 
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.theta_current = np.zeros((self.N,))
@@ -107,14 +111,18 @@ class racer():
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
 
         # warmstart init
-        self.zinit = np.concatenate([xinit, np.array([0, 0, 0])])
+        self.zinit = np.concatenate([xinit, xinit, np.zeros(len(self.uvars))])
         # will be reshaped after
         self.z_current = np.tile(self.zinit, (self.N, 1))
 
         # arbitrarily set theta values and assign them to z_current
-        theta_old = self.zinit[self.zvars.index(
+        f_theta_old = self.zinit[self.zvars.index(
             'f_theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
-        self.z_current[:, self.zvars.index('f_theta')] = theta_old
+        self.z_current[:, self.zvars.index('f_theta')] = f_theta_old
+
+        s_theta_old = self.zinit[self.zvars.index(
+            's_theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
+        self.z_current[:, self.zvars.index('s_theta')] = s_theta_old
 
         # TODO initialize values on track (x,y,phi=yaw) for first iteration
         # for theta in theta_old:
@@ -122,17 +130,32 @@ class racer():
 
         # get a convergent Theta
         for index in range(iter):
+            # init parameters for each stage of the horizon
             all_parameters = []
-            for stageidx in range(self.N):
-                track_idx = utils.get_trackDataIdx_from_theta(
-                    theta_old[stageidx], self.arcLength)
 
-                p_val = np.array([self.xtrack[track_idx],
-                                 self.ytrack[track_idx],
-                                 self.xrate[track_idx],
-                                 self.yrate[track_idx],
-                                 self.arcLength[track_idx],
-                                 self.tangentAngle[track_idx],
+            for stageidx in range(self.N):
+                # get index on track linearization relative to theta
+                f_track_idx = utils.get_trackDataIdx_from_theta(
+                    f_theta_old[stageidx], self.arcLength)
+                s_track_idx = utils.get_trackDataIdx_from_theta(
+                    s_theta_old[stageidx], self.arcLength)
+
+                # store the according parameters
+                p_val = np.array([  # fast
+                                 self.xtrack[f_track_idx],
+                                 self.ytrack[f_track_idx],
+                                 self.xrate[f_track_idx],
+                                 self.yrate[f_track_idx],
+                                 self.arcLength[f_track_idx],
+                                 self.tangentAngle[f_track_idx],
+                                 # safe
+                                 self.xtrack[s_track_idx],
+                                 self.ytrack[s_track_idx],
+                                 self.xrate[s_track_idx],
+                                 self.yrate[s_track_idx],
+                                 self.arcLength[s_track_idx],
+                                 self.tangentAngle[s_track_idx],
+                                 # other params
                                  self.Q1,
                                  self.Q2,
                                  self.R1,
@@ -153,15 +176,18 @@ class racer():
                                  self.Cm2,
                                  self.Cd,
                                  self.Croll])
+
                 all_parameters.append(p_val)
 
             all_parameters = np.array(all_parameters)
 
+            # reshape data for the solver
             problem = {"x0": self.z_current.reshape(-1,),
                        "xinit": xinit,
                        "all_parameters": all_parameters.reshape(-1,)}
 
-            z0_old = self.z_current[0, :]  # check z0_size, should be (1,12)
+            # check z0_size, should be (1,12) #TODO remove #STOPPPPPPPPEEEED HEEEEEERE
+            z0_old = self.z_current[0, :]
 
             output, exitflag, info = self.solver.solve(problem)
 
@@ -181,7 +207,7 @@ class racer():
             # theta_diff = np.sum(np.abs(self.theta_current-theta_old))
             # print(f": theta init difference: {theta_diff}")
             # print("theta values", self.theta_current)
-            theta_old = self.theta_current
+            f_theta_old = self.theta_current
             self.xinit = self.z_current[0, 0:9]  # TODO Change this
             # self.z_current[0, self.zvars.index('posx')] = xinit[0]
 
