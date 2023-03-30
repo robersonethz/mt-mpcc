@@ -1,0 +1,23 @@
+#Vehicle params
+lr: 0.033
+lf: 0.029
+m: 0.041
+I: 0.0000278
+
+#lateral force params
+Df: 0.2055
+Cf: 1.0617
+Bf: 3.3204
+Dr: 0.1665
+Cr: 1.3178
+Br: 3.3144
+
+# longitudinal force params
+Cm1: 0.2443
+Cm2: 0.0358
+Cd: 0.0019
+Croll: 0.0297
+
+# Simulation params
+freq: 30 
+dt: 0.0333333 #1/f
