@@ -22,16 +22,16 @@
 % [OUTPUTS] = FORCESNLPsolver(INPUTS) solves an optimization problem where:
 % Inputs:
 % - xinit - matrix of size [18x1]
-% - x0 - matrix of size [480x1]
-% - all_parameters - matrix of size [640x1]
+% - x0 - matrix of size [720x1]
+% - all_parameters - matrix of size [960x1]
 % - num_of_threads - scalar
 % - receive_floating_license - scalar
 % Outputs:
-% - outputs - column vector of length 480
+% - outputs - column vector of length 720
 function [outputs] = FORCESNLPsolver(xinit, x0, all_parameters, num_of_threads, receive_floating_license)
     
     [output, ~, ~] = FORCESNLPsolverBuildable.forcesCall(xinit, x0, all_parameters, num_of_threads, receive_floating_license);
-    outputs = coder.nullcopy(zeros(480,1));
+    outputs = coder.nullcopy(zeros(720,1));
     outputs(1:24) = output.x01;
     outputs(25:48) = output.x02;
     outputs(49:72) = output.x03;
@@ -52,4 +52,14 @@ function [outputs] = FORCESNLPsolver(xinit, x0, all_parameters, num_of_threads, 
     outputs(409:432) = output.x18;
     outputs(433:456) = output.x19;
     outputs(457:480) = output.x20;
+    outputs(481:504) = output.x21;
+    outputs(505:528) = output.x22;
+    outputs(529:552) = output.x23;
+    outputs(553:576) = output.x24;
+    outputs(577:600) = output.x25;
+    outputs(601:624) = output.x26;
+    outputs(625:648) = output.x27;
+    outputs(649:672) = output.x28;
+    outputs(673:696) = output.x29;
+    outputs(697:720) = output.x30;
 end

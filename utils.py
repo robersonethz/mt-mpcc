@@ -142,6 +142,7 @@ def continuous_dynamics(x, u, p):
     s_Frx = (Cm1-Cm2*s_vx) * s_d - Croll - Cd*s_vx*s_vx
 
     statedot = casadi.vertcat(
+        # FAST
         f_vx * np.cos(f_phi) - f_vy * np.sin(f_phi),  # posxdot
         f_vx * np.sin(f_phi) + f_vy * np.cos(f_phi),  # posydot
         f_omega,  # phidot
@@ -151,7 +152,7 @@ def continuous_dynamics(x, u, p):
         f_ddot,
         f_deltadot,
         f_thetadot,
-
+        # SAFE
         s_vx * np.cos(s_phi) - s_vy * np.sin(s_phi),  # posxdot
         s_vx * np.sin(s_phi) + s_vy * np.cos(s_phi),  # posydot
         s_omega,  # phidot
@@ -161,6 +162,8 @@ def continuous_dynamics(x, u, p):
         s_ddot,
         s_deltadot,
         s_thetadot
+
+
     )
     return statedot
 
@@ -218,7 +221,7 @@ def dynamics_RK4(z, p, freq):
     return next_state
 
 
-def nonlinear_ineq(z, p):
+def nonlinear_ineq_sameInput(z, p):
 
     # extract parameters
     f_xt = p[pvars.index('f_xd')]
@@ -243,11 +246,179 @@ def nonlinear_ineq(z, p):
     f_xt_hat = f_xt + f_cos_phit * (f_theta - f_theta_hat)
     f_yt_hat = f_yt + f_sin_phit * (f_theta - f_theta_hat)
 
+    s_xt = p[pvars.index('s_xd')]
+    s_yt = p[pvars.index('s_yd')]
+    s_phit = p[pvars.index('s_phi_d')]
+    s_sin_phit = np.sin(s_phit)
+    s_cos_phit = np.cos(s_phit)
+    s_theta_hat = p[pvars.index('s_theta_hat')]
+    hals_track_width = 0.46/2  # TODO move to config
+    lf = p[pvars.index('lf')]
+    lr = p[pvars.index('lr')]
+
+    lencar = lf+lr
+    widthcar = lencar/2
+
+    # extract relevant states
+    s_posx = z[zvars.index('s_posx')]
+    s_posy = z[zvars.index('s_posy')]
+    s_theta = z[zvars.index('s_theta')]
+
+    # compute approximate linearized contouring and lag error
+    s_xt_hat = s_xt + s_cos_phit * (s_theta - s_theta_hat)
+    s_yt_hat = s_yt + s_sin_phit * (s_theta - s_theta_hat)
+
     # inside track <=> tval <= 0
     f_tval = (f_xt_hat-f_posx)**2 + (f_yt_hat-f_posy)**2 - \
         (half_track_width-widthcar)**2
 
-    return f_tval
+    # inside track <=> tval <= 0
+    s_tval = (s_xt_hat-s_posx)**2 + (s_yt_hat-s_posy)**2 - \
+        (half_track_width-widthcar)**2
+
+    # Same input
+    f_ddot = z[zvars.index('f_ddot')]
+    f_deltadot = z[zvars.index('f_deltadot')]
+    f_thetadot = z[zvars.index('f_thetadot')]
+    s_ddot = z[zvars.index('s_ddot')]
+    s_deltadot = z[zvars.index('s_deltadot')]
+    s_thetadot = z[zvars.index('s_thetadot')]
+
+    ddot_cond = f_ddot - s_ddot
+    deltadot_cond = f_deltadot - s_deltadot
+    thetadot_cond = f_thetadot - s_thetadot
+
+    return casadi.vertcat(f_tval,
+                          s_tval,
+                          ddot_cond,
+                          deltadot_cond,
+                          thetadot_cond
+                          )
+
+
+def nonlinear_ineq_standard(z, p):
+
+    # extract parameters
+    f_xt = p[pvars.index('f_xd')]
+    f_yt = p[pvars.index('f_yd')]
+    f_phit = p[pvars.index('f_phi_d')]
+    f_sin_phit = np.sin(f_phit)
+    f_cos_phit = np.cos(f_phit)
+    f_theta_hat = p[pvars.index('f_theta_hat')]
+    half_track_width = 0.46/2  # TODO move to config
+    lf = p[pvars.index('lf')]
+    lr = p[pvars.index('lr')]
+
+    lencar = lf+lr
+    widthcar = lencar/2
+
+    # extract relevant states
+    f_posx = z[zvars.index('f_posx')]
+    f_posy = z[zvars.index('f_posy')]
+    f_theta = z[zvars.index('f_theta')]
+
+    # compute approximate linearized contouring and lag error
+    f_xt_hat = f_xt + f_cos_phit * (f_theta - f_theta_hat)
+    f_yt_hat = f_yt + f_sin_phit * (f_theta - f_theta_hat)
+
+    s_xt = p[pvars.index('s_xd')]
+    s_yt = p[pvars.index('s_yd')]
+    s_phit = p[pvars.index('s_phi_d')]
+    s_sin_phit = np.sin(s_phit)
+    s_cos_phit = np.cos(s_phit)
+    s_theta_hat = p[pvars.index('s_theta_hat')]
+    hals_track_width = 0.46/2  # TODO move to config
+    lf = p[pvars.index('lf')]
+    lr = p[pvars.index('lr')]
+
+    lencar = lf+lr
+    widthcar = lencar/2
+
+    # extract relevant states
+    s_posx = z[zvars.index('s_posx')]
+    s_posy = z[zvars.index('s_posy')]
+    s_theta = z[zvars.index('s_theta')]
+
+    # compute approximate linearized contouring and lag error
+    s_xt_hat = s_xt + s_cos_phit * (s_theta - s_theta_hat)
+    s_yt_hat = s_yt + s_sin_phit * (s_theta - s_theta_hat)
+
+    # inside track <=> tval <= 0
+    f_tval = (f_xt_hat-f_posx)**2 + (f_yt_hat-f_posy)**2 - \
+        (half_track_width-widthcar)**2
+
+    # inside track <=> tval <= 0
+    s_tval = (s_xt_hat-s_posx)**2 + (s_yt_hat-s_posy)**2 - \
+        (half_track_width-widthcar)**2
+
+    return casadi.vertcat(f_tval,
+                          s_tval
+                          )
+
+
+def nonlinear_ineq_final(z, p):
+
+    # extract parameters
+    f_xt = p[pvars.index('f_xd')]
+    f_yt = p[pvars.index('f_yd')]
+    f_phit = p[pvars.index('f_phi_d')]
+    f_sin_phit = np.sin(f_phit)
+    f_cos_phit = np.cos(f_phit)
+    f_theta_hat = p[pvars.index('f_theta_hat')]
+    half_track_width = 0.46/2  # TODO move to config
+    lf = p[pvars.index('lf')]
+    lr = p[pvars.index('lr')]
+
+    lencar = lf+lr
+    widthcar = lencar/2
+
+    # extract relevant states
+    f_posx = z[zvars.index('f_posx')]
+    f_posy = z[zvars.index('f_posy')]
+    f_theta = z[zvars.index('f_theta')]
+
+    # compute approximate linearized contouring and lag error
+    f_xt_hat = f_xt + f_cos_phit * (f_theta - f_theta_hat)
+    f_yt_hat = f_yt + f_sin_phit * (f_theta - f_theta_hat)
+
+    s_xt = p[pvars.index('s_xd')]
+    s_yt = p[pvars.index('s_yd')]
+    s_phit = p[pvars.index('s_phi_d')]
+    s_sin_phit = np.sin(s_phit)
+    s_cos_phit = np.cos(s_phit)
+    s_theta_hat = p[pvars.index('s_theta_hat')]
+    hals_track_width = 0.46/2  # TODO move to config
+    lf = p[pvars.index('lf')]
+    lr = p[pvars.index('lr')]
+
+    lencar = lf+lr
+    widthcar = lencar/2
+
+    # extract relevant states
+    s_posx = z[zvars.index('s_posx')]
+    s_posy = z[zvars.index('s_posy')]
+    s_theta = z[zvars.index('s_theta')]
+
+    # compute approximate linearized contouring and lag error
+    s_xt_hat = s_xt + s_cos_phit * (s_theta - s_theta_hat)
+    s_yt_hat = s_yt + s_sin_phit * (s_theta - s_theta_hat)
+
+    # inside track <=> tval <= 0
+    f_tval = (f_xt_hat-f_posx)**2 + (f_yt_hat-f_posy)**2 - \
+        (half_track_width-widthcar)**2
+
+    # inside track <=> tval <= 0
+    s_tval = (s_xt_hat-s_posx)**2 + (s_yt_hat-s_posy)**2 - \
+        (half_track_width-widthcar)**2
+
+    s_vx = z[zvars.index('s_vx')]
+    s_vy = z[zvars.index('s_vy')]
+
+    return casadi.vertcat(f_tval,
+                          s_tval,
+                          s_vx,
+                          s_vy
+                          )
 
 
 def inequality_constraint(z, p):

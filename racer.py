@@ -67,7 +67,7 @@ class racer():
         self.theta_max = max(self.arcLength)
 
         self.model, self.solver = generate_forces_solver.build_solver(
-            N=20, Ts=self.dt, cfg=config)
+            N=30, Ts=self.dt, cfg=config)
 
         self.N = self.model.N
         self.Nsim = 30  # number of points to simulate, simulation length

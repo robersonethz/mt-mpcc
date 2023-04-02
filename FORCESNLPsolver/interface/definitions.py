@@ -6,13 +6,13 @@ requires_callback = True
 lib = "lib/libFORCESNLPsolver.so"
 lib_static = "lib/libFORCESNLPsolver.a"
 c_header = "include/FORCESNLPsolver.h"
-nstages = 20
+nstages = 30
 
 # Parameter             | Type    | Scalar type      | Ctypes type    | Numpy type   | Shape     | Len
 params = \
 [("xinit"               , "dense" , ""               , ctypes.c_double, numpy.float64, ( 18,   1),   18),
- ("x0"                  , "dense" , ""               , ctypes.c_double, numpy.float64, (480,   1),  480),
- ("all_parameters"      , "dense" , ""               , ctypes.c_double, numpy.float64, (640,   1),  640),
+ ("x0"                  , "dense" , ""               , ctypes.c_double, numpy.float64, (720,   1),  720),
+ ("all_parameters"      , "dense" , ""               , ctypes.c_double, numpy.float64, (960,   1),  960),
  ("num_of_threads"      , "dense" , "solver_int32_unsigned", ctypes.c_uint  , numpy.uint32 , (  1,   1),    1),
  ("receive_floating_license", "dense" , "solver_int32_default", ctypes.c_int   , numpy.int32  , (  1,   1),    1)]
 
@@ -37,7 +37,17 @@ outputs = \
  ("x17"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
  ("x18"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
  ("x19"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
- ("x20"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24)]
+ ("x20"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x21"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x22"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x23"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x24"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x25"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x26"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x27"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x28"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x29"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x30"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24)]
 
 # Info Struct Fields
 info = \
@@ -66,24 +76,34 @@ info = \
 # Dynamics dimensions
 #   nvar    |   neq   |   dimh    |   dimp    |   diml    |   dimu    |   dimhl   |   dimhu    
 dynamics_dims = [
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1), 
-	(24, 18, 1, 32, 24, 24, 1, 1)
+	(24, 18, 5, 32, 24, 24, 5, 5), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2)
 ]
