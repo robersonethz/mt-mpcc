@@ -87,11 +87,13 @@ class racer():
                       's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
                       'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
 
-        self.zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta', 'f_ddot', 'f_deltadot', 'f_thetadot',
-                      's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta', 's_ddot', 's_deltadot', 's_thetadot']
+        self.zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
+                      's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta',
+                      'f_ddot', 'f_deltadot', 'f_thetadot',
+                      's_ddot', 's_deltadot', 's_thetadot']
 
         self.z_current = np.zeros((self.N, len(self.zvars)))
-        self.theta_current = np.zeros((self.N,))
+        self.f_theta_current = np.zeros((self.N,))
 
         # list to store all visited states
         self.zinit_vals = np.zeros((self.Nsim, len(self.zvars)))
@@ -111,7 +113,7 @@ class racer():
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
 
         # warmstart init
-        self.zinit = np.concatenate([xinit, xinit, np.zeros(len(self.uvars))])
+        self.zinit = np.concatenate([xinit, np.zeros(len(self.uvars))])
         # will be reshaped after
         self.z_current = np.tile(self.zinit, (self.N, 1))
 
@@ -197,73 +199,76 @@ class racer():
                 # print(key)
                 # if key == 'x0':
                 #     pass
-                zsol = output[key]  # TODO verify: each key is a stage
+                zsol = output[key]
                 self.z_current[idx_sol, :] = zsol
                 idx_sol = idx_sol+1
 
-            self.theta_current = self.z_current[:, self.zvars.index('f_theta')]
+            self.f_theta_current = self.z_current[:, self.zvars.index(
+                'f_theta')]
+            self.s_theta_current = self.z_current[:, self.zvars.index(
+                's_theta')]
 
             # # compute difference
             # theta_diff = np.sum(np.abs(self.theta_current-theta_old))
             # print(f": theta init difference: {theta_diff}")
             # print("theta values", self.theta_current)
-            f_theta_old = self.theta_current
-            self.xinit = self.z_current[0, 0:9]  # TODO Change this
-            # self.z_current[0, self.zvars.index('posx')] = xinit[0]
+            f_theta_old = self.f_theta_current
+            s_theta_old = self.s_theta_current
 
-            # prepare for plotting
-            np_xtrack = np.array(self.xtrack)
-            np_xrate = np.array(self.xrate)
-            np_ytrack = np.array(self.ytrack)
-            np_yrate = np.array(self.yrate)
-
-            list_log = {'z_current': self.z_current,
-                        # 'info': info,
-                        'np_xtrack': np_xtrack,
-                        'np_xrate': np_xrate,
-                        'np_ytrack': np_ytrack,
-                        'np_yrate': np_yrate}
-
-            with open('log_data.pickle', 'wb') as f:
-                pickle.dump(list_log, f)
+            self.xinit = self.z_current[0, 0:len(self.xvars)]
 
         return self.z_current
 
     def update(self):
         all_parameters = []
 
-        theta_old = self.theta_current
+        f_theta_old = self.f_theta_current
+        s_theta_old = self.s_theta_current
 
         for stageidx in range(self.N):
-            track_idx = utils.get_trackDataIdx_from_theta(
-                theta_old[stageidx], self.arcLength)
+            # get index on track linearization relative to theta
+            f_track_idx = utils.get_trackDataIdx_from_theta(
+                f_theta_old[stageidx], self.arcLength)
+            s_track_idx = utils.get_trackDataIdx_from_theta(
+                s_theta_old[stageidx], self.arcLength)
 
-            p_val = np.array([self.xtrack[track_idx],
-                              self.ytrack[track_idx],
-                              self.xrate[track_idx],
-                              self.yrate[track_idx],
-                              self.arcLength[track_idx],
-                              self.tangentAngle[track_idx],
-                              self.Q1,
-                              self.Q2,
-                              self.R1,
-                              self.R2,
-                              self.R3,
-                              self.q,
-                              self.lr,
-                              self.lf,
-                              self.m,
-                              self.I,
-                              self.Df,
-                              self.Cf,
-                              self.Bf,
-                              self.Dr,
-                              self.Cr,
-                              self.Br,
-                              self.Cm1,
-                              self.Cm2,
-                              self.Cd,
-                              self.Croll])
+            # store the according parameters
+            p_val = np.array([  # fast
+                self.xtrack[f_track_idx],
+                self.ytrack[f_track_idx],
+                self.xrate[f_track_idx],
+                self.yrate[f_track_idx],
+                self.arcLength[f_track_idx],
+                self.tangentAngle[f_track_idx],
+                # safe
+                self.xtrack[s_track_idx],
+                self.ytrack[s_track_idx],
+                self.xrate[s_track_idx],
+                self.yrate[s_track_idx],
+                self.arcLength[s_track_idx],
+                self.tangentAngle[s_track_idx],
+                # other params
+                self.Q1,
+                self.Q2,
+                self.R1,
+                self.R2,
+                self.R3,
+                self.q,
+                self.lr,
+                self.lf,
+                self.m,
+                self.I,
+                self.Df,
+                self.Cf,
+                self.Bf,
+                self.Dr,
+                self.Cr,
+                self.Br,
+                self.Cm1,
+                self.Cm2,
+                self.Cd,
+                self.Croll])
+
             all_parameters.append(p_val)
 
         all_parameters = np.array(all_parameters)
@@ -284,47 +289,59 @@ class racer():
             idx_sol = idx_sol+1
 
         # #simulate dynamics
-        u = self.z_current[0, 9:]
+        u = self.z_current[0, len(self.xvars):]
         xtrue = self.dynamics.tick(u, all_parameters[0, :], self.freq)
 
         # #shift horizon for next warmstart and insert the new "measured position"
-        self.z_current[1, 0:9] = xtrue
+        self.z_current[1, :len(self.xvars)] = xtrue
         # TODO check what is doing
         self.z_current = np.roll(self.z_current, -1, axis=0)
         # copy last state to be the same as antestage
         self.z_current[-1, :] = self.z_current[-2, :]
         # advance the last prediction for theta
         self.z_current[-1, self.zvars.index('f_theta')] += 0.1
+        self.z_current[-1, self.zvars.index('s_theta')] += 0.1
 
         # log solution
         # self.z_data[self.simidx, :, :] = self.z_current
         self.zinit = self.z_current[0, :]
-        self.xinit = self.zinit[:9]
+        self.xinit = self.zinit[:len(self.xvars)]
 
         # self.zinit_vals[self.simidx, :] = self.zinit
         #
 
         # update theta
-        self.theta_current = self.z_current[:, self.zvars.index('f_theta')]
+        self.f_theta_current = self.z_current[:, self.zvars.index('f_theta')]
+        self.s_theta_current = self.z_current[:, self.zvars.index('s_theta')]
 
-        if self.theta_current[0] > self.theta_max/2:
+        if self.f_theta_current[0] > self.theta_max/2:
             print("#################################RESET###############################")
+            # update laps
             self.laps = self.laps + 1
             print("lap:", self.laps)
-            self.theta_current = self.theta_current - self.theta_max/2
-            self.z_current[:, self.zvars.index('theta')] = self.theta_current
+            # reset theta
+            self.f_theta_current = self.f_theta_current - self.theta_max/2
+            self.s_theta_current = self.s_theta_current - self.theta_max/2
+            # set theta to z_current for correspondance
+            self.z_current[:, self.zvars.index(
+                'f_theta')] = self.f_theta_current
             wrapdir = self.dynamics.wrap_phi()
+            # reset phi to origininal
             self.z_current[:, self.zvars.index(
                 'f_phi')] = self.z_current[:, self.zvars.index('f_phi')] - (wrapdir)*2*3.14159
-            self.dynamics.set_theta(self.theta_current[0])
+            self.z_current[:, self.zvars.index(
+                's_phi')] = self.z_current[:, self.zvars.index('s_phi')] - (wrapdir)*2*3.14159
+            # reset theta to dynamics object for correspondance
+            self.dynamics.set_theta(
+                self.f_theta_current[0], self.s_theta_current[0])
 
         if exitflag == -7:
             print("#################################################reinitialize#######################################################")
-            self.reinitialize()
+            self.reinitialize()  # TODO still to implement
 
         self.simidx = self.simidx + 1
         time = info.solvetime
-        type_time = type(time)
+        # type_time = type(time)
         return self.z_current, time
 
     def return_sim_data(self):

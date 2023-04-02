@@ -4,9 +4,11 @@ import pickle
 import racer as rc
 
 racer_agent = rc.racer()
+xinit = np.array([0.15, -1.05, 0, 1, 0, 0, 0, 0, 0])
+
 z_curr = racer_agent.initialize_trajectory(
-    xinit=np.array([0.15, -1.05, 0, 1, 0, 0, 0, 0, 0]))
-sim_length = 40
+    np.tile(xinit, 2))
+sim_length = 100
 
 z_output = []
 log_info = []
@@ -23,5 +25,5 @@ list_log = {'z_output': z_output,
             }
 
 
-with open('log_data.pickle', 'wb') as f:
+with open('log_data/log_data.pickle', 'wb') as f:
     pickle.dump(list_log, f)

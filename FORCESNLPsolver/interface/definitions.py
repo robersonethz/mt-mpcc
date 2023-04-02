@@ -10,34 +10,34 @@ nstages = 20
 
 # Parameter             | Type    | Scalar type      | Ctypes type    | Numpy type   | Shape     | Len
 params = \
-[("xinit"               , "dense" , ""               , ctypes.c_double, numpy.float64, (  9,   1),    9),
- ("x0"                  , "dense" , ""               , ctypes.c_double, numpy.float64, (240,   1),  240),
- ("all_parameters"      , "dense" , ""               , ctypes.c_double, numpy.float64, (520,   1),  520),
+[("xinit"               , "dense" , ""               , ctypes.c_double, numpy.float64, ( 18,   1),   18),
+ ("x0"                  , "dense" , ""               , ctypes.c_double, numpy.float64, (480,   1),  480),
+ ("all_parameters"      , "dense" , ""               , ctypes.c_double, numpy.float64, (640,   1),  640),
  ("num_of_threads"      , "dense" , "solver_int32_unsigned", ctypes.c_uint  , numpy.uint32 , (  1,   1),    1),
  ("receive_floating_license", "dense" , "solver_int32_default", ctypes.c_int   , numpy.int32  , (  1,   1),    1)]
 
 # Output                | Type    | Ctypes type    | Numpy type   | Shape     | Len
 outputs = \
-[("x01"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x02"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x03"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x04"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x05"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x06"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x07"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x08"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x09"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x10"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x11"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x12"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x13"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x14"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x15"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x16"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x17"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x18"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x19"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12),
- ("x20"                 , ""               , ctypes.c_double, numpy.float64,     ( 12,),   12)]
+[("x01"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x02"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x03"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x04"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x05"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x06"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x07"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x08"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x09"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x10"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x11"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x12"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x13"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x14"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x15"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x16"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x17"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x18"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x19"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x20"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24)]
 
 # Info Struct Fields
 info = \
@@ -66,24 +66,24 @@ info = \
 # Dynamics dimensions
 #   nvar    |   neq   |   dimh    |   dimp    |   diml    |   dimu    |   dimhl   |   dimhu    
 dynamics_dims = [
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1), 
-	(12, 9, 1, 26, 12, 12, 1, 1)
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1), 
+	(24, 18, 1, 32, 24, 24, 1, 1)
 ]

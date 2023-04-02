@@ -84,26 +84,26 @@ classdef FORCESNLPsolverBuildable < coder.ExternalDependency
                           'fevalstime', infos_fevalstime,...
                           'solver_id', infos_solver_id);
 
-            outputs_x01 = coder.nullcopy(zeros(12, 1));
-            outputs_x02 = coder.nullcopy(zeros(12, 1));
-            outputs_x03 = coder.nullcopy(zeros(12, 1));
-            outputs_x04 = coder.nullcopy(zeros(12, 1));
-            outputs_x05 = coder.nullcopy(zeros(12, 1));
-            outputs_x06 = coder.nullcopy(zeros(12, 1));
-            outputs_x07 = coder.nullcopy(zeros(12, 1));
-            outputs_x08 = coder.nullcopy(zeros(12, 1));
-            outputs_x09 = coder.nullcopy(zeros(12, 1));
-            outputs_x10 = coder.nullcopy(zeros(12, 1));
-            outputs_x11 = coder.nullcopy(zeros(12, 1));
-            outputs_x12 = coder.nullcopy(zeros(12, 1));
-            outputs_x13 = coder.nullcopy(zeros(12, 1));
-            outputs_x14 = coder.nullcopy(zeros(12, 1));
-            outputs_x15 = coder.nullcopy(zeros(12, 1));
-            outputs_x16 = coder.nullcopy(zeros(12, 1));
-            outputs_x17 = coder.nullcopy(zeros(12, 1));
-            outputs_x18 = coder.nullcopy(zeros(12, 1));
-            outputs_x19 = coder.nullcopy(zeros(12, 1));
-            outputs_x20 = coder.nullcopy(zeros(12, 1));
+            outputs_x01 = coder.nullcopy(zeros(24, 1));
+            outputs_x02 = coder.nullcopy(zeros(24, 1));
+            outputs_x03 = coder.nullcopy(zeros(24, 1));
+            outputs_x04 = coder.nullcopy(zeros(24, 1));
+            outputs_x05 = coder.nullcopy(zeros(24, 1));
+            outputs_x06 = coder.nullcopy(zeros(24, 1));
+            outputs_x07 = coder.nullcopy(zeros(24, 1));
+            outputs_x08 = coder.nullcopy(zeros(24, 1));
+            outputs_x09 = coder.nullcopy(zeros(24, 1));
+            outputs_x10 = coder.nullcopy(zeros(24, 1));
+            outputs_x11 = coder.nullcopy(zeros(24, 1));
+            outputs_x12 = coder.nullcopy(zeros(24, 1));
+            outputs_x13 = coder.nullcopy(zeros(24, 1));
+            outputs_x14 = coder.nullcopy(zeros(24, 1));
+            outputs_x15 = coder.nullcopy(zeros(24, 1));
+            outputs_x16 = coder.nullcopy(zeros(24, 1));
+            outputs_x17 = coder.nullcopy(zeros(24, 1));
+            outputs_x18 = coder.nullcopy(zeros(24, 1));
+            outputs_x19 = coder.nullcopy(zeros(24, 1));
+            outputs_x20 = coder.nullcopy(zeros(24, 1));
             output = struct('x01', outputs_x01,...
                             'x02', outputs_x02,...
                             'x03', outputs_x03,...
@@ -254,26 +254,26 @@ classdef FORCESNLPsolverBuildable < coder.ExternalDependency
                           'fevalstime', infos_fevalstime,...
                           'solver_id', infos_solver_id);
                           
-            outputs_x01 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x02 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x03 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x04 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x05 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x06 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x07 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x08 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x09 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x10 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x11 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x12 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x13 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x14 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x15 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x16 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x17 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x18 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x19 = coder.nullcopy(double(zeros(12, 1)));
-            outputs_x20 = coder.nullcopy(double(zeros(12, 1)));
+            outputs_x01 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x02 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x03 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x04 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x05 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x06 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x07 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x08 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x09 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x10 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x11 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x12 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x13 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x14 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x15 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x16 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x17 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x18 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x19 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x20 = coder.nullcopy(double(zeros(24, 1)));
             output = struct('x01', outputs_x01,...
                             'x02', outputs_x02,...
                             'x03', outputs_x03,...

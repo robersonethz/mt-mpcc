@@ -1,13 +1,14 @@
+import utils
 import forcespro
 import argparse
 import os
 import numpy as np
 import rospkg
 import yaml
-import utils
 
 import sys
-sys.path.insert(0, 'home/robin/Dev/Forcespro/forces_pro_client/')
+
+# sys.path.insert(0, 'home/robin/Dev/Forcespro/forces_pro_client/')
 
 
 def build_solver(N: int, Ts: float, cfg: dict):
@@ -29,8 +30,10 @@ def build_solver(N: int, Ts: float, cfg: dict):
     -------
     None
     """
-    npar = 26  # number of parameters per stage
-    nvar = 12
+    npar = (6*2)+20  # number of parameters per stage
+    nstates = 9*2
+    ninputs = 3*2
+    nvar = nstates+ninputs
     car_dim = 0.07  # move to config?
     half_track_width = 0.46/2  # move to config?
 
@@ -39,24 +42,24 @@ def build_solver(N: int, Ts: float, cfg: dict):
     model.N = N        # set horizon length
     model.nvar = nvar  # number of variables
     model.npar = npar  # set number of parameters per stage for solver
-    model.neq = 9      # number of equality constraints
+    model.neq = nstates      # number of equality constraints
     model.nh = 1       # number of nonlinear inequality constraints
 
     model.objective = lambda z, p: utils.stage_cost(z, p)
     model.continuous_dynamics = utils.continuous_dynamics
-    model.E = np.concatenate([np.eye(9), np.zeros((9, 3))], axis=1)
+    model.E = np.concatenate(
+        [np.eye(nstates), np.zeros((nstates, ninputs))], axis=1)
 
     # inequalities
     model.ineq = lambda z, p: utils.nonlinear_ineq(z, p)
     model.hu = 0
     model.hl = -10
 
-    # initial state indeces (9:11 are inputs to the system)
-    model.xinitidx = range(0, 9)
+    # initial state indeces
+    model.xinitidx = range(0, nstates)
 
     # inequalities lower and upper bounds for state vector defined at head of
     # this subscript
-    # z =              ([   x,   y,     yaw,   vx,    vy,  dyaw,  torque,  steer,  Theta,     dtorque,    dsteer,    dtheta])
     constraints = cfg["model_bounds"]
 
     model.lb = np.array([
@@ -69,6 +72,21 @@ def build_solver(N: int, Ts: float, cfg: dict):
         constraints["T_min"],
         constraints["delta_min"],
         constraints["theta_min"],
+
+        constraints["x_min"],
+        constraints["y_min"],
+        constraints["yaw_min"],
+        constraints["vx_min"],
+        constraints["vy_min"],
+        constraints["dyaw_min"],
+        constraints["T_min"],
+        constraints["delta_min"],
+        constraints["theta_min"],
+
+        constraints["dT_min"],
+        constraints["ddelta_min"],
+        constraints["dtheta_min"],
+
         constraints["dT_min"],
         constraints["ddelta_min"],
         constraints["dtheta_min"]
@@ -84,6 +102,21 @@ def build_solver(N: int, Ts: float, cfg: dict):
         constraints["T_max"],
         constraints["delta_max"],
         constraints["theta_max"],
+
+        constraints["x_max"],
+        constraints["y_max"],
+        constraints["yaw_max"],
+        constraints["vx_max"],
+        constraints["vy_max"],
+        constraints["dyaw_max"],
+        constraints["T_max"],
+        constraints["delta_max"],
+        constraints["theta_max"],
+
+        constraints["dT_max"],
+        constraints["ddelta_max"],
+        constraints["dtheta_max"],
+
         constraints["dT_max"],
         constraints["ddelta_max"],
         constraints["dtheta_max"]

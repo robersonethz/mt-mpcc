@@ -53,20 +53,21 @@ import math
 import numpy as np
 from casadi import atan, sin, cos
 
-pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d', 'Q1', 'Q2', 'R1', 'R2',
-         'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
-zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega',
-         'f_d', 'f_delta', 'f_theta', 'f_ddot', 'f_deltadot', 'f_thetadot']
+xvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
+         's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta']
+
+uvars = ['f_ddot', 'f_deltadot', 'f_thetadot',
+         's_ddot', 's_deltadot', 's_thetadot']
 
 
-def compute_phi(z, s, m):
+pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d',
+         's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
+         'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
 
-    harm_arg = 2*math.pi*s*z
-    c = np.cos(harm_arg)
-    s = np.sin(harm_arg)
-    phi = np.vertcat(c, s)
-
-    return phi
+zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
+         's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta',
+         'f_ddot', 'f_deltadot', 'f_thetadot',
+         's_ddot', 's_deltadot', 's_thetadot']
 
 
 def continuous_dynamics(x, u, p):
@@ -88,19 +89,35 @@ def continuous_dynamics(x, u, p):
     Croll = p[pvars.index('Croll')]
 
     # extract states and inputs
-    f_posx = x[zvars.index('f_posx')]
-    f_posy = x[zvars.index('f_posy')]
-    f_phi = x[zvars.index('f_phi')]
-    f_vx = x[zvars.index('f_vx')]
-    f_vy = x[zvars.index('f_vy')]
-    f_omega = x[zvars.index('f_omega')]
-    f_d = x[zvars.index('f_d')]
-    f_delta = x[zvars.index('f_delta')]
-    f_theta = x[zvars.index('f_theta')]
+    # FAST
+    f_posx = x[xvars.index('f_posx')]
+    f_posy = x[xvars.index('f_posy')]
+    f_phi = x[xvars.index('f_phi')]
+    f_vx = x[xvars.index('f_vx')]
+    f_vy = x[xvars.index('f_vy')]
+    f_omega = x[xvars.index('f_omega')]
+    f_d = x[xvars.index('f_d')]
+    f_delta = x[xvars.index('f_delta')]
+    f_theta = x[xvars.index('f_theta')]
 
-    f_ddot = u[0]
-    f_deltadot = u[1]
-    f_thetadot = u[2]
+    f_ddot = u[uvars.index('f_ddot')]
+    f_deltadot = u[uvars.index('f_deltadot')]
+    f_thetadot = u[uvars.index('f_thetadot')]
+
+    # SAFE
+    s_posx = x[xvars.index('s_posx')]
+    s_posy = x[xvars.index('s_posy')]
+    s_phi = x[xvars.index('s_phi')]
+    s_vx = x[xvars.index('s_vx')]
+    s_vy = x[xvars.index('s_vy')]
+    s_omega = x[xvars.index('s_omega')]
+    s_d = x[xvars.index('s_d')]
+    s_delta = x[xvars.index('s_delta')]
+    s_theta = x[xvars.index('s_theta')]
+
+    s_ddot = u[uvars.index('s_ddot')]
+    s_deltadot = u[uvars.index('s_deltadot')]
+    s_thetadot = u[uvars.index('s_thetadot')]
 
     # build CasADi expressions for dynamic model
     # front lateral tireforce
@@ -114,7 +131,15 @@ def continuous_dynamics(x, u, p):
     # rear longitudinal forces
     f_Frx = (Cm1-Cm2*f_vx) * f_d - Croll - Cd*f_vx*f_vx
 
-    # let z = [x, u] = [posx, posy, phi, vx, vy, omega, d, delta, theta, ddot, deltadot, thetadot]
+    s_alphaf = -np.arctan2((s_omega*lf + s_vy), s_vx) + s_delta
+    s_Ffy = Df*np.sin(Cf*np.arctan(Bf*s_alphaf))
+
+    # rear lateral tireforce
+    s_alphar = np.arctan2((s_omega*lr - s_vy), s_vx)
+    s_Fry = Dr*np.sin(Cr*np.arctan(Br*s_alphar))
+
+    # rear longitudinal forces
+    s_Frx = (Cm1-Cm2*s_vx) * s_d - Croll - Cd*s_vx*s_vx
 
     statedot = casadi.vertcat(
         f_vx * np.cos(f_phi) - f_vy * np.sin(f_phi),  # posxdot
@@ -125,112 +150,19 @@ def continuous_dynamics(x, u, p):
         1/I * (f_Ffy*lf*np.cos(f_delta) - f_Fry*lr),  # omegadot
         f_ddot,
         f_deltadot,
-        f_thetadot
+        f_thetadot,
+
+        s_vx * np.cos(s_phi) - s_vy * np.sin(s_phi),  # posxdot
+        s_vx * np.sin(s_phi) + s_vy * np.cos(s_phi),  # posydot
+        s_omega,  # phidot
+        1/m * (s_Frx - s_Ffy*np.sin(s_delta) + m*s_vy*s_omega),  # vxdot
+        1/m * (s_Fry + s_Ffy*np.cos(s_delta) - m*s_vx*s_omega),  # vydot
+        1/I * (s_Ffy*lf*np.cos(s_delta) - s_Fry*lr),  # omegadot
+        s_ddot,
+        s_deltadot,
+        s_thetadot
     )
     return statedot
-
-
-def continuous_dynamics_old(x, u, p):
-    """Cont. Dynamics. x are the states, u are the inputs p are the parameters."""
-    # States
-    temp_p = p
-    yaw = x[2]
-    vx = x[3]
-    vy = x[4]
-    omega = x[5]
-    T = x[6]
-    delta = x[7]
-
-    # Inputs
-    dT = u[0]
-    ddelta = u[1]
-    dtheta = u[2]
-
-    lr = p[12]
-    lf = p[13]
-    m = p[14]
-    I = p[15]
-    Df = p[16]
-    Cf = p[17]
-    Bf = p[18]
-    Dr = p[19]
-    Cr = p[20]
-    Br = p[21]
-    Cm1 = p[22]
-    Cm2 = p[23]
-    Cd = p[24]
-    Croll = p[25]
-
-    # dynamics
-
-    alphaf = -np.arctan2((omega*lf + vy), vx) + delta
-    Ffy = Df*np.sin(Cf*np.arctan(Bf*alphaf))
-
-    # rear lateral tireforce
-    alphar = np.arctan2((omega*lr - vy), vx)
-    Fry = Dr*np.sin(Cr*np.arctan(Br*alphar))
-
-    # rear longitudinal forces
-    Frx = (Cm1-Cm2*vx) * T - Croll - Cd*vx*vx
-
-    # let z = [x, u] = [posx, posy, phi, vx, vy, omega, d, delta, theta, dT, ddelta, dtheta]
-
-    statedot = casadi.vertcat(
-        vx * np.cos(yaw) - vy * np.sin(yaw),  # posxdot
-        vx * np.sin(yaw) + vy * np.cos(yaw),  # posydot
-        omega,  # phidot
-        1/m * (Frx - Ffy*np.sin(delta) + m*vy*omega),  # vxdot
-        1/m * (Fry + Ffy*np.cos(delta) - m*vx*omega),  # vydot
-        1/I * (Ffy*lf*np.cos(delta) - Fry*lr),  # omegadot
-        dT,
-        ddelta,
-        dtheta
-    )
-    return statedot
-
-
-def cost_function_pacejka(z, p):
-    """Cost function for the model. Z are states and inputs stacked together, p are parameters."""
-
-    # States
-    xp = z[zvars.index('posx')]
-    yp = z[zvars.index('posy')]
-    theta = z[zvars.index('theta')]
-
-    # Inputs
-    dT = z[zvars.index('ddot')]
-    ddelta = z[zvars.index('deltadot')]
-    dtheta = z[zvars.index('thetadot')]
-    # Parameters
-    xd = p[pvars.index('xd')]
-    yd = p[pvars.index('yd')]
-    grad_xd = p[pvars.index('grad_xd')]
-    grad_yd = p[pvars.index('grad_yd')]
-    theta_hat = p[pvars.index('theta_hat')]
-    phi_d = p[pvars.index('phi_d')]
-    Q1 = p[pvars.index('Q1')]
-    Q2 = p[pvars.index('Q2')]
-    R1 = p[pvars.index('R1')]
-    R2 = p[pvars.index('R2')]
-    R3 = p[pvars.index('R3')]
-    q = p[pvars.index('q')]
-
-    # cost
-    # TODO rework this part to be more lisible
-
-    eC = casadi.sin(phi_d)*(xp-xd-grad_xd*(theta-theta_hat)) - \
-        casadi.cos(phi_d)*(yp-yd-grad_yd*(theta-theta_hat))
-    eL = -casadi.cos(phi_d)*(xp-xd-grad_xd*(theta-theta_hat)) - \
-        casadi.sin(phi_d)*(yp-yd-grad_yd*(theta-theta_hat))
-
-    c_eC = eC*eC*Q1
-    c_eL = eL*eL*Q2
-    c_theta = -q*theta
-    c_dT = dT*dT*R1
-    c_ddelta = ddelta*ddelta*R2
-    c_dtheta = dtheta*dtheta*R3
-
-    return c_eC + c_eL + c_theta + c_dT + c_ddelta + c_dtheta
 
 
 def stage_cost(z, p):
@@ -272,8 +204,8 @@ def stage_cost(z, p):
 
 def dynamics_RK4(z, p, freq):
     """Runge Kutta 4 Approximation of car dynamics. z are stacked states and inputs, p the parameters and freq the frequency"""
-    x = z[0:9]
-    u = z[9:12]
+    x = z[:len(xvars)]
+    u = z[len(xvars):]
 
     dt = 1/freq
     k1 = continuous_dynamics(x, u, p)
@@ -287,8 +219,6 @@ def dynamics_RK4(z, p, freq):
 
 
 def nonlinear_ineq(z, p):
-    # pvars = ['xd', 'yd', 'grad_xd', 'grad_yd', 'theta_hat', 'phi_d', 'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
-    # zvars = ['posx', 'posy', 'phi', 'vx', 'vy', 'omega', 'd', 'delta', 'theta', 'ddot', 'deltadot', 'thetadot']
 
     # extract parameters
     f_xt = p[pvars.index('f_xd')]

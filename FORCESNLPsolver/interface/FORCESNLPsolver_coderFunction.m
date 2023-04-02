@@ -21,32 +21,32 @@
 % 
 % [OUTPUTS] = FORCESNLPsolver(INPUTS) solves an optimization problem where:
 % Inputs:
-% - xinit - matrix of size [9x1]
-% - x0 - matrix of size [240x1]
-% - all_parameters - matrix of size [520x1]
+% - xinit - matrix of size [18x1]
+% - x0 - matrix of size [480x1]
+% - all_parameters - matrix of size [640x1]
 % - num_of_threads - scalar
 % - receive_floating_license - scalar
 % Outputs:
-% - x01 - column vector of length 12
-% - x02 - column vector of length 12
-% - x03 - column vector of length 12
-% - x04 - column vector of length 12
-% - x05 - column vector of length 12
-% - x06 - column vector of length 12
-% - x07 - column vector of length 12
-% - x08 - column vector of length 12
-% - x09 - column vector of length 12
-% - x10 - column vector of length 12
-% - x11 - column vector of length 12
-% - x12 - column vector of length 12
-% - x13 - column vector of length 12
-% - x14 - column vector of length 12
-% - x15 - column vector of length 12
-% - x16 - column vector of length 12
-% - x17 - column vector of length 12
-% - x18 - column vector of length 12
-% - x19 - column vector of length 12
-% - x20 - column vector of length 12
+% - x01 - column vector of length 24
+% - x02 - column vector of length 24
+% - x03 - column vector of length 24
+% - x04 - column vector of length 24
+% - x05 - column vector of length 24
+% - x06 - column vector of length 24
+% - x07 - column vector of length 24
+% - x08 - column vector of length 24
+% - x09 - column vector of length 24
+% - x10 - column vector of length 24
+% - x11 - column vector of length 24
+% - x12 - column vector of length 24
+% - x13 - column vector of length 24
+% - x14 - column vector of length 24
+% - x15 - column vector of length 24
+% - x16 - column vector of length 24
+% - x17 - column vector of length 24
+% - x18 - column vector of length 24
+% - x19 - column vector of length 24
+% - x20 - column vector of length 24
 function [x01, x02, x03, x04, x05, x06, x07, x08, x09, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20] = FORCESNLPsolver(xinit, x0, all_parameters, num_of_threads, receive_floating_license)
     
     [output, ~, ~] = FORCESNLPsolverBuildable.forcesCall(xinit, x0, all_parameters, num_of_threads, receive_floating_license);
