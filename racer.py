@@ -12,12 +12,12 @@ import dynamics
 class racer():
     def __init__(self, modelparams="modelparams.yaml", solverparams="solverparams") -> None:
 
-        self.modelparams = '/home/robin/Dev/mpcc_python/model_params.yaml'
+        self.modelparams = 'model_params.yaml'
 
-        with open('/home/robin/Dev/mpcc_python/model_params.yaml') as stream:
+        with open(self.modelparams) as stream:
             model_params = yaml.safe_load(stream)
 
-        with open('/home/robin/Dev/mpcc_python/solver.yaml') as stream:
+        with open('solver.yaml') as stream:
             config = yaml.safe_load(stream)
 
         # Vehicle params
@@ -54,7 +54,7 @@ class racer():
         self.dt = 1/self.freq
 
         # Load track
-        with open('/home/robin/Dev/mpcc_python/DEMO_TRACK.yaml') as stream:
+        with open('DEMO_TRACK.yaml') as stream:
             data = yaml.safe_load(stream)
 
         self.track = data['track']
@@ -65,11 +65,13 @@ class racer():
         self.arcLength = self.track['arcLength']
         self.tangentAngle = self.track['tangentAngle']
         self.theta_max = max(self.arcLength)
+        self.N = 40
 
-        self.model, self.solver = generate_forces_solver.build_solver(
-            N=40, Ts=self.dt, cfg=config)
-
-        self.N = self.model.N
+        # self.model, self.solver = generate_forces_solver.build_solver(
+        #     N=self.N, Ts=self.dt, cfg=config)
+        self.solver = forcespro.nlp.Solver.from_directory(
+            "/home/robin/Dev/mpcc_python/FORCESNLPsolver")
+        self.solver.help
 
         # phi = yaw
         # d = Thrust
@@ -324,19 +326,27 @@ class racer():
             self.z_current[:, self.zvars.index(
                 'f_phi')] = self.z_current[:, self.zvars.index('f_phi')] - (wrapdir)*2*3.14159
             self.z_current[:, self.zvars.index(
-                's_phi')] = self.z_current[:, self.zvars.index('s_phi')] - (wrapdir)*2*3.14159
+                's_phi')] = self.z_current[:, self.zvars.index('f_phi')] - (wrapdir)*2*3.14159
             # reset theta to dynamics object for correspondance
             self.dynamics.set_theta(
-                self.f_theta_current[0], self.s_theta_current[0])
+                self.f_theta_current[0])
+            # reset safe traj to have the same state as fast traj
+            self.z_current[:, self.zvars.index('s_posx'):self.zvars.index(
+                's_theta')] = self.z_current[:, self.zvars.index('f_posx'):self.zvars.index('f_theta')]
+            print(f'zcurrent = {self.z_current[2,:]}')
 
         if exitflag == -7:
             print("#################################################reinitialize#######################################################")
             self.reinitialize()  # TODO still to implement
 
         self.simidx = self.simidx + 1
-        time = info.solvetime
+        info_dic = {}
+        info_dic['solvetime'] = info.solvetime
+        info_dic['res_ineq'] = info.res_ineq
+        info_dic['exitflag'] = exitflag
+
         # type_time = type(time)
-        return self.z_current, time, all_parameters
+        return self.z_current, info_dic, all_parameters
 
     def return_sim_data(self):
         return self.zinit_vals, self.z_data

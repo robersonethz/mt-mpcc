@@ -225,7 +225,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
 if __name__ == "__main__":
     N = 20
     Tf = 1
-    with open('/home/robin/Dev/mpcc_python/solver.yaml') as stream:
+    with open('solver.yaml') as stream:
         config = yaml.safe_load(stream)
 
     solver = build_solver(N=20, Ts=0.3333, cfg=config)

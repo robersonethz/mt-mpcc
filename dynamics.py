@@ -25,8 +25,9 @@ class dynamics_simulator():
             z, all_parameters, freq).full().transpose().reshape(-1)
         return self.x
 
-    def set_theta(self, f_theta, s_theta):
-        self.x[self.xvars.index('f_theta')] = f_theta, s_theta
+    def set_theta(self, f_theta):
+        self.x[self.xvars.index('f_theta')] = f_theta
+        self.x[self.xvars.index('s_theta')] = f_theta
 
     def wrap_phi(self):
         if self.x[self.xvars.index('f_phi')] > 2 * 3.14159:
