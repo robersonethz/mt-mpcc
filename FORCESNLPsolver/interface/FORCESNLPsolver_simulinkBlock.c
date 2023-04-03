@@ -78,14 +78,14 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 720, 1);
+    ssSetInputPortMatrixDimensions(S,  1, 960, 1);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 1, 1); /*direct input signal access*/
 	
 	/* Input Port 2 */
-    ssSetInputPortMatrixDimensions(S,  2, 960, 1);
+    ssSetInputPortMatrixDimensions(S,  2, 1280, 1);
     ssSetInputPortDataType(S, 2, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 2, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 2, 1); /* Feedthrough enabled */
@@ -107,8 +107,8 @@ static void mdlInitializeSizes(SimStruct *S)
  
 
 
-	/* initialize output ports - there are 30 in total */
-    if (!ssSetNumOutputPorts(S, 30)) return;    
+	/* initialize output ports - there are 40 in total */
+    if (!ssSetNumOutputPorts(S, 40)) return;    
 		
 	/* Output Port 0 */
     ssSetOutputPortMatrixDimensions(S,  0, 24, 1);
@@ -259,6 +259,56 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetOutputPortMatrixDimensions(S,  29, 24, 1);
     ssSetOutputPortDataType(S, 29, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 29, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 30 */
+    ssSetOutputPortMatrixDimensions(S,  30, 24, 1);
+    ssSetOutputPortDataType(S, 30, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 30, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 31 */
+    ssSetOutputPortMatrixDimensions(S,  31, 24, 1);
+    ssSetOutputPortDataType(S, 31, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 31, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 32 */
+    ssSetOutputPortMatrixDimensions(S,  32, 24, 1);
+    ssSetOutputPortDataType(S, 32, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 32, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 33 */
+    ssSetOutputPortMatrixDimensions(S,  33, 24, 1);
+    ssSetOutputPortDataType(S, 33, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 33, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 34 */
+    ssSetOutputPortMatrixDimensions(S,  34, 24, 1);
+    ssSetOutputPortDataType(S, 34, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 34, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 35 */
+    ssSetOutputPortMatrixDimensions(S,  35, 24, 1);
+    ssSetOutputPortDataType(S, 35, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 35, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 36 */
+    ssSetOutputPortMatrixDimensions(S,  36, 24, 1);
+    ssSetOutputPortDataType(S, 36, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 36, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 37 */
+    ssSetOutputPortMatrixDimensions(S,  37, 24, 1);
+    ssSetOutputPortDataType(S, 37, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 37, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 38 */
+    ssSetOutputPortMatrixDimensions(S,  38, 24, 1);
+    ssSetOutputPortDataType(S, 38, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 38, COMPLEX_NO); /* no complex signals suppported */
+	
+	/* Output Port 39 */
+    ssSetOutputPortMatrixDimensions(S,  39, 24, 1);
+    ssSetOutputPortDataType(S, 39, SS_DOUBLE);
+    ssSetOutputPortComplexSignal(S, 39, COMPLEX_NO); /* no complex signals suppported */
 
 
 	/* set sampling time */
@@ -380,6 +430,16 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	real_T *x28 = (real_T*) ssGetOutputPortSignal(S,27);
 	real_T *x29 = (real_T*) ssGetOutputPortSignal(S,28);
 	real_T *x30 = (real_T*) ssGetOutputPortSignal(S,29);
+	real_T *x31 = (real_T*) ssGetOutputPortSignal(S,30);
+	real_T *x32 = (real_T*) ssGetOutputPortSignal(S,31);
+	real_T *x33 = (real_T*) ssGetOutputPortSignal(S,32);
+	real_T *x34 = (real_T*) ssGetOutputPortSignal(S,33);
+	real_T *x35 = (real_T*) ssGetOutputPortSignal(S,34);
+	real_T *x36 = (real_T*) ssGetOutputPortSignal(S,35);
+	real_T *x37 = (real_T*) ssGetOutputPortSignal(S,36);
+	real_T *x38 = (real_T*) ssGetOutputPortSignal(S,37);
+	real_T *x39 = (real_T*) ssGetOutputPortSignal(S,38);
+	real_T *x40 = (real_T*) ssGetOutputPortSignal(S,39);
 	
 
 	/* Solver data */
@@ -395,12 +455,12 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 		params.xinit[i] = (double) xinit[i];
 	}
 
-	for(i = 0; i < 720; i++)
+	for(i = 0; i < 960; i++)
 	{
 		params.x0[i] = (double) x0[i];
 	}
 
-	for(i = 0; i < 960; i++)
+	for(i = 0; i < 1280; i++)
 	{
 		params.all_parameters[i] = (double) all_parameters[i];
 	}
@@ -588,6 +648,56 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	for(i = 0; i < 24; i++)
 	{
 		x30[i] = (real_T) output.x30[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x31[i] = (real_T) output.x31[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x32[i] = (real_T) output.x32[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x33[i] = (real_T) output.x33[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x34[i] = (real_T) output.x34[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x35[i] = (real_T) output.x35[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x36[i] = (real_T) output.x36[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x37[i] = (real_T) output.x37[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x38[i] = (real_T) output.x38[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x39[i] = (real_T) output.x39[i];
+	}
+
+	for(i = 0; i < 24; i++)
+	{
+		x40[i] = (real_T) output.x40[i];
 	}
 
 	

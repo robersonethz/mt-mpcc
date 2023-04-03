@@ -67,10 +67,9 @@ class racer():
         self.theta_max = max(self.arcLength)
 
         self.model, self.solver = generate_forces_solver.build_solver(
-            N=30, Ts=self.dt, cfg=config)
+            N=40, Ts=self.dt, cfg=config)
 
         self.N = self.model.N
-        self.Nsim = 30  # number of points to simulate, simulation length
 
         # phi = yaw
         # d = Thrust
@@ -94,11 +93,6 @@ class racer():
 
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.f_theta_current = np.zeros((self.N,))
-
-        # list to store all visited states
-        self.zinit_vals = np.zeros((self.Nsim, len(self.zvars)))
-        # list containing also the prediction horizons
-        self.z_data = np.zeros((self.Nsim, self.N, len(self.zvars)))
 
         # sim step tracking
         self.simidx = 0
@@ -128,7 +122,7 @@ class racer():
 
         # TODO initialize values on track (x,y,phi=yaw) for first iteration
         # for theta in theta_old:
-        #     idx = utils.get_trackDataIdx_from_theta(theta, self.arcLength)
+        # idx = utils.get_trackDataIdx_from_theta(theta, self.arcLength)
 
         # get a convergent Theta
         for index in range(iter):
@@ -342,7 +336,7 @@ class racer():
         self.simidx = self.simidx + 1
         time = info.solvetime
         # type_time = type(time)
-        return self.z_current, time
+        return self.z_current, time, all_parameters
 
     def return_sim_data(self):
         return self.zinit_vals, self.z_data

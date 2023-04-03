@@ -1,53 +1,4 @@
-"""Function (Model Prediction, Cost, ...) for the forces solver.
 
-The variables x, u and p have the following content:
-
-    # States
-    xp = x[0]
-    yp = x[1]
-    yaw = x[2]
-    vx = x[3]
-    vy = x[4]
-    omega = x[5]
-    T = x[6]
-    delta = x[7]
-    theta = x[8]
-
-    x : [0: x, 1: y, 2: yaw, 3: vx, 4: vy, 5: dyaw, 6: torque, 7: steer, 8: Theta,
-
-    # Inputs
-    dT = u[0]
-    ddelta = u[1]
-    dtheta = u[2]
-
-    # Parameters
-    xd = p[0]
-    yd = p[1]
-    grad_xd = p[2]
-    grad_yd = p[3]
-    theta_hat = p[4]
-    phi_d = p[5]
-    Q1 = p[6]
-    Q2 = p[7]
-    R1 = p[8]
-    R2 = p[9]
-    R3 = p[10]
-    q = p[11]
-    lr = p[12]
-    lf = p[13]
-    m = p[14]
-    I = p[15]
-    Df = p[16]
-    Cf = p[17]
-    Bf = p[18]
-    Dr = p[19]
-    Cr = p[20]
-    Br = p[21]
-    Cm1 = p[22]
-    Cm2 = p[23]
-    Cd = p[24]
-    Croll = p[25]
-"""
 import casadi
 import math
 import numpy as np
@@ -192,6 +143,9 @@ def stage_cost(z, p):
     deltadot = z[zvars.index('f_deltadot')]
     thetadot = z[zvars.index('f_thetadot')]
 
+    s_vx = z[zvars.index('s_vx')]
+    Q_s = 10  # TODO move to config
+
     # compute approximate linearized contouring and lag error
     xt_hat = xd + cos_phit * (theta - theta_hat)
     yt_hat = yd + sin_phit * (theta - theta_hat)
@@ -200,7 +154,7 @@ def stage_cost(z, p):
     e_lag = cos_phit * (xt_hat - posx) + sin_phit * (yt_hat - posy)
 
     cost = e_cont * Q1 * e_cont + e_lag * Q2 * e_lag - q * \
-        thetadot + ddot * R1 * ddot + deltadot * R2 * deltadot
+        thetadot + ddot * R1 * ddot + deltadot * R2 * deltadot - Q_s * s_vx
 
     return cost
 
@@ -417,7 +371,59 @@ def nonlinear_ineq_final(z, p):
     return casadi.vertcat(f_tval,
                           s_tval,
                           s_vx,
-                          s_vy
+                          #   s_vy
+                          )
+
+
+def nonlinear_ineq_sameInput_v2(z, p):
+
+    f_posx = z[zvars.index('f_posx')]
+    f_posy = z[zvars.index('f_posy')]
+    f_xd = p[pvars.index('f_xd')]
+    f_yd = p[pvars.index('f_yd')]
+    f_tval = (f_posx-f_xd)*(f_posx-f_xd) + (f_posy-f_yd)*(f_posy-f_yd)
+
+    s_posx = z[zvars.index('s_posx')]
+    s_posy = z[zvars.index('s_posy')]
+    s_xd = p[pvars.index('s_xd')]
+    s_yd = p[pvars.index('s_yd')]
+    s_tval = (s_posx-s_xd)*(s_posx-s_xd) + (s_posy-s_yd)*(s_posy-s_yd)
+
+    # Same input
+    f_ddot = z[zvars.index('f_ddot')]
+    f_deltadot = z[zvars.index('f_deltadot')]
+    f_thetadot = z[zvars.index('f_thetadot')]
+    s_ddot = z[zvars.index('s_ddot')]
+    s_deltadot = z[zvars.index('s_deltadot')]
+    s_thetadot = z[zvars.index('s_thetadot')]
+
+    ddot_cond = f_ddot - s_ddot
+    deltadot_cond = f_deltadot - s_deltadot
+    thetadot_cond = f_thetadot - s_thetadot
+
+    return casadi.vertcat(f_tval,
+                          s_tval,
+                          ddot_cond,
+                          deltadot_cond,
+                          thetadot_cond
+                          )
+
+
+def nonlinear_ineq_standard_v2(z, p):
+    f_posx = z[zvars.index('f_posx')]
+    f_posy = z[zvars.index('f_posy')]
+    f_xd = p[pvars.index('f_xd')]
+    f_yd = p[pvars.index('f_yd')]
+    f_tval = (f_posx-f_xd)*(f_posx-f_xd) + (f_posy-f_yd)*(f_posy-f_yd)
+
+    s_posx = z[zvars.index('s_posx')]
+    s_posy = z[zvars.index('s_posy')]
+    s_xd = p[pvars.index('s_xd')]
+    s_yd = p[pvars.index('s_yd')]
+    s_tval = (s_posx-s_xd)*(s_posx-s_xd) + (s_posy-s_yd)*(s_posy-s_yd)
+
+    return casadi.vertcat(f_tval,
+                          s_tval,
                           )
 
 

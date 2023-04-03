@@ -3,8 +3,8 @@
 %   OUTPUT = FORCESNLPsolver(PARAMS) solves a multistage problem
 %   subject to the parameters supplied in the following struct:
 %       PARAMS.xinit - matrix of size [18x1]
-%       PARAMS.x0 - matrix of size [720x1]
-%       PARAMS.all_parameters - matrix of size [960x1]
+%       PARAMS.x0 - matrix of size [960x1]
+%       PARAMS.all_parameters - matrix of size [1280x1]
 %       PARAMS.num_of_threads - scalar
 %       PARAMS.receive_floating_license - scalar
 %
@@ -39,6 +39,16 @@
 %       OUTPUT.x28 - column vector of length 24
 %       OUTPUT.x29 - column vector of length 24
 %       OUTPUT.x30 - column vector of length 24
+%       OUTPUT.x31 - column vector of length 24
+%       OUTPUT.x32 - column vector of length 24
+%       OUTPUT.x33 - column vector of length 24
+%       OUTPUT.x34 - column vector of length 24
+%       OUTPUT.x35 - column vector of length 24
+%       OUTPUT.x36 - column vector of length 24
+%       OUTPUT.x37 - column vector of length 24
+%       OUTPUT.x38 - column vector of length 24
+%       OUTPUT.x39 - column vector of length 24
+%       OUTPUT.x40 - column vector of length 24
 %
 %   [OUTPUT, EXITFLAG] = FORCESNLPsolver(PARAMS) returns additionally
 %   the integer EXITFLAG indicating the state of the solution with 

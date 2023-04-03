@@ -63,7 +63,7 @@ extern solver_int32_default FORCESNLPsolver_adtool2forces(FORCESNLPsolver_float 
 	
     /* temporary storage for AD tool sparse output */
     FORCESNLPsolver_callback_float this_f = (FORCESNLPsolver_callback_float) 0.0;
-    FORCESNLPsolver_float nabla_f_sparse[6];
+    FORCESNLPsolver_float nabla_f_sparse[7];
     FORCESNLPsolver_float h_sparse[5];
     FORCESNLPsolver_float nabla_h_sparse[12];
     FORCESNLPsolver_float c_sparse[1];
@@ -1199,6 +1199,8 @@ extern solver_int32_default FORCESNLPsolver_adtool2forces(FORCESNLPsolver_float 
 			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
 		}
 		
+		FORCESNLPsolver_rkfour_29(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_29, FORCESNLPsolver_cdyn_29, threadID);
+		
 		out[0] = h_sparse;
 		out[1] = nabla_h_sparse;
 		FORCESNLPsolver_inequalities_29(in, out, NULL, w, 0);
@@ -1216,6 +1218,384 @@ extern solver_int32_default FORCESNLPsolver_adtool2forces(FORCESNLPsolver_float 
 			ncol = FORCESNLPsolver_inequalities_29_sparsity_out(1)[1];
 			colind = FORCESNLPsolver_inequalities_29_sparsity_out(1) + 2;
 			row = FORCESNLPsolver_inequalities_29_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((30 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_30(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_30_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_30_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_30_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_30_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_30(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_30, FORCESNLPsolver_cdyn_30, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_30(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_30_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_30_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_30_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_30_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_30_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_30_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_30_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_30_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((31 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_31(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_31_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_31_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_31_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_31_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_31(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_31, FORCESNLPsolver_cdyn_31, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_31(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_31_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_31_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_31_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_31_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_31_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_31_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_31_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_31_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((32 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_32(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_32_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_32_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_32_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_32_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_32(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_32, FORCESNLPsolver_cdyn_32, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_32(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_32_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_32_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_32_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_32_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_32_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_32_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_32_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_32_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((33 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_33(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_33_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_33_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_33_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_33_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_33(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_33, FORCESNLPsolver_cdyn_33, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_33(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_33_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_33_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_33_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_33_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_33_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_33_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_33_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_33_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((34 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_34(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_34_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_34_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_34_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_34_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_34(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_34, FORCESNLPsolver_cdyn_34, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_34(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_34_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_34_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_34_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_34_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_34_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_34_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_34_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_34_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((35 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_35(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_35_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_35_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_35_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_35_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_35(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_35, FORCESNLPsolver_cdyn_35, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_35(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_35_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_35_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_35_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_35_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_35_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_35_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_35_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_35_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((36 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_36(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_36_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_36_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_36_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_36_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_36(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_36, FORCESNLPsolver_cdyn_36, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_36(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_36_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_36_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_36_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_36_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_36_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_36_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_36_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_36_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((37 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_37(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_37_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_37_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_37_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_37_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_37(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_37, FORCESNLPsolver_cdyn_37, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_37(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_37_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_37_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_37_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_37_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_37_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_37_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_37_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_37_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((38 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_38(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_38_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_38_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_38_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_38_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		FORCESNLPsolver_rkfour_38(x, p, c, nabla_c, FORCESNLPsolver_cdyn_0rd_38, FORCESNLPsolver_cdyn_38, threadID);
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_38(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_38_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_38_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_38_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_38_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_38_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_38_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_38_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_38_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
+		}
+	}
+	if ((39 == stage))
+	{
+		
+		
+		out[0] = &this_f;
+		out[1] = nabla_f_sparse;
+		FORCESNLPsolver_objective_39(in, out, NULL, w, 0);
+		if( nabla_f )
+		{
+			nrow = FORCESNLPsolver_objective_39_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_objective_39_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_objective_39_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_objective_39_sparsity_out(1) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
+		}
+		
+		out[0] = h_sparse;
+		out[1] = nabla_h_sparse;
+		FORCESNLPsolver_inequalities_39(in, out, NULL, w, 0);
+		if( h )
+		{
+			nrow = FORCESNLPsolver_inequalities_39_sparsity_out(0)[0];
+			ncol = FORCESNLPsolver_inequalities_39_sparsity_out(0)[1];
+			colind = FORCESNLPsolver_inequalities_39_sparsity_out(0) + 2;
+			row = FORCESNLPsolver_inequalities_39_sparsity_out(0) + 2 + (ncol + 1);
+			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
+		}
+		if( nabla_h )
+		{
+			nrow = FORCESNLPsolver_inequalities_39_sparsity_out(1)[0];
+			ncol = FORCESNLPsolver_inequalities_39_sparsity_out(1)[1];
+			colind = FORCESNLPsolver_inequalities_39_sparsity_out(1) + 2;
+			row = FORCESNLPsolver_inequalities_39_sparsity_out(1) + 2 + (ncol + 1);
 			FORCESNLPsolver_sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
 		}
 	}

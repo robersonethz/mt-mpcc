@@ -6,13 +6,13 @@ requires_callback = True
 lib = "lib/libFORCESNLPsolver.so"
 lib_static = "lib/libFORCESNLPsolver.a"
 c_header = "include/FORCESNLPsolver.h"
-nstages = 30
+nstages = 40
 
 # Parameter             | Type    | Scalar type      | Ctypes type    | Numpy type   | Shape     | Len
 params = \
 [("xinit"               , "dense" , ""               , ctypes.c_double, numpy.float64, ( 18,   1),   18),
- ("x0"                  , "dense" , ""               , ctypes.c_double, numpy.float64, (720,   1),  720),
- ("all_parameters"      , "dense" , ""               , ctypes.c_double, numpy.float64, (960,   1),  960),
+ ("x0"                  , "dense" , ""               , ctypes.c_double, numpy.float64, (960,   1),  960),
+ ("all_parameters"      , "dense" , ""               , ctypes.c_double, numpy.float64, (1280,   1), 1280),
  ("num_of_threads"      , "dense" , "solver_int32_unsigned", ctypes.c_uint  , numpy.uint32 , (  1,   1),    1),
  ("receive_floating_license", "dense" , "solver_int32_default", ctypes.c_int   , numpy.int32  , (  1,   1),    1)]
 
@@ -47,7 +47,17 @@ outputs = \
  ("x27"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
  ("x28"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
  ("x29"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
- ("x30"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24)]
+ ("x30"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x31"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x32"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x33"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x34"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x35"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x36"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x37"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x38"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x39"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24),
+ ("x40"                 , ""               , ctypes.c_double, numpy.float64,     ( 24,),   24)]
 
 # Info Struct Fields
 info = \
@@ -77,6 +87,16 @@ info = \
 #   nvar    |   neq   |   dimh    |   dimp    |   diml    |   dimu    |   dimhl   |   dimhu    
 dynamics_dims = [
 	(24, 18, 5, 32, 24, 24, 5, 5), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
+	(24, 18, 2, 32, 24, 24, 2, 2), 
 	(24, 18, 2, 32, 24, 24, 2, 2), 
 	(24, 18, 2, 32, 24, 24, 2, 2), 
 	(24, 18, 2, 32, 24, 24, 2, 2), 

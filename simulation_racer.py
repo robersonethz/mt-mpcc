@@ -12,15 +12,18 @@ sim_length = 100
 
 z_output = []
 log_info = []
+all_parameters_output = []
 
 for i in range(sim_length):
-    z_return, info = racer_agent.update()
+    z_return, info, all_parameters = racer_agent.update()
     z_output.append(z_return)
+    all_parameters_output.append(all_parameters)
     log_info.append(info)
     # print(z_return[0, 0:2])
 
 
 list_log = {'z_output': z_output,
+            'all_parameters_output': all_parameters_output,
             'log_info': log_info
             }
 
