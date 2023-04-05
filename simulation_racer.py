@@ -6,12 +6,14 @@ import ploting
 
 ### PARAMETERS FOR SIMULATION ###
 
-sim_length = 200
-generate_new_solver = True
+sim_length = 400
+generate_new_solver = False
+init_it = 100
 
 # SIMULATION
 
-racer_agent = rc.racer(generate_new_solver=generate_new_solver)
+racer_agent = rc.racer(
+    generate_new_solver=generate_new_solver, init_iter=init_it)
 xinit = np.array([0.15, -1.05, 0, 1, 0, 0, 0, 0, 0])
 
 z_log = np.zeros((sim_length, 40, 25))

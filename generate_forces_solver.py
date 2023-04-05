@@ -39,7 +39,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     car_dim = 0.07  # move to config?
     half_track_width = 0.46/2 - 0.1  # move to config?
     hu_car = (half_track_width-car_dim)*(half_track_width-car_dim)
-    r_antena = 1
+    r_antena = 0.8
 
     # dimensions
     model = forcespro.nlp.SymbolicModel(N)
@@ -76,21 +76,21 @@ def build_solver(N: int, Ts: float, cfg: dict):
     # inequalities
     for i in range(0, model.N):
         if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
-            model.nh[i] = 4       # number of nonlinear inequality constraints
+            model.nh[i] = 5       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
                 z, p)
-            model.hu[i] = [0, 0.001, 0.001, 0.001]
-            model.hl[i] = [-100, -0.001, -0.001, -0.001]
+            model.hu[i] = [0, 0.001, 0.001, 0.001, r_antena**2]
+            model.hl[i] = [-100, -0.001, -0.001, -0.001, 0]
         elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
-            model.nh[i] = 2       # number of nonlinear inequality constraints
+            model.nh[i] = 3       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
-            model.hu[i] = [0, 0.01]
-            model.hl[i] = [-100, -0.01]
+            model.hu[i] = [0, 0.01, r_antena**2]
+            model.hl[i] = [-100, -0.01, 0]
         else:  # usual constraints : contained inside track
-            model.nh[i] = 1       # number of nonlinear inequality constraints
+            model.nh[i] = 2       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-            model.hu[i] = [0]
-            model.hl[i] = [-100]
+            model.hu[i] = [0, r_antena**2]
+            model.hl[i] = [-100, 0]
 
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)

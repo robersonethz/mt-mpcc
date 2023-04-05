@@ -164,7 +164,7 @@ def stage_cost(z, p):
 
     cost = e_cont * Q1 * e_cont + e_lag * Q2 * e_lag - q * \
         thetadot + ddot * R1 * ddot + deltadot * R2 * \
-        deltadot + s_slack*s_slack*1000000
+        deltadot + s_slack*10000
 
     return cost
 
@@ -420,11 +420,17 @@ def nonlinear_ineq_sameInput_v2(z, p):
     deltadot_cond = f_deltadot - s_deltadot
     thetadot_cond = f_thetadot - s_thetadot
 
+    s0_x = p[pvars.index('s0_x')]
+    s0_y = p[pvars.index('s0_y')]
+
+    s_antena = (s0_x-s_posx)**2 + (s0_y-s_posy)**2
+
     return casadi.vertcat(  # f_tval,
         s_tval,
         ddot_cond,
         deltadot_cond,
-        thetadot_cond
+        thetadot_cond,
+        s_antena
     )
 
 
@@ -444,9 +450,15 @@ def nonlinear_ineq_standard_v2(z, p):
 
     s_tval = (s_posx-s_xd)**2 + (s_posy-s_yd)**2 - (hu_car+s_slack)**2
 
+    s0_x = p[pvars.index('s0_x')]
+    s0_y = p[pvars.index('s0_y')]
+
+    s_antena = (s0_x-s_posx)**2 + (s0_y-s_posy)**2
+
     # Do not return f_tval : cost should be enough
     return casadi.vertcat(  # f_tval,
         s_tval,
+        s_antena
     )
 
 
@@ -477,7 +489,7 @@ def nonlinear_ineq_final_v2(z, p):
     return casadi.vertcat(  # f_tval,
         s_tval,
         s_vx,
-        # s_antena
+        s_antena
     )
 
 

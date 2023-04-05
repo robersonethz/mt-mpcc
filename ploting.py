@@ -83,6 +83,8 @@ def plot_results(gif_name):
         plt.plot(np.array(hor_f_x[i]), np.array(hor_f_y[i]), 'red')
         plt.scatter(s_x[i], s_y[i])
         plt.plot(np.array(hor_s_x[i]), np.array(hor_s_y[i]), 'green')
+        circle = plt.Circle((f_x[i], f_y[i]), 0.8, color='blue', alpha=0.2)
+        ax.add_patch(circle)
 
     ani = FuncAnimation(fig, animate_s, frames=len(f_x),
                         interval=20, repeat=False)

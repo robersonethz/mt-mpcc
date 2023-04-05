@@ -10,9 +10,10 @@ import dynamics
 
 
 class racer():
-    def __init__(self, generate_new_solver: bool, modelparams="modelparams.yaml", solverparams="solverparams") -> None:
+    def __init__(self, generate_new_solver: bool, init_iter, modelparams="modelparams.yaml", solverparams="solverparams") -> None:
 
         self.modelparams = 'model_params.yaml'
+        self.init_iter = init_iter
 
         with open(self.modelparams) as stream:
             model_params = yaml.safe_load(stream)
@@ -108,7 +109,7 @@ class racer():
     def initialize_trajectory(self, xinit):
 
         # initialization for theta values
-        iter = 100
+        iter = self.init_iter
 
         # initialize dyamics simulation
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
