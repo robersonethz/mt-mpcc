@@ -48,17 +48,18 @@ yrate = track['yRate']
 arcLength = track['arcLength']
 tangentAngle = track['tangentAngle']
 
-#generate solver
-model, codeoptions, outputs_gen, solver = generate_forces_solver.build_solver(N=20, Ts=dt, cfg=config)
+# generate solver
+model, codeoptions, outputs_gen, solver = generate_forces_solver.build_solver(
+    N=20, Ts=dt, cfg=config)
 
-# set weights for cost function 
-Q = np.array([[20, 0],[0, 1000]]) # weights for contouring and lag error
-R = 10*np.eye(3) # weights for changes in torque, steer and theta
-R[0,0] = 10
-R[1,1] = 10 # change individual weight if necessary
+# set weights for cost function
+Q = np.array([[20, 0], [0, 1000]])  # weights for contouring and lag error
+R = 10*np.eye(3)  # weights for changes in torque, steer and theta
+R[0, 0] = 10
+R[1, 1] = 10  # change individual weight if necessary
 q = 1
 
-#set init params
+# set init params
 p = np.zeros(model.npar)
 p[6] = Q[0, 0]
 p[7] = Q[1, 1]
@@ -84,44 +85,45 @@ p[25] = Croll
 
 # get initial arclengths
 problem = {}
-problem['x0'] = np.zeros(model.nvar*model.N) #transpose?
-#set 'x0' with a larger dtheta
+problem['x0'] = np.zeros(model.nvar*model.N)  # transpose?
+# set 'x0' with a larger dtheta
 x0 = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0.5])
 problem['x0'] = np.tile(x0, model.N)
 # [x y yaw vx vy dyaw theta torque steer]
-#z = [0: x, 1: y, 2: yaw, 3: vx, 4: vy, 5: dyaw, 6: torque, 7: steer, 8: Theta, 9: dtorque, 10: dsteer, 11: dtheta]
-problem['xinit'] = np.array([0.75, -1.05, 0, 1, 0, 0, 0, 0, 0]) #include also first inputs in z vector (3 last variables)
+# z = [0: x, 1: y, 2: yaw, 3: vx, 4: vy, 5: dyaw, 6: torque, 7: steer, 8: Theta, 9: dtorque, 10: dsteer, 11: dtheta]
+# include also first inputs in z vector (3 last variables)
+problem['xinit'] = np.array([0.75, -1.05, 0, 1, 0, 0, 0, 0, 0])
 next_state = problem['xinit']
 
-problem['all_parameters'] = np.tile(p,model.N)
+problem['all_parameters'] = np.tile(p, model.N)
 
-theta = np.zeros(model.N)
+c1_theta = np.zeros(model.N)
 theta_eff = np.zeros(model.N)
 
 # iterate until initial Theta and dTheta converges
 
-for i in range(100): #was 100
+for i in range(100):  # was 100
     outputs, exitflag, info = solver.solve(problem)
-    theta = outputs['theta']
+    c1_theta = outputs['theta']
     dtheta = outputs['dtheta']
     for j in range(model.N):
-        
+
         # theta at stage j
         # iterate through arcLength to find the closest one to theta[j]
         idx = 0
         temp = 100
-        while(abs(arcLength[idx] - theta[j]) < temp):
-           temp = abs(arcLength[idx] - theta[j])
-           idx = idx + 1
-        
+        while (abs(arcLength[idx] - c1_theta[j]) < temp):
+            temp = abs(arcLength[idx] - c1_theta[j])
+            idx = idx + 1
+
         if idx != 0:
             idx -= 1
-        
+
         # print(idx)
-        problem['x0'][model.nvar*(j)+8] = theta[j]
+        problem['x0'][model.nvar*(j)+8] = c1_theta[j]
         problem['x0'][model.nvar*(j)+11] = dtheta[j]
-        
-        if j>1: # save previous parameters
+
+        if j > 1:  # save previous parameters
             problem['all_parameters'][model.npar*(j-1)] = xtrack[idx]
             problem['all_parameters'][model.npar*(j-1)+1] = ytrack[idx]
             problem['all_parameters'][model.npar*(j-1)+2] = xrate[idx]
@@ -129,13 +131,13 @@ for i in range(100): #was 100
             problem['all_parameters'][model.npar*(j-1)+4] = arcLength[idx]
             problem['all_parameters'][model.npar*(j-1)+5] = tangentAngle[idx]
             theta_eff[j-1] = arcLength[idx]
-        
+
         # save static params (are rewritten every time in this overhead)
-        problem['all_parameters'][model.npar*(j)+6] = Q[0,0]
-        problem['all_parameters'][model.npar*(j)+7] = Q[1,1]
-        problem['all_parameters'][model.npar*(j)+8] = R[0,0]
-        problem['all_parameters'][model.npar*(j)+9] = R[1,1]
-        problem['all_parameters'][model.npar*(j)+10] = R[2,2]
+        problem['all_parameters'][model.npar*(j)+6] = Q[0, 0]
+        problem['all_parameters'][model.npar*(j)+7] = Q[1, 1]
+        problem['all_parameters'][model.npar*(j)+8] = R[0, 0]
+        problem['all_parameters'][model.npar*(j)+9] = R[1, 1]
+        problem['all_parameters'][model.npar*(j)+10] = R[2, 2]
         problem['all_parameters'][model.npar*(j)+11] = q
         # problem['all_parameters'][model.npar*(j)+12] = freq
         problem['all_parameters'][model.npar*(j)+12] = lr
@@ -152,47 +154,54 @@ for i in range(100): #was 100
         problem['all_parameters'][model.npar*(j)+23] = Cm2
         problem['all_parameters'][model.npar*(j)+24] = Cd
         problem['all_parameters'][model.npar*(j)+25] = Croll
-    
+
     # last stage params are equal to penultimate params
-    problem['all_parameters'][model.npar*(model.N-1)] = problem['all_parameters'][model.npar*(model.N-2)]
-    problem['all_parameters'][model.npar*(model.N-1)+1] = problem['all_parameters'][model.npar*(model.N-2)+1]
-    problem['all_parameters'][model.npar*(model.N-1)+2] = problem['all_parameters'][model.npar*(model.N-2)+2]
-    problem['all_parameters'][model.npar*(model.N-1)+3] = problem['all_parameters'][model.npar*(model.N-2)+3]
-    problem['all_parameters'][model.npar*(model.N-1)+4] = problem['all_parameters'][model.npar*(model.N-2)+4]
-    problem['all_parameters'][model.npar*(model.N-1)+5] = problem['all_parameters'][model.npar*(model.N-2)+5]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)] = problem['all_parameters'][model.npar*(model.N-2)]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+1] = problem['all_parameters'][model.npar*(model.N-2)+1]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+2] = problem['all_parameters'][model.npar*(model.N-2)+2]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+3] = problem['all_parameters'][model.npar*(model.N-2)+3]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+4] = problem['all_parameters'][model.npar*(model.N-2)+4]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+5] = problem['all_parameters'][model.npar*(model.N-2)+5]
     theta_eff[model.N-1] = theta_eff[model.N-2]
 
-##########################SIMULATION#######################################
+########################## SIMULATION#######################################
 
-######INITIALIZE#####
+###### INITIALIZE#####
 
 
 # run simulation
-sim_length = 50 # number of time steps to simulate
+sim_length = 50  # number of time steps to simulate
 u = np.zeros(3)
 
 # logging initialization
 state = np.zeros((sim_length, model.nvar))
-last_arc_length = max(arcLength)/2 # is at half, because track has been added to itself to account for laps
+# is at half, because track has been added to itself to account for laps
+last_arc_length = max(arcLength)/2
 exitflags = np.zeros(sim_length)
 solvetimes = np.zeros(sim_length)
 its = np.zeros(sim_length)
 
 # flag, which is set after each lap to reset
-reset = 0;
+reset = 0
 
 
 for i in range(sim_length):
-    state[i,0] = next_state[0]
-    state[i,1] = next_state[1]
-    state[i,2] = next_state[2]
-    state[i,3] = next_state[3]
-    state[i,4] = next_state[4]
-    state[i,5] = next_state[5]
-    state[i,6] = next_state[6]
-    state[i,7] = next_state[7]
-    state[i,8] = next_state[8]
-    
+    state[i, 0] = next_state[0]
+    state[i, 1] = next_state[1]
+    state[i, 2] = next_state[2]
+    state[i, 3] = next_state[3]
+    state[i, 4] = next_state[4]
+    state[i, 5] = next_state[5]
+    state[i, 6] = next_state[6]
+    state[i, 7] = next_state[7]
+    state[i, 8] = next_state[8]
+
     outputs, exitflag, info = solver.solve(problem)
 
     exitflags[i] = exitflag
@@ -202,57 +211,70 @@ for i in range(sim_length):
     u[0] = outputs['s0'][9]
     u[1] = outputs['s0'][10]
     u[2] = outputs['s0'][11]
-#z = [0: x, 1: y, 2: yaw, 3: vx, 4: vy, 5: dyaw, 6: torque, 7: steer, 8: Theta, 9: dtorque, 10: dsteer, 11: dtheta]
-#u = dtorque, dsteer, dtheta]
+# z = [0: x, 1: y, 2: yaw, 3: vx, 4: vy, 5: dyaw, 6: torque, 7: steer, 8: Theta, 9: dtorque, 10: dsteer, 11: dtheta]
+# u = dtorque, dsteer, dtheta]
 
-    state[i,9] = u[0]
-    state[i,10] = u[1]
-    state[i,11] = u[2]
-
+    state[i, 9] = u[0]
+    state[i, 10] = u[1]
+    state[i, 11] = u[2]
 
     # next_state = utils.advanceState_pacejka(next_state, u, problem['all_parameters']);
-    next_state = utils.dynamics_RK4(state[i, :], problem['all_parameters'], freq).full().transpose().reshape(-1)
-
+    next_state = utils.dynamics_RK4(
+        state[i, :], problem['all_parameters'], freq).full().transpose().reshape(-1)
 
     if next_state[8] > last_arc_length:
-        next_state[8] = np.mod(next_state[8], last_arc_length) #if the vehicle goes past the start, reset arcLength
+        # if the vehicle goes past the start, reset arcLength
+        next_state[8] = np.mod(next_state[8], last_arc_length)
         reset = 1
-    
-    problem['xinit'] = next_state # initial state for solver next iteration is the advanced state based on x01
-    problem['x0'] = np.tile(np.hstack((next_state,u)), model.N) #TODO Check for dimensions...
 
-    theta = outputs['theta']
+    # initial state for solver next iteration is the advanced state based on x01
+    problem['xinit'] = next_state
+    # TODO Check for dimensions...
+    problem['x0'] = np.tile(np.hstack((next_state, u)), model.N)
 
-    for j in range(model.N): # iterate over all stages and get closest arc length
-        if reset: # if past the start reset (maybe better if closeness to start is checked)
-            theta[j] = np.mod(theta[j], max(arcLength)/2)
-        
-        
+    c1_theta = outputs['theta']
+
+    for j in range(model.N):  # iterate over all stages and get closest arc length
+        # if past the start reset (maybe better if closeness to start is checked)
+        if reset:
+            c1_theta[j] = np.mod(c1_theta[j], max(arcLength)/2)
+
         idx = 0
         temp = 100
-        while abs(arcLength[idx] - theta[j]) < temp:
-            temp = abs(arcLength[idx] - theta[j])
+        while abs(arcLength[idx] - c1_theta[j]) < temp:
+            temp = abs(arcLength[idx] - c1_theta[j])
             idx = idx + 1
-        
+
         if idx != 0:
             idx = idx-1
-        
-        
+
         # if j>1:
-        problem['all_parameters'][model.npar*(j-1)] = xtrack[idx] #assign linearization parameters for closest theta
-        problem['all_parameters'][model.npar*(j-1)+1] = ytrack[idx] # assign linearization parameters for closest theta
-        problem['all_parameters'][model.npar*(j-1)+2] = xrate[idx] #assign linearization parameters for closest theta
-        problem['all_parameters'][model.npar*(j-1)+3] = yrate[idx] # assign linearization parameters for closest theta
-        problem['all_parameters'][model.npar*(j-1)+4] = arcLength[idx] # assign linearization parameters for closest theta
-        problem['all_parameters'][model.npar*(j-1)+5] = tangentAngle[idx] # assign linearization parameters for closest theta
-        #TODO Check index
-    problem['all_parameters'][model.npar*(model.N-1)] = problem['all_parameters'][model.npar*(model.N-2)]
-    problem['all_parameters'][model.npar*(model.N-1)+1] = problem['all_parameters'][model.npar*(model.N-2)+1]
-    problem['all_parameters'][model.npar*(model.N-1)+2] = problem['all_parameters'][model.npar*(model.N-2)+2]
-    problem['all_parameters'][model.npar*(model.N-1)+3] = problem['all_parameters'][model.npar*(model.N-2)+3]
-    problem['all_parameters'][model.npar*(model.N-1)+4] = problem['all_parameters'][model.npar*(model.N-2)+4]
-    problem['all_parameters'][model.npar*(model.N-1)+5] = problem['all_parameters'][model.npar*(model.N-2)+5]
-    reset = 0 #is set at every lap
+        # assign linearization parameters for closest theta
+        problem['all_parameters'][model.npar*(j-1)] = xtrack[idx]
+        # assign linearization parameters for closest theta
+        problem['all_parameters'][model.npar*(j-1)+1] = ytrack[idx]
+        # assign linearization parameters for closest theta
+        problem['all_parameters'][model.npar*(j-1)+2] = xrate[idx]
+        # assign linearization parameters for closest theta
+        problem['all_parameters'][model.npar*(j-1)+3] = yrate[idx]
+        # assign linearization parameters for closest theta
+        problem['all_parameters'][model.npar*(j-1)+4] = arcLength[idx]
+        # assign linearization parameters for closest theta
+        problem['all_parameters'][model.npar*(j-1)+5] = tangentAngle[idx]
+        # TODO Check index
+    problem['all_parameters'][model.npar *
+                              (model.N-1)] = problem['all_parameters'][model.npar*(model.N-2)]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+1] = problem['all_parameters'][model.npar*(model.N-2)+1]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+2] = problem['all_parameters'][model.npar*(model.N-2)+2]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+3] = problem['all_parameters'][model.npar*(model.N-2)+3]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+4] = problem['all_parameters'][model.npar*(model.N-2)+4]
+    problem['all_parameters'][model.npar *
+                              (model.N-1)+5] = problem['all_parameters'][model.npar*(model.N-2)+5]
+    reset = 0  # is set at every lap
 
 half_track_width = 0.46/2
 
@@ -262,15 +284,14 @@ np_ytrack = np.array(ytrack)
 np_yrate = np.array(yrate)
 
 list_log = {'state': state,
-            'last_arc_length': last_arc_length, 
-            'exitflags': exitflags, 
-            'solvetimes': solvetimes, 
-            'its': its, 
-            'np_xtrack': np_xtrack, 
-            'np_xrate': np_xrate, 
-            'np_ytrack': np_ytrack, 
-            'np_yrate': np_yrate} 
-
+            'last_arc_length': last_arc_length,
+            'exitflags': exitflags,
+            'solvetimes': solvetimes,
+            'its': its,
+            'np_xtrack': np_xtrack,
+            'np_xrate': np_xrate,
+            'np_ytrack': np_ytrack,
+            'np_yrate': np_yrate}
 
 
 with open('log_data.pickle', 'wb') as f:
@@ -344,4 +365,3 @@ with open('log_data.pickle', 'wb') as f:
 # fig.tight_layout()
 # plt.figure(1)
 # plt.plot()
-

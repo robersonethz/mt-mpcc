@@ -6,8 +6,8 @@ import ploting
 
 ### PARAMETERS FOR SIMULATION ###
 
-sim_length = 100
-init_it = 100
+sim_length = 80
+init_it = 80
 # solver
 generate_new_solver = False
 max_it_solver = 100
@@ -17,7 +17,7 @@ max_it_solver = 100
 
 racer_agent = rc.racer(
     generate_new_solver=generate_new_solver, init_iter=init_it, max_it_solver=max_it_solver)
-xinit = np.array([0.15, -1.05, np.pi, 1, 0, 0, 0, 0, 0])
+c1_xinit = np.array([0.15, -1.05, np.pi, 1, 0, 0, 0, 0, 0])
 
 nvar = 25
 horizon = 40
@@ -27,7 +27,7 @@ z_log = np.zeros((sim_length, horizon, nvar))
 print('Init traj')
 
 z_curr = racer_agent.initialize_trajectory(
-    np.tile(xinit, 2))
+    np.tile(c1_xinit, 2))
 
 log_info = []
 all_parameters_output = []
