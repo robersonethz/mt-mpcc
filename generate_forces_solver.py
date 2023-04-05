@@ -54,20 +54,20 @@ def build_solver(N: int, Ts: float, cfg: dict):
     # inequalities
     for i in range(0, model.N):
         if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
-            model.nh[i] = 5       # number of nonlinear inequality constraints
+            model.nh[i] = 4       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput(z, p)
-            model.hu[i] = [0, 0, 0.001, 0.001, 0.001]
-            model.hl[i] = [-10, -10, -0.001, -0.001, -0.001]
+            model.hu[i] = [0, 0.001, 0.001, 0.001]
+            model.hl[i] = [-10, -0.001, -0.001, -0.001]
         # elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
         #     model.nh[i] = 3       # number of nonlinear inequality constraints
         #     model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final(z, p)
         #     model.hu[i] = [0, 0, 0.01]
         #     model.hl[i] = [-10, -10, -0.01]
         else:  # usual constraints : contained inside track
-            model.nh[i] = 2       # number of nonlinear inequality constraints
+            model.nh[i] = 1       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard(z, p)
-            model.hu[i] = [0, 0]
-            model.hl[i] = [-10, -10]
+            model.hu[i] = [0]
+            model.hl[i] = [-10]
 
     # inequalities
     # for i in range(0, model.N):
@@ -158,7 +158,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     # Define solver options.
     codeoptions = forcespro.CodeOptions('FORCESNLPsolver')
 
-    codeoptions.maxit = 20    # Maximum number of iterations
+    codeoptions.maxit = 200    # Maximum number of iterations
     # codeoptions.solver_timeout = 2 # timeout enabled
     # codeoptions.timeout_estimate_coeff = Ts / 2 # Set timeout to half the sampling time
 

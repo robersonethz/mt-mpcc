@@ -67,11 +67,11 @@ class racer():
         self.theta_max = max(self.arcLength)
         self.N = 40
 
-        # self.model, self.solver = generate_forces_solver.build_solver(
-        #     N=self.N, Ts=self.dt, cfg=config)
-        self.solver = forcespro.nlp.Solver.from_directory(
-            "/home/robin/Dev/mpcc_python/FORCESNLPsolver")
-        self.solver.help
+        self.model, self.solver = generate_forces_solver.build_solver(
+            N=self.N, Ts=self.dt, cfg=config)
+        # self.solver = forcespro.nlp.Solver.from_directory(
+        #     "/home/robin/Dev/mpcc_python/FORCESNLPsolver")
+        # self.solver.help
 
         # phi = yaw
         # d = Thrust

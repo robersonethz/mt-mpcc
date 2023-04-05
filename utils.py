@@ -242,12 +242,12 @@ def nonlinear_ineq_sameInput(z, p):
     deltadot_cond = f_deltadot - s_deltadot
     thetadot_cond = f_thetadot - s_thetadot
 
-    return casadi.vertcat(f_tval,
-                          s_tval,
-                          ddot_cond,
-                          deltadot_cond,
-                          thetadot_cond
-                          )
+    return casadi.vertcat(  # f_tval,
+        s_tval,
+        ddot_cond,
+        deltadot_cond,
+        thetadot_cond
+    )
 
 
 def nonlinear_ineq_standard(z, p):
@@ -305,9 +305,9 @@ def nonlinear_ineq_standard(z, p):
     s_tval = (s_xt_hat-s_posx)**2 + (s_yt_hat-s_posy)**2 - \
         (half_track_width-widthcar)**2
 
-    return casadi.vertcat(f_tval,
-                          s_tval
-                          )
+    return casadi.vertcat(  # f_tval,
+        s_tval
+    )
 
 
 def nonlinear_ineq_final(z, p):
@@ -368,11 +368,11 @@ def nonlinear_ineq_final(z, p):
     s_vx = z[zvars.index('s_vx')]
     s_vy = z[zvars.index('s_vy')]
 
-    return casadi.vertcat(f_tval,
-                          s_tval,
-                          s_vx,
-                          #   s_vy
-                          )
+    return casadi.vertcat(  # f_tval,
+        s_tval,
+        s_vx,
+        #   s_vy
+    )
 
 
 def nonlinear_ineq_sameInput_v2(z, p):
@@ -401,12 +401,12 @@ def nonlinear_ineq_sameInput_v2(z, p):
     deltadot_cond = f_deltadot - s_deltadot
     thetadot_cond = f_thetadot - s_thetadot
 
-    return casadi.vertcat(f_tval,
-                          s_tval,
-                          ddot_cond,
-                          deltadot_cond,
-                          thetadot_cond
-                          )
+    return casadi.vertcat(  # f_tval,
+        s_tval,
+        ddot_cond,
+        deltadot_cond,
+        thetadot_cond
+    )
 
 
 def nonlinear_ineq_standard_v2(z, p):
@@ -422,9 +422,10 @@ def nonlinear_ineq_standard_v2(z, p):
     s_yd = p[pvars.index('s_yd')]
     s_tval = (s_posx-s_xd)*(s_posx-s_xd) + (s_posy-s_yd)*(s_posy-s_yd)
 
-    return casadi.vertcat(f_tval,
-                          s_tval,
-                          )
+    # Do not return f_tval : cost should be enough
+    return casadi.vertcat(  # f_tval,
+        s_tval,
+    )
 
 
 def inequality_constraint(z, p):
