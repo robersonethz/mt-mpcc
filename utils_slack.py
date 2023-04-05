@@ -14,7 +14,7 @@ uvars = ['s_slack',
 
 pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d',
          's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
-         'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
+         'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll', 's0_x', 's0_y']
 
 zvars = ['s_slack',
          'f_ddot', 'f_deltadot', 'f_thetadot',
@@ -26,6 +26,7 @@ zvars = ['s_slack',
 
 car_dim = 0.07  # move to config?
 half_track_width = 0.46/2 - 0.1  # move to config?
+hu_car = (half_track_width-car_dim)
 
 
 def continuous_dynamics(x, u, p):
@@ -163,7 +164,7 @@ def stage_cost(z, p):
 
     cost = e_cont * Q1 * e_cont + e_lag * Q2 * e_lag - q * \
         thetadot + ddot * R1 * ddot + deltadot * R2 * \
-        deltadot + s_slack*s_slack*10000
+        deltadot + s_slack*s_slack*1000000
 
     return cost
 
@@ -402,7 +403,10 @@ def nonlinear_ineq_sameInput_v2(z, p):
     s_posy = z[zvars.index('s_posy')]
     s_xd = p[pvars.index('s_xd')]
     s_yd = p[pvars.index('s_yd')]
-    s_tval = (s_posx-s_xd)*(s_posx-s_xd) + (s_posy-s_yd)*(s_posy-s_yd)
+
+    s_slack = z[zvars.index('s_slack')]
+
+    s_tval = (s_posx-s_xd)**2 + (s_posy-s_yd)**2 - (hu_car+s_slack)**2
 
     # Same input
     f_ddot = z[zvars.index('f_ddot')]
@@ -438,8 +442,7 @@ def nonlinear_ineq_standard_v2(z, p):
 
     s_slack = z[zvars.index('s_slack')]
 
-    s_tval = (s_posx-s_xd)*(s_posx-s_xd) + \
-        (s_posy-s_yd)*(s_posy-s_yd) + s_slack
+    s_tval = (s_posx-s_xd)**2 + (s_posy-s_yd)**2 - (hu_car+s_slack)**2
 
     # Do not return f_tval : cost should be enough
     return casadi.vertcat(  # f_tval,
@@ -461,14 +464,20 @@ def nonlinear_ineq_final_v2(z, p):
 
     s_slack = z[zvars.index('s_slack')]
 
-    s_tval = (s_posx-s_xd)*(s_posx-s_xd) + \
-        (s_posy-s_yd)*(s_posy-s_yd) + s_slack
+    s_tval = (s_posx-s_xd)**2 + (s_posy-s_yd)**2 - (hu_car+s_slack)**2
 
     s_vx = z[zvars.index('s_vx')]
     # Do not return f_tval : cost should be enough
+
+    s0_x = p[pvars.index('s0_x')]
+    s0_y = p[pvars.index('s0_y')]
+
+    s_antena = (s0_x-s_posx)**2 + (s0_y-s_posy)**2
+
     return casadi.vertcat(  # f_tval,
         s_tval,
-        s_vx
+        s_vx,
+        # s_antena
     )
 
 

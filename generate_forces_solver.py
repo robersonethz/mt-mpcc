@@ -31,7 +31,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     -------
     None
     """
-    npar = (6*2)+20  # number of parameters per stage
+    npar = (6*2)+22  # number of parameters per stage
     nstates = 9*2
     ninputs = 3*2
     nslack = 1
@@ -39,6 +39,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     car_dim = 0.07  # move to config?
     half_track_width = 0.46/2 - 0.1  # move to config?
     hu_car = (half_track_width-car_dim)*(half_track_width-car_dim)
+    r_antena = 1
 
     # dimensions
     model = forcespro.nlp.SymbolicModel(N)
@@ -78,18 +79,18 @@ def build_solver(N: int, Ts: float, cfg: dict):
             model.nh[i] = 4       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
                 z, p)
-            model.hu[i] = [hu_car, 0.001, 0.001, 0.001]
-            model.hl[i] = [0, -0.001, -0.001, -0.001]
+            model.hu[i] = [0, 0.001, 0.001, 0.001]
+            model.hl[i] = [-100, -0.001, -0.001, -0.001]
         elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
             model.nh[i] = 2       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
-            model.hu[i] = [hu_car, 0.01]
-            model.hl[i] = [0, -0.01]
+            model.hu[i] = [0, 0.01]
+            model.hl[i] = [-100, -0.01]
         else:  # usual constraints : contained inside track
             model.nh[i] = 1       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-            model.hu[i] = [hu_car]
-            model.hl[i] = [0]
+            model.hu[i] = [0]
+            model.hl[i] = [-100]
 
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)

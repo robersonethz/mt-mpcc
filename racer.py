@@ -89,7 +89,7 @@ class racer():
 
         self.pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d',
                       's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
-                      'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
+                      'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll', 's0_x', 's0_y']
 
         self.zvars = ['s_slack',
                       'f_ddot', 'f_deltadot', 'f_thetadot',
@@ -108,10 +108,14 @@ class racer():
     def initialize_trajectory(self, xinit):
 
         # initialization for theta values
-        iter = 50
+        iter = 100
 
         # initialize dyamics simulation
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
+
+        # retain init position for antena constraint
+        self.s0_x = xinit[self.xvars.index('f_posx')]
+        self.s0_y = xinit[self.xvars.index('f_posy')]
 
         # warmstart init
         self.zinit = np.concatenate([np.zeros(len(self.uvars)), xinit])
@@ -199,7 +203,9 @@ class racer():
                                  self.Cm1,
                                  self.Cm2,
                                  self.Cd,
-                                 self.Croll])
+                                 self.Croll,
+                                 self.s0_x,
+                                 self.s0_y])
 
                 all_parameters.append(p_val)
 
@@ -247,6 +253,9 @@ class racer():
         f_theta_old = self.f_theta_current
         s_theta_old = self.s_theta_current
 
+        self.s0_x = self.xinit[self.xvars.index('f_posx')]
+        self.s0_y = self.xinit[self.xvars.index('f_posy')]
+
         for stageidx in range(self.N):
             # get index on track linearization relative to theta
             f_track_idx = utils.get_trackDataIdx_from_theta(
@@ -289,7 +298,9 @@ class racer():
                 self.Cm1,
                 self.Cm2,
                 self.Cd,
-                self.Croll])
+                self.Croll,
+                self.s0_x,
+                self.s0_y])
 
             all_parameters.append(p_val)
 
@@ -337,7 +348,7 @@ class racer():
         self.s_theta_current = self.z_current[:, self.zvars.index('s_theta')]
 
         if self.f_theta_current[0] > self.theta_max/2:
-            print("#################################RESET###############################")
+            print("#################################LAP###############################")
             # update laps
             self.laps = self.laps + 1
             print("lap:", self.laps)

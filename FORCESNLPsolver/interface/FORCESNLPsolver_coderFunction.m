@@ -23,7 +23,7 @@
 % Inputs:
 % - xinit - matrix of size [18x1]
 % - x0 - matrix of size [1000x1]
-% - all_parameters - matrix of size [1280x1]
+% - all_parameters - matrix of size [1360x1]
 % - num_of_threads - scalar
 % - receive_floating_license - scalar
 % Outputs:

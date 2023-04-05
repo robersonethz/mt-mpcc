@@ -4,7 +4,7 @@
 %   subject to the parameters supplied in the following struct:
 %       PARAMS.xinit - matrix of size [18x1]
 %       PARAMS.x0 - matrix of size [1000x1]
-%       PARAMS.all_parameters - matrix of size [1280x1]
+%       PARAMS.all_parameters - matrix of size [1360x1]
 %       PARAMS.num_of_threads - scalar
 %       PARAMS.receive_floating_license - scalar
 %

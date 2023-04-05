@@ -66,7 +66,7 @@ extern solver_int32_default FORCESNLPsolver_adtool2forces(FORCESNLPsolver_float 
     FORCESNLPsolver_callback_float this_f = (FORCESNLPsolver_callback_float) 0.0;
     FORCESNLPsolver_float nabla_f_sparse[7];
     FORCESNLPsolver_float h_sparse[4];
-    FORCESNLPsolver_float nabla_h_sparse[8];
+    FORCESNLPsolver_float nabla_h_sparse[9];
     FORCESNLPsolver_float c_sparse[1];
     FORCESNLPsolver_float nabla_c_sparse[1];
             

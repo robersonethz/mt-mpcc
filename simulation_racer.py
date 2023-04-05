@@ -7,7 +7,7 @@ import ploting
 ### PARAMETERS FOR SIMULATION ###
 
 sim_length = 200
-generate_new_solver = False
+generate_new_solver = True
 
 # SIMULATION
 
