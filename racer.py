@@ -3,14 +3,14 @@ import forcespro.nlp
 import yaml
 import sys
 import generate_forces_solver
-import utils
+import utils_slack as utils
 import matplotlib.pyplot as plt
 import pickle
 import dynamics
 
 
 class racer():
-    def __init__(self, modelparams="modelparams.yaml", solverparams="solverparams") -> None:
+    def __init__(self, generate_new_solver: bool, modelparams="modelparams.yaml", solverparams="solverparams") -> None:
 
         self.modelparams = 'model_params.yaml'
 
@@ -67,11 +67,13 @@ class racer():
         self.theta_max = max(self.arcLength)
         self.N = 40
 
-        self.model, self.solver = generate_forces_solver.build_solver(
-            N=self.N, Ts=self.dt, cfg=config)
-        # self.solver = forcespro.nlp.Solver.from_directory(
-        #     "/home/robin/Dev/mpcc_python/FORCESNLPsolver")
-        # self.solver.help
+        if generate_new_solver:
+            self.model, self.solver = generate_forces_solver.build_solver(
+                N=self.N, Ts=self.dt, cfg=config)
+        else:
+            self.solver = forcespro.nlp.Solver.from_directory(
+                "/home/robin/Dev/mpcc_python/FORCESNLPsolver")
+            self.solver.help
 
         # phi = yaw
         # d = Thrust
@@ -81,14 +83,16 @@ class racer():
         self.xvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
                       's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta']
 
-        self.uvars = ['f_ddot', 'f_deltadot', 'f_thetadot',
+        self.uvars = ['s_slack',
+                      'f_ddot', 'f_deltadot', 'f_thetadot',
                       's_ddot', 's_deltadot', 's_thetadot']
 
         self.pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d',
                       's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
                       'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
 
-        self.zvars = ['f_ddot', 'f_deltadot', 'f_thetadot',
+        self.zvars = ['s_slack',
+                      'f_ddot', 'f_deltadot', 'f_thetadot',
                       's_ddot', 's_deltadot', 's_thetadot',
                       'f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
                       's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta'
@@ -104,7 +108,7 @@ class racer():
     def initialize_trajectory(self, xinit):
 
         # initialization for theta values
-        iter = 100
+        iter = 50
 
         # initialize dyamics simulation
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
@@ -150,6 +154,8 @@ class racer():
         for index in range(iter):
             # init parameters for each stage of the horizon
             all_parameters = []
+            if index % 20 == 0:
+                print(f'initialisation : {index}')
 
             for stageidx in range(self.N):
                 # get index on track linearization relative to theta
@@ -305,12 +311,12 @@ class racer():
             idx_sol = idx_sol+1
 
         # #simulate dynamics
-        u = self.z_current[0, 0:len(self.uvars)]
+        u = self.z_current[0, :len(self.uvars)]
         xtrue = self.dynamics.tick(u, all_parameters[0, :], self.freq)
 
         # #shift horizon for next warmstart and insert the new "measured position"
         self.z_current[1, len(self.uvars):] = xtrue
-        # TODO check what is doing
+        # Shift all stages
         self.z_current = np.roll(self.z_current, -1, axis=0)
         # copy last state to be the same as antestage
         self.z_current[-1, :] = self.z_current[-2, :]
@@ -367,7 +373,8 @@ class racer():
         info_dic['exitflag'] = exitflag
 
         # type_time = type(time)
-        return self.z_current, info_dic, all_parameters
+        # f_posx = self.z_current[0, 7]
+        # s_posx = self.z_current[0, 16]
 
-    def return_sim_data(self):
-        return self.zinit_vals, self.z_data
+        # print(f'f_posx : {f_posx:.2f}, s_posx : {s_posx:.2f}')
+        return self.z_current, info_dic, all_parameters

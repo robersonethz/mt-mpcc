@@ -1,6 +1,6 @@
 /*
  * AD tool to FORCESPRO Template - missing information to be filled in by createADTool.m 
- * (C) embotech AG, Zurich, Switzerland, 2013-2022. All rights reserved.
+ * (C) embotech AG, Zurich, Switzerland, 2013-2023. All rights reserved.
  *
  * This file is part of the FORCESPRO client, and carries the same license.
  */ 
@@ -56,16 +56,17 @@ extern solver_int32_default FORCESNLPsolver_adtool2forces(FORCESNLPsolver_float 
     /* AD tool input and output arrays */
     const FORCESNLPsolver_callback_float *in[4];
     FORCESNLPsolver_callback_float *out[7];
-	
+    
 
-	/* Allocate working arrays for AD tool */
-	FORCESNLPsolver_float w[65];
+    /* Allocate working arrays for AD tool */
+    
+    FORCESNLPsolver_callback_float w[65];
 	
     /* temporary storage for AD tool sparse output */
     FORCESNLPsolver_callback_float this_f = (FORCESNLPsolver_callback_float) 0.0;
     FORCESNLPsolver_float nabla_f_sparse[7];
     FORCESNLPsolver_float h_sparse[4];
-    FORCESNLPsolver_float nabla_h_sparse[9];
+    FORCESNLPsolver_float nabla_h_sparse[8];
     FORCESNLPsolver_float c_sparse[1];
     FORCESNLPsolver_float nabla_c_sparse[1];
             

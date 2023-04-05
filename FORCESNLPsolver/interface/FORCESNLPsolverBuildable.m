@@ -1,6 +1,6 @@
 % FORCESNLPsolver : A fast customized optimization solver.
 % 
-% Copyright (C) 2013-2022 EMBOTECH AG [info@embotech.com]. All rights reserved.
+% Copyright (C) 2013-2023 EMBOTECH AG [info@embotech.com]. All rights reserved.
 % 
 % 
 % This software is intended for simulation and testing purposes only. 
@@ -39,7 +39,18 @@ classdef FORCESNLPsolverBuildable < coder.ExternalDependency
             if(~strcmp(foldername, 'interface') || ~strcmp(solvername, 'FORCESNLPsolver'))
                 solverpath = fullfile(buildablepath, 'FORCESNLPsolver');
             end
-            ForcesUpdateBuildInfo(buildInfo, cfg, 'FORCESNLPsolver', solverpath, 1, true);
+            solverInfo = struct();
+            solverInfo.solvername = 'FORCESNLPsolver';
+            solverInfo.solverpath = solverpath;
+            solverInfo.pythonClientFormat = true;
+            solverInfo.useParallel = 1;
+            solverInfo.isNLP = true;
+            ForcesUpdateBuildInfo(buildInfo, cfg, solverInfo);
+            postUpdateBuildInfoScript = [solverInfo.solvername, 'PostUpdateBuildInfo'];
+            if exist(fullfile(buildablepath, [postUpdateBuildInfoScript, '.m']), 'file')
+                postUpdateBuildInfo = str2func(postUpdateBuildInfoScript);
+                postUpdateBuildInfo(buildInfo, cfg, solverInfo);
+            end
         end
         
         function [output,exitflag,info] = forcesInitOutputsMatlab()
@@ -84,46 +95,46 @@ classdef FORCESNLPsolverBuildable < coder.ExternalDependency
                           'fevalstime', infos_fevalstime,...
                           'solver_id', infos_solver_id);
 
-            outputs_x01 = coder.nullcopy(zeros(24, 1));
-            outputs_x02 = coder.nullcopy(zeros(24, 1));
-            outputs_x03 = coder.nullcopy(zeros(24, 1));
-            outputs_x04 = coder.nullcopy(zeros(24, 1));
-            outputs_x05 = coder.nullcopy(zeros(24, 1));
-            outputs_x06 = coder.nullcopy(zeros(24, 1));
-            outputs_x07 = coder.nullcopy(zeros(24, 1));
-            outputs_x08 = coder.nullcopy(zeros(24, 1));
-            outputs_x09 = coder.nullcopy(zeros(24, 1));
-            outputs_x10 = coder.nullcopy(zeros(24, 1));
-            outputs_x11 = coder.nullcopy(zeros(24, 1));
-            outputs_x12 = coder.nullcopy(zeros(24, 1));
-            outputs_x13 = coder.nullcopy(zeros(24, 1));
-            outputs_x14 = coder.nullcopy(zeros(24, 1));
-            outputs_x15 = coder.nullcopy(zeros(24, 1));
-            outputs_x16 = coder.nullcopy(zeros(24, 1));
-            outputs_x17 = coder.nullcopy(zeros(24, 1));
-            outputs_x18 = coder.nullcopy(zeros(24, 1));
-            outputs_x19 = coder.nullcopy(zeros(24, 1));
-            outputs_x20 = coder.nullcopy(zeros(24, 1));
-            outputs_x21 = coder.nullcopy(zeros(24, 1));
-            outputs_x22 = coder.nullcopy(zeros(24, 1));
-            outputs_x23 = coder.nullcopy(zeros(24, 1));
-            outputs_x24 = coder.nullcopy(zeros(24, 1));
-            outputs_x25 = coder.nullcopy(zeros(24, 1));
-            outputs_x26 = coder.nullcopy(zeros(24, 1));
-            outputs_x27 = coder.nullcopy(zeros(24, 1));
-            outputs_x28 = coder.nullcopy(zeros(24, 1));
-            outputs_x29 = coder.nullcopy(zeros(24, 1));
-            outputs_x30 = coder.nullcopy(zeros(24, 1));
-            outputs_x31 = coder.nullcopy(zeros(24, 1));
-            outputs_x32 = coder.nullcopy(zeros(24, 1));
-            outputs_x33 = coder.nullcopy(zeros(24, 1));
-            outputs_x34 = coder.nullcopy(zeros(24, 1));
-            outputs_x35 = coder.nullcopy(zeros(24, 1));
-            outputs_x36 = coder.nullcopy(zeros(24, 1));
-            outputs_x37 = coder.nullcopy(zeros(24, 1));
-            outputs_x38 = coder.nullcopy(zeros(24, 1));
-            outputs_x39 = coder.nullcopy(zeros(24, 1));
-            outputs_x40 = coder.nullcopy(zeros(24, 1));
+            outputs_x01 = coder.nullcopy(zeros(25, 1));
+            outputs_x02 = coder.nullcopy(zeros(25, 1));
+            outputs_x03 = coder.nullcopy(zeros(25, 1));
+            outputs_x04 = coder.nullcopy(zeros(25, 1));
+            outputs_x05 = coder.nullcopy(zeros(25, 1));
+            outputs_x06 = coder.nullcopy(zeros(25, 1));
+            outputs_x07 = coder.nullcopy(zeros(25, 1));
+            outputs_x08 = coder.nullcopy(zeros(25, 1));
+            outputs_x09 = coder.nullcopy(zeros(25, 1));
+            outputs_x10 = coder.nullcopy(zeros(25, 1));
+            outputs_x11 = coder.nullcopy(zeros(25, 1));
+            outputs_x12 = coder.nullcopy(zeros(25, 1));
+            outputs_x13 = coder.nullcopy(zeros(25, 1));
+            outputs_x14 = coder.nullcopy(zeros(25, 1));
+            outputs_x15 = coder.nullcopy(zeros(25, 1));
+            outputs_x16 = coder.nullcopy(zeros(25, 1));
+            outputs_x17 = coder.nullcopy(zeros(25, 1));
+            outputs_x18 = coder.nullcopy(zeros(25, 1));
+            outputs_x19 = coder.nullcopy(zeros(25, 1));
+            outputs_x20 = coder.nullcopy(zeros(25, 1));
+            outputs_x21 = coder.nullcopy(zeros(25, 1));
+            outputs_x22 = coder.nullcopy(zeros(25, 1));
+            outputs_x23 = coder.nullcopy(zeros(25, 1));
+            outputs_x24 = coder.nullcopy(zeros(25, 1));
+            outputs_x25 = coder.nullcopy(zeros(25, 1));
+            outputs_x26 = coder.nullcopy(zeros(25, 1));
+            outputs_x27 = coder.nullcopy(zeros(25, 1));
+            outputs_x28 = coder.nullcopy(zeros(25, 1));
+            outputs_x29 = coder.nullcopy(zeros(25, 1));
+            outputs_x30 = coder.nullcopy(zeros(25, 1));
+            outputs_x31 = coder.nullcopy(zeros(25, 1));
+            outputs_x32 = coder.nullcopy(zeros(25, 1));
+            outputs_x33 = coder.nullcopy(zeros(25, 1));
+            outputs_x34 = coder.nullcopy(zeros(25, 1));
+            outputs_x35 = coder.nullcopy(zeros(25, 1));
+            outputs_x36 = coder.nullcopy(zeros(25, 1));
+            outputs_x37 = coder.nullcopy(zeros(25, 1));
+            outputs_x38 = coder.nullcopy(zeros(25, 1));
+            outputs_x39 = coder.nullcopy(zeros(25, 1));
+            outputs_x40 = coder.nullcopy(zeros(25, 1));
             output = struct('x01', outputs_x01,...
                             'x02', outputs_x02,...
                             'x03', outputs_x03,...
@@ -267,7 +278,7 @@ classdef FORCESNLPsolverBuildable < coder.ExternalDependency
             output.x39 = cast(output_c.x39, 'like', output.x39);
             output.x40 = cast(output_c.x40, 'like', output.x40);
             
-            exitflag = exitflag_c;
+            exitflag = cast(exitflag_c, 'like', exitflag);
         end
     end
 
@@ -314,46 +325,46 @@ classdef FORCESNLPsolverBuildable < coder.ExternalDependency
                           'fevalstime', infos_fevalstime,...
                           'solver_id', infos_solver_id);
                           
-            outputs_x01 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x02 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x03 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x04 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x05 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x06 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x07 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x08 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x09 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x10 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x11 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x12 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x13 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x14 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x15 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x16 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x17 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x18 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x19 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x20 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x21 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x22 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x23 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x24 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x25 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x26 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x27 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x28 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x29 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x30 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x31 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x32 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x33 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x34 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x35 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x36 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x37 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x38 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x39 = coder.nullcopy(double(zeros(24, 1)));
-            outputs_x40 = coder.nullcopy(double(zeros(24, 1)));
+            outputs_x01 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x02 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x03 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x04 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x05 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x06 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x07 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x08 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x09 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x10 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x11 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x12 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x13 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x14 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x15 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x16 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x17 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x18 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x19 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x20 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x21 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x22 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x23 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x24 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x25 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x26 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x27 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x28 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x29 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x30 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x31 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x32 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x33 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x34 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x35 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x36 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x37 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x38 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x39 = coder.nullcopy(double(zeros(25, 1)));
+            outputs_x40 = coder.nullcopy(double(zeros(25, 1)));
             output = struct('x01', outputs_x01,...
                             'x02', outputs_x02,...
                             'x03', outputs_x03,...

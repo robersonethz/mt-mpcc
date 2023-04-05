@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "4/5/2023 6:29:21 AM"
+  Created		  "4/5/2023 11:38:43 AM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "4/5/2023 6:29:21 AM"
+  LastModifiedDate	  "4/5/2023 11:38:43 AM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -781,7 +781,7 @@ Model {
 	Description		" ---- Simulink block encapsulating your customized solver FORCESNLPsolver ---- \n\n"
 				"FORCESNLPsolver : A fast customized optimization solver.\n"
 "\n"
-"Copyright (C) 2013-2022 EMBOTECH AG [info@embotech.com]. All rights reserved.\n"
+"Copyright (C) 2013-2023 EMBOTECH AG [info@embotech.com]. All rights reserved.\n"
 "\n"
 "\n"
 "This software is intended for simulation and testing purposes only. \n"
@@ -805,13 +805,13 @@ Model {
 	"\nOUTPUTS = FORCESNLPsolver(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
 	" - xinit - matrix of size [18x1]\n  "
-" - x0 - matrix of size [960x1]\n  "
+" - x0 - matrix of size [1000x1]\n  "
 " - all_parameters - matrix of size [1280x1]\n  "
 " - num_of_threads - scalar\n  "
 " - receive_floating_license - scalar\n  "
 
 	"\nOUTPUTS:\n"
-	" - outputs - column vector of length 960\n  "
+	" - outputs - column vector of length 1000\n  "
 
 	"\n For more information, see https://forces.embotech.com/Documentation/simulink_interface/index.html \n "
 

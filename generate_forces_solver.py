@@ -1,4 +1,5 @@
-import utils
+import utils_slack as utils
+# import utils
 import forcespro
 import argparse
 import os
@@ -33,7 +34,8 @@ def build_solver(N: int, Ts: float, cfg: dict):
     npar = (6*2)+20  # number of parameters per stage
     nstates = 9*2
     ninputs = 3*2
-    nvar = nstates+ninputs
+    nslack = 1
+    nvar = nslack+ninputs+nstates
     car_dim = 0.07  # move to config?
     half_track_width = 0.46/2 - 0.1  # move to config?
     hu_car = (half_track_width-car_dim)*(half_track_width-car_dim)
@@ -49,53 +51,55 @@ def build_solver(N: int, Ts: float, cfg: dict):
     model.continuous_dynamics = utils.continuous_dynamics
 
     model.E = np.concatenate(
-        [np.zeros((nstates, ninputs)), np.eye(nstates)], axis=1)
+        [np.zeros((nstates, nslack+ninputs)), np.eye(nstates)], axis=1)
+
+    # # inequalities
+    # for i in range(0, model.N):
+    #     if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
+    #         model.nh[i] = 4       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput(z, p)
+    #         # without slack: set first to 0
+    #         model.hu[i] = [100, 0.001, 0.001, 0.001]
+    #         model.hl[i] = [-10, -0.001, -0.001, -0.001]
+    #     elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
+    #         model.nh[i] = 2       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final(z, p)
+    #         model.hu[i] = [100, 0.01]  # without slack: set first to 0
+    #         model.hl[i] = [-10, -0.01]
+    #     else:  # usual constraints : contained inside track
+    #         model.nh[i] = 1       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard(z, p)
+    #         model.hu[i] = [100]  # without slack: set first to 0
+    #         model.hl[i] = [-10]
 
     # inequalities
     for i in range(0, model.N):
         if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
             model.nh[i] = 4       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput(z, p)
-            model.hu[i] = [0, 0.001, 0.001, 0.001]
-            model.hl[i] = [-10, -0.001, -0.001, -0.001]
+            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
+                z, p)
+            model.hu[i] = [hu_car, 0.001, 0.001, 0.001]
+            model.hl[i] = [0, -0.001, -0.001, -0.001]
         elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
             model.nh[i] = 2       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final(z, p)
-            model.hu[i] = [0, 0.01]
-            model.hl[i] = [-10, -0.01]
+            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
+            model.hu[i] = [hu_car, 0.01]
+            model.hl[i] = [0, -0.01]
         else:  # usual constraints : contained inside track
             model.nh[i] = 1       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard(z, p)
-            model.hu[i] = [0]
-            model.hl[i] = [-10]
-
-    # inequalities
-    # for i in range(0, model.N):
-    #     if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
-    #         model.nh[i] = 5       # number of nonlinear inequality constraints
-    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
-    #             z, p)
-    #         model.hu[i] = [hu_car, hu_car, 0.001, 0.001, 0.001]
-    #         model.hl[i] = [0, 0, -0.001, -0.001, -0.001]
-    #     # elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
-    #     #     model.nh[i] = 3       # number of nonlinear inequality constraints
-    #     #     model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final(z, p)
-    #     #     model.hu[i] = [0, 0, 0.01]
-    #     #     model.hl[i] = [-10, -10, -0.01]
-    #     else:  # usual constraints : contained inside track
-    #         model.nh[i] = 2       # number of nonlinear inequality constraints
-    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-    #         model.hu[i] = [hu_car, hu_car]
-    #         model.hl[i] = [0, 0]
+            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
+            model.hu[i] = [hu_car]
+            model.hl[i] = [0]
 
     # initial state indeces
-    model.xinitidx = np.arange(ninputs, nvar)
+    model.xinitidx = np.arange(nslack+ninputs, nvar)
 
     # inequalities lower and upper bounds for state vector defined at head of
     # this subscript
     constraints = cfg["model_bounds"]
 
     model.lb = np.array([
+        0,  # slack_var TODO: move to config
         constraints["dT_min"],
         constraints["ddelta_min"],
         constraints["dtheta_min"],
@@ -127,6 +131,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     ])
 
     model.ub = np.array([
+        100,  # slack_var TODO: move to config
         constraints["dT_max"],
         constraints["ddelta_max"],
         constraints["dtheta_max"],
@@ -161,7 +166,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     # Define solver options.
     codeoptions = forcespro.CodeOptions('FORCESNLPsolver')
 
-    codeoptions.maxit = 100    # Maximum number of iterations
+    codeoptions.maxit = 500    # Maximum number of iterations
     # codeoptions.solver_timeout = 2 # timeout enabled
     # codeoptions.timeout_estimate_coeff = Ts / 2 # Set timeout to half the sampling time
 
@@ -189,42 +194,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
 
     return [model, solver]
 
-### OLD GENEREATION ###
-# objective
-    # model.objective = utils.cost_function_pacejka # option as in matlab
-    # equalities
-    # def rk4_with_freq(z, p):
-    #     return utils.dynamics_RK4(z,p,freq=1 / Ts)
 
-    # model.eq = rk4_with_freq
-
-    # define outputs and generate solver
-    # outputs = [
-    #     ('s0', 0 , range(0, 12)), #state at 0
-    #     ('theta', range(0, N), 8),
-    #     ('dtheta', range(0, N), 11),
-    #     ('x', range(0, N), 0),
-    #     ('y', range(0, N), 1),
-
-    #     ('horizon', range(0, N), range(0, 12))]
-    # Generate c code
-    # solver = model.generate_solver(codeoptions, outputs)
-
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(description='Create a new Forces MPCC solver for the pacejka model')
-#     parser.add_argument('--config', type=str, help='Name of the configuration file', default="solver.yaml")
-#     args = parser.parse_args()
-
-#     rospack = rospkg.RosPack()
-#     # commented out to be able to run it without ROS/Docker.
-#     # TODO, change this back
-#     # controller_path = rospack.get_path('forces_pacejka_mpcc_solver')
-#     # os.chdir( controller_path + "/src" )
-
-#     with open(f"../config/{args.config}") as f:
-#         cfg = yaml.load(f, Loader=yaml.loader.SafeLoader)
-#         build_solver(cfg["solver_creation"]["N"], cfg["solver_creation"]["Ts"], cfg)
 if __name__ == "__main__":
     N = 20
     Tf = 1
