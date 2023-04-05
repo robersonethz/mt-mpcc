@@ -6,17 +6,23 @@ import ploting
 
 ### PARAMETERS FOR SIMULATION ###
 
-sim_length = 400
-generate_new_solver = False
+sim_length = 100
 init_it = 100
+# solver
+generate_new_solver = False
+max_it_solver = 100
+
 
 # SIMULATION
 
 racer_agent = rc.racer(
-    generate_new_solver=generate_new_solver, init_iter=init_it)
-xinit = np.array([0.15, -1.05, 0, 1, 0, 0, 0, 0, 0])
+    generate_new_solver=generate_new_solver, init_iter=init_it, max_it_solver=max_it_solver)
+xinit = np.array([0.15, -1.05, np.pi, 1, 0, 0, 0, 0, 0])
 
-z_log = np.zeros((sim_length, 40, 25))
+nvar = 25
+horizon = 40
+
+z_log = np.zeros((sim_length, horizon, nvar))
 
 print('Init traj')
 

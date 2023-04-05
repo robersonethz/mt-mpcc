@@ -10,7 +10,7 @@ import dynamics
 
 
 class racer():
-    def __init__(self, generate_new_solver: bool, init_iter, modelparams="modelparams.yaml", solverparams="solverparams") -> None:
+    def __init__(self, generate_new_solver: bool, init_iter=80, modelparams="modelparams.yaml", solverparams="solverparams", max_it_solver=500) -> None:
 
         self.modelparams = 'model_params.yaml'
         self.init_iter = init_iter
@@ -55,7 +55,7 @@ class racer():
         self.dt = 1/self.freq
 
         # Load track
-        with open('DEMO_TRACK.yaml') as stream:
+        with open('DEMO_TRACK_REVERSE.yaml') as stream:
             data = yaml.safe_load(stream)
 
         self.track = data['track']
@@ -70,7 +70,7 @@ class racer():
 
         if generate_new_solver:
             self.model, self.solver = generate_forces_solver.build_solver(
-                N=self.N, Ts=self.dt, cfg=config)
+                N=self.N, Ts=self.dt, cfg=config, max_it_solver=max_it_solver)
         else:
             self.solver = forcespro.nlp.Solver.from_directory(
                 "/home/robin/Dev/mpcc_python/FORCESNLPsolver")

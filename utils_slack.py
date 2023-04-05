@@ -164,7 +164,7 @@ def stage_cost(z, p):
 
     cost = e_cont * Q1 * e_cont + e_lag * Q2 * e_lag - q * \
         thetadot + ddot * R1 * ddot + deltadot * R2 * \
-        deltadot + s_slack*10000
+        deltadot + s_slack*100 + s_slack**2*100
 
     return cost
 
