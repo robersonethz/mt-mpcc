@@ -8,7 +8,7 @@ xinit = np.array([0.15, -1.05, 0, 1, 0, 0, 0, 0, 0])
 
 z_curr = racer_agent.initialize_trajectory(
     np.tile(xinit, 2))
-sim_length = 100
+sim_length = 800
 
 z_output = []
 log_info = []

@@ -350,14 +350,15 @@ class racer():
             # reset theta to dynamics object for correspondance
             self.dynamics.set_theta(
                 self.f_theta_current[0])
-            # reset safe traj to have the same state as fast traj
-            self.z_current[:, self.zvars.index('s_posx'):self.zvars.index(
-                's_theta')] = self.z_current[:, self.zvars.index('f_posx'):self.zvars.index('f_theta')]
+            # # reset safe traj to have the same state as fast traj
+            # self.z_current[:, self.zvars.index('s_posx'):self.zvars.index(
+            #     's_theta')] = self.z_current[:, self.zvars.index('f_posx'):self.zvars.index('f_theta')]
             print(f'zcurrent = {self.z_current[2,:]}')
 
         if exitflag == -7:
             print("#################################################reinitialize#######################################################")
-            self.reinitialize()  # TODO still to implement
+            self.initialize_trajectory(self.xinit)
+            # TODO still to implement
 
         self.simidx = self.simidx + 1
         info_dic = {}
