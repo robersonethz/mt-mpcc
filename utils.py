@@ -15,10 +15,11 @@ pvars = ['f_xd', 'f_yd', 'f_grad_xd', 'f_grad_yd', 'f_theta_hat', 'f_phi_d',
          's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
          'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
 
-zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
-         's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta',
-         'f_ddot', 'f_deltadot', 'f_thetadot',
-         's_ddot', 's_deltadot', 's_thetadot']
+zvars = ['f_ddot', 'f_deltadot', 'f_thetadot',
+         's_ddot', 's_deltadot', 's_thetadot',
+         'f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
+         's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta'
+         ]
 
 
 def continuous_dynamics(x, u, p):
@@ -161,8 +162,8 @@ def stage_cost(z, p):
 
 def dynamics_RK4(z, p, freq):
     """Runge Kutta 4 Approximation of car dynamics. z are stacked states and inputs, p the parameters and freq the frequency"""
-    x = z[:len(xvars)]
-    u = z[len(xvars):]
+    u = z[:len(uvars)]
+    x = z[len(uvars):]
 
     dt = 1/freq
     k1 = continuous_dynamics(x, u, p)

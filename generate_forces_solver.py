@@ -49,7 +49,7 @@ def build_solver(N: int, Ts: float, cfg: dict):
     model.continuous_dynamics = utils.continuous_dynamics
 
     model.E = np.concatenate(
-        [np.eye(nstates), np.zeros((nstates, ninputs))], axis=1)
+        [np.zeros((nstates, ninputs)), np.eye(nstates)], axis=1)
 
     # inequalities
     for i in range(0, model.N):
@@ -89,70 +89,73 @@ def build_solver(N: int, Ts: float, cfg: dict):
     #         model.hl[i] = [0, 0]
 
     # initial state indeces
-    model.xinitidx = range(0, nstates)
+    model.xinitidx = np.arange(ninputs, nvar)
 
     # inequalities lower and upper bounds for state vector defined at head of
     # this subscript
     constraints = cfg["model_bounds"]
 
     model.lb = np.array([
-        constraints["x_min"],
-        constraints["y_min"],
-        constraints["yaw_min"],
-        constraints["vx_min"],
-        constraints["vy_min"],
-        constraints["dyaw_min"],
-        constraints["T_min"],
-        constraints["delta_min"],
-        constraints["theta_min"],
-
-        constraints["x_min"],
-        constraints["y_min"],
-        constraints["yaw_min"],
-        constraints["vx_min"],
-        constraints["vy_min"],
-        constraints["dyaw_min"],
-        constraints["T_min"],
-        constraints["delta_min"],
-        constraints["theta_min"],
-
         constraints["dT_min"],
         constraints["ddelta_min"],
         constraints["dtheta_min"],
 
         constraints["dT_min"],
         constraints["ddelta_min"],
-        constraints["dtheta_min"]
+        constraints["dtheta_min"],
+
+        constraints["x_min"],
+        constraints["y_min"],
+        constraints["yaw_min"],
+        constraints["vx_min"],
+        constraints["vy_min"],
+        constraints["dyaw_min"],
+        constraints["T_min"],
+        constraints["delta_min"],
+        constraints["theta_min"],
+
+        constraints["x_min"],
+        constraints["y_min"],
+        constraints["yaw_min"],
+        constraints["vx_min"],
+        constraints["vy_min"],
+        constraints["dyaw_min"],
+        constraints["T_min"],
+        constraints["delta_min"],
+        constraints["theta_min"]
+
     ])
 
     model.ub = np.array([
-        constraints["x_max"],
-        constraints["y_max"],
-        constraints["yaw_max"],
-        constraints["vx_max"],
-        constraints["vy_max"],
-        constraints["dyaw_max"],
-        constraints["T_max"],
-        constraints["delta_max"],
-        constraints["theta_max"],
-
-        constraints["x_max"],
-        constraints["y_max"],
-        constraints["yaw_max"],
-        constraints["vx_max"],
-        constraints["vy_max"],
-        constraints["dyaw_max"],
-        constraints["T_max"],
-        constraints["delta_max"],
-        constraints["theta_max"],
-
         constraints["dT_max"],
         constraints["ddelta_max"],
         constraints["dtheta_max"],
 
         constraints["dT_max"],
         constraints["ddelta_max"],
-        constraints["dtheta_max"]
+        constraints["dtheta_max"],
+
+        constraints["x_max"],
+        constraints["y_max"],
+        constraints["yaw_max"],
+        constraints["vx_max"],
+        constraints["vy_max"],
+        constraints["dyaw_max"],
+        constraints["T_max"],
+        constraints["delta_max"],
+        constraints["theta_max"],
+
+        constraints["x_max"],
+        constraints["y_max"],
+        constraints["yaw_max"],
+        constraints["vx_max"],
+        constraints["vy_max"],
+        constraints["dyaw_max"],
+        constraints["T_max"],
+        constraints["delta_max"],
+        constraints["theta_max"],
+
+
     ])
 
     # Define solver options.

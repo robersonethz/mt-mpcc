@@ -20,7 +20,7 @@ class dynamics_simulator():
         self.x = x0
 
     def tick(self, u, all_parameters, freq):
-        z = np.hstack((self.x, u))
+        z = np.hstack((u, self.x))
         self.x = utils.dynamics_RK4(
             z, all_parameters, freq).full().transpose().reshape(-1)
         return self.x

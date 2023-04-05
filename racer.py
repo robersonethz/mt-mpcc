@@ -88,10 +88,11 @@ class racer():
                       's_xd', 's_yd', 's_grad_xd', 's_grad_yd', 's_theta_hat', 's_phi_d',
                       'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll']
 
-        self.zvars = ['f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
-                      's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta',
-                      'f_ddot', 'f_deltadot', 'f_thetadot',
-                      's_ddot', 's_deltadot', 's_thetadot']
+        self.zvars = ['f_ddot', 'f_deltadot', 'f_thetadot',
+                      's_ddot', 's_deltadot', 's_thetadot',
+                      'f_posx', 'f_posy', 'f_phi', 'f_vx', 'f_vy', 'f_omega', 'f_d', 'f_delta', 'f_theta',
+                      's_posx', 's_posy', 's_phi', 's_vx', 's_vy', 's_omega', 's_d', 's_delta', 's_theta'
+                      ]
 
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.f_theta_current = np.zeros((self.N,))
@@ -109,7 +110,7 @@ class racer():
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
 
         # warmstart init
-        self.zinit = np.concatenate([xinit, np.zeros(len(self.uvars))])
+        self.zinit = np.concatenate([np.zeros(len(self.uvars)), xinit])
         # will be reshaped after
         self.z_current = np.tile(self.zinit, (self.N, 1))
 
@@ -211,7 +212,7 @@ class racer():
             f_theta_old = self.f_theta_current
             s_theta_old = self.s_theta_current
 
-            self.xinit = self.z_current[0, 0:len(self.xvars)]
+            self.xinit = self.z_current[0, len(self.uvars):]
 
         return self.z_current
 
@@ -285,11 +286,11 @@ class racer():
             idx_sol = idx_sol+1
 
         # #simulate dynamics
-        u = self.z_current[0, len(self.xvars):]
+        u = self.z_current[0, 0:len(self.uvars)]
         xtrue = self.dynamics.tick(u, all_parameters[0, :], self.freq)
 
         # #shift horizon for next warmstart and insert the new "measured position"
-        self.z_current[1, :len(self.xvars)] = xtrue
+        self.z_current[1, len(self.uvars):] = xtrue
         # TODO check what is doing
         self.z_current = np.roll(self.z_current, -1, axis=0)
         # copy last state to be the same as antestage
@@ -301,7 +302,7 @@ class racer():
         # log solution
         # self.z_data[self.simidx, :, :] = self.z_current
         self.zinit = self.z_current[0, :]
-        self.xinit = self.zinit[:len(self.xvars)]
+        self.xinit = self.zinit[len(self.uvars):]
 
         # self.zinit_vals[self.simidx, :] = self.zinit
         #
