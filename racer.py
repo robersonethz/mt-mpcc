@@ -104,7 +104,7 @@ class racer():
     def initialize_trajectory(self, xinit):
 
         # initialization for theta values
-        iter = 30
+        iter = 100
 
         # initialize dyamics simulation
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
@@ -126,7 +126,26 @@ class racer():
         # TODO initialize values on track (x,y,phi=yaw) for first iteration
         # for theta in theta_old:
         # idx = utils.get_trackDataIdx_from_theta(theta, self.arcLength)
+        for stageidx in range(self.N):
+            # get index on track linearization relative to theta
+            f_track_idx = utils.get_trackDataIdx_from_theta(
+                f_theta_old[stageidx], self.arcLength)
+            s_track_idx = utils.get_trackDataIdx_from_theta(
+                s_theta_old[stageidx], self.arcLength)
 
+            self.z_current[stageidx, self.zvars.index(
+                'f_posx')] = self.xtrack[f_track_idx]
+            self.z_current[stageidx, self.zvars.index(
+                'f_posy')] = self.ytrack[f_track_idx]
+            self.z_current[stageidx, self.zvars.index(
+                'f_phi')] = self.tangentAngle[f_track_idx]
+
+            self.z_current[stageidx, self.zvars.index(
+                's_posx')] = self.xtrack[s_track_idx]
+            self.z_current[stageidx, self.zvars.index(
+                's_posy')] = self.ytrack[s_track_idx]
+            self.z_current[stageidx, self.zvars.index(
+                's_phi')] = self.tangentAngle[s_track_idx]
         # get a convergent Theta
         for index in range(iter):
             # init parameters for each stage of the horizon

@@ -186,6 +186,8 @@ extern "C" {
 #define casadi_s0 CASADI_PREFIX(s0)
 #define casadi_s1 CASADI_PREFIX(s1)
 #define casadi_s10 CASADI_PREFIX(s10)
+#define casadi_s11 CASADI_PREFIX(s11)
+#define casadi_s12 CASADI_PREFIX(s12)
 #define casadi_s2 CASADI_PREFIX(s2)
 #define casadi_s3 CASADI_PREFIX(s3)
 #define casadi_s4 CASADI_PREFIX(s4)
@@ -224,6 +226,8 @@ static const casadi_int casadi_s7[10] = {6, 1, 0, 6, 0, 1, 2, 3, 4, 5};
 static const casadi_int casadi_s8[27] = {6, 18, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5};
 static const casadi_int casadi_s9[61] = {18, 18, 0, 3, 6, 7, 12, 16, 20, 20, 20, 20, 23, 26, 27, 32, 36, 40, 40, 40, 40, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6, 7, 3, 4, 5, 7, 3, 4, 5, 7, 11, 12, 13, 11, 12, 13, 14, 12, 13, 14, 15, 16, 12, 13, 14, 16, 12, 13, 14, 16};
 static const casadi_int casadi_s10[30] = {1, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 3, 0, 0, 0};
+static const casadi_int casadi_s11[6] = {2, 1, 0, 2, 0, 1};
+static const casadi_int casadi_s12[31] = {2, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 3, 3, 3, 3, 4, 0, 0, 1, 0};
 
 /* FORCESNLPsolver_objective_0:(i0[24],i1[32])->(o0,o1[1x24,7nz]) */
 static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
@@ -42334,7 +42338,7 @@ int FORCESNLPsolver_objective_39_work(casadi_int *sz_arg, casadi_int* sz_res, ca
   return 0;
 }
 
-/* FORCESNLPsolver_inequalities_39:(i0[24],i1[32])->(o0,o1[1x24,3nz]) */
+/* FORCESNLPsolver_inequalities_39:(i0[24],i1[32])->(o0[2],o1[2x24,4nz]) */
 static int casadi_f157(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a2, a3, a4, a5, a6, a7;
   a0=arg[1]? arg[1][6] : 0;
@@ -42367,16 +42371,20 @@ static int casadi_f157(const casadi_real** arg, casadi_real** res, casadi_int* i
   a3=casadi_sq(a3);
   a5=(a5-a3);
   if (res[0]!=0) res[0][0]=a5;
+  a5=arg[0]? arg[0][18] : 0;
+  if (res[0]!=0) res[0][1]=a5;
   a0=(a0+a0);
   a5=(-a0);
   if (res[1]!=0) res[1][0]=a5;
   a6=(a6+a6);
   a5=(-a6);
   if (res[1]!=0) res[1][1]=a5;
+  a5=1.;
+  if (res[1]!=0) res[1][2]=a5;
   a1=(a1*a6);
   a2=(a2*a0);
   a1=(a1+a2);
-  if (res[1]!=0) res[1][2]=a1;
+  if (res[1]!=0) res[1][3]=a1;
   return 0;
 }
 
@@ -42444,8 +42452,8 @@ const casadi_int* FORCESNLPsolver_inequalities_39_sparsity_in(casadi_int i) {
 
 const casadi_int* FORCESNLPsolver_inequalities_39_sparsity_out(casadi_int i) {
   switch (i) {
-    case 0: return casadi_s2;
-    case 1: return casadi_s10;
+    case 0: return casadi_s11;
+    case 1: return casadi_s12;
     default: return 0;
   }
 }
