@@ -8,7 +8,7 @@ xvars = ['c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega
          # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
          ]
 
-uvars = ['c1_s_slack',
+uvars = ['c1_s_slack', 'c1_f_slack_ddot', 'c1_f_slack_deltadot', 'c1_f_slack_thetadot',
          'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
          # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
          ]
@@ -20,12 +20,7 @@ pvars = ['c1_f_xd', 'c1_f_yd', 'c1_f_grad_xd', 'c1_f_grad_yd', 'c1_f_theta_hat',
          # 'c1_s0_x', 'c1_s0_y'
          ]
 
-zvars = ['c1_s_slack',
-         'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-         # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-         'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-         # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
-         ]
+zvars = uvars + xvars
 
 
 car_dim = 0.07  # move to config?
@@ -154,6 +149,10 @@ def stage_cost(z, p):
 
     # extract inputs
     c1_s_slack = z[zvars.index('c1_s_slack')]
+    c1_f_slack_ddot = z[zvars.index('c1_f_slack_ddot')]
+    c1_f_slack_deltadot = z[zvars.index('c1_f_slack_deltadot')]
+    c1_f_slack_thetadot = z[zvars.index('c1_f_slack_thetadot')]
+
     c1_ddot = z[zvars.index('c1_f_ddot')]
     c1_deltadot = z[zvars.index('c1_f_deltadot')]
     c1_thetadot = z[zvars.index('c1_f_thetadot')]
@@ -172,9 +171,12 @@ def stage_cost(z, p):
 
     c1_cost = c1_e_cont * Q1 * c1_e_cont + c1_e_lag * Q2 * c1_e_lag - q * \
         c1_thetadot + c1_ddot * R1 * c1_ddot + c1_deltadot * R2 * \
-        c1_deltadot + c1_s_slack*0.0000001  # + c1_s_slack**2*0.00001
+        c1_deltadot
 
-    return c1_cost
+    slack_cost = c1_s_slack + c1_f_slack_ddot + \
+        c1_f_slack_deltadot + c1_f_slack_thetadot
+
+    return c1_cost + 10e2 * slack_cost
 
 
 def dynamics_RK4(z, p, freq):
@@ -453,6 +455,14 @@ def nonlinear_ineq_standard_v2(z, p):
 
     c1_f_tval = (c1_f_posx-c1_f_xd)**2 + (c1_f_posy-c1_f_yd)**2 - c1_s_slack
 
+    c1_f_ddot = z[zvars.index('c1_f_ddot')]
+    c1_f_deltadot = z[zvars.index('c1_f_deltadot')]
+    c1_f_thetadot = z[zvars.index('c1_f_thetadot')]
+
+    c1_f_slack_ddot = z[zvars.index('c1_f_slack_ddot')]
+    c1_f_slack_deltadot = z[zvars.index('c1_f_slack_deltadot')]
+    c1_f_slack_thetadot = z[zvars.index('c1_f_slack_thetadot')]
+
     # c1_s_posx = z[zvars.index('c1_s_posx')]
     # c1_s_posy = z[zvars.index('c1_s_posy')]
     # c1_s_xd = p[pvars.index('c1_s_xd')]
@@ -476,7 +486,13 @@ def nonlinear_ineq_standard_v2(z, p):
 
     # Do not return c1_f_tval : cost should be enough
     return casadi.vertcat(  # c1_f_tval,
-        c1_f_tval
+        c1_f_tval,
+        c1_f_ddot - c1_f_slack_ddot,
+        c1_f_ddot + c1_f_slack_ddot,
+        c1_f_deltadot - c1_f_slack_deltadot,
+        c1_f_deltadot + c1_f_slack_deltadot,
+        c1_f_thetadot - c1_f_slack_thetadot,
+        c1_f_thetadot + c1_f_slack_thetadot,
         # c1_s_tval,
         # c1_s_antena
     )

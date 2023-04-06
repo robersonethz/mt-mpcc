@@ -22,51 +22,51 @@
 % [OUTPUTS] = FORCESNLPsolver(INPUTS) solves an optimization problem where:
 % Inputs:
 % - xinit - matrix of size [9x1]
-% - x0 - matrix of size [520x1]
+% - x0 - matrix of size [640x1]
 % - all_parameters - matrix of size [1040x1]
 % - num_of_threads - scalar
 % - receive_floating_license - scalar
 % Outputs:
-% - x01 - column vector of length 13
-% - x02 - column vector of length 13
-% - x03 - column vector of length 13
-% - x04 - column vector of length 13
-% - x05 - column vector of length 13
-% - x06 - column vector of length 13
-% - x07 - column vector of length 13
-% - x08 - column vector of length 13
-% - x09 - column vector of length 13
-% - x10 - column vector of length 13
-% - x11 - column vector of length 13
-% - x12 - column vector of length 13
-% - x13 - column vector of length 13
-% - x14 - column vector of length 13
-% - x15 - column vector of length 13
-% - x16 - column vector of length 13
-% - x17 - column vector of length 13
-% - x18 - column vector of length 13
-% - x19 - column vector of length 13
-% - x20 - column vector of length 13
-% - x21 - column vector of length 13
-% - x22 - column vector of length 13
-% - x23 - column vector of length 13
-% - x24 - column vector of length 13
-% - x25 - column vector of length 13
-% - x26 - column vector of length 13
-% - x27 - column vector of length 13
-% - x28 - column vector of length 13
-% - x29 - column vector of length 13
-% - x30 - column vector of length 13
-% - x31 - column vector of length 13
-% - x32 - column vector of length 13
-% - x33 - column vector of length 13
-% - x34 - column vector of length 13
-% - x35 - column vector of length 13
-% - x36 - column vector of length 13
-% - x37 - column vector of length 13
-% - x38 - column vector of length 13
-% - x39 - column vector of length 13
-% - x40 - column vector of length 13
+% - x01 - column vector of length 16
+% - x02 - column vector of length 16
+% - x03 - column vector of length 16
+% - x04 - column vector of length 16
+% - x05 - column vector of length 16
+% - x06 - column vector of length 16
+% - x07 - column vector of length 16
+% - x08 - column vector of length 16
+% - x09 - column vector of length 16
+% - x10 - column vector of length 16
+% - x11 - column vector of length 16
+% - x12 - column vector of length 16
+% - x13 - column vector of length 16
+% - x14 - column vector of length 16
+% - x15 - column vector of length 16
+% - x16 - column vector of length 16
+% - x17 - column vector of length 16
+% - x18 - column vector of length 16
+% - x19 - column vector of length 16
+% - x20 - column vector of length 16
+% - x21 - column vector of length 16
+% - x22 - column vector of length 16
+% - x23 - column vector of length 16
+% - x24 - column vector of length 16
+% - x25 - column vector of length 16
+% - x26 - column vector of length 16
+% - x27 - column vector of length 16
+% - x28 - column vector of length 16
+% - x29 - column vector of length 16
+% - x30 - column vector of length 16
+% - x31 - column vector of length 16
+% - x32 - column vector of length 16
+% - x33 - column vector of length 16
+% - x34 - column vector of length 16
+% - x35 - column vector of length 16
+% - x36 - column vector of length 16
+% - x37 - column vector of length 16
+% - x38 - column vector of length 16
+% - x39 - column vector of length 16
+% - x40 - column vector of length 16
 function [x01, x02, x03, x04, x05, x06, x07, x08, x09, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31, x32, x33, x34, x35, x36, x37, x38, x39, x40] = FORCESNLPsolver(xinit, x0, all_parameters, num_of_threads, receive_floating_license)
     
     [output, ~, ~] = FORCESNLPsolverBuildable.forcesCall(xinit, x0, all_parameters, num_of_threads, receive_floating_license);

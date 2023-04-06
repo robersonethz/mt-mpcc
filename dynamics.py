@@ -14,7 +14,7 @@ class dynamics_simulator():
                       # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
                       ]
 
-        self.uvars = ['c1_s_slack',
+        self.uvars = ['c1_s_slack', 'c1_f_slack_ddot', 'c1_f_slack_deltadot', 'c1_f_slack_thetadot',
                       'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
                       # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
                       ]
@@ -23,11 +23,11 @@ class dynamics_simulator():
         self.x = x0
 
     def tick(self, u, all_parameters, freq):
-        slack = u[self.uvars.index('c1_s_slack')]
+        slacks = u[self.uvars.index('c1_s_slack'):self.uvars.index('c1_f_slack_thetadot')+1]
         c1_f_u = u[self.uvars.index(
             'c1_f_ddot'):self.uvars.index('c1_f_thetadot')+1]
 
-        z = np.hstack((np.array([slack]),
+        z = np.hstack((slacks,
                        c1_f_u,
                        # c1_f_u,
                        self.x))

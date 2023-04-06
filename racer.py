@@ -85,7 +85,7 @@ class racer():
                       # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
                       ]
 
-        self.uvars = ['c1_s_slack',
+        self.uvars = ['c1_s_slack', 'c1_f_slack_ddot', 'c1_f_slack_deltadot', 'c1_f_slack_thetadot',
                       'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
                       # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
                       ]
@@ -96,12 +96,8 @@ class racer():
                       # 'c1_s0_x', 'c1_s0_y'
                       ]
 
-        self.zvars = ['c1_s_slack',
-                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-                      # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-                      'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-                      # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
-                      ]
+        self.zvars = self.uvars + self.xvars
+
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.c1_f_theta_current = np.zeros((self.N,))
 
@@ -251,6 +247,10 @@ class racer():
         return self.z_current
 
     def update(self):
+        # set all slack variables to 0
+        self.z_current[:, self.zvars.index('c1_s_slack'):self.zvars.index(
+            'c1_f_slack_thetadot')+1] = np.zeros((self.N, 4))
+
         all_parameters = []
 
         c1_f_theta_old = self.c1_f_theta_current
@@ -379,11 +379,18 @@ class racer():
 
         if exitflag == -7:
             print("#################################################reinitialize#######################################################")
-            self.initialize_trajectory(self.xinit)
             # TODO still to implement
+            info_dic = [info.solvetime, info.res_ineq,
+                        info.it, exitflag, info.pobj]
+            z_current_temp = self.z_current
+            all_parameters_temp = all_parameters
+            self.initialize_trajectory(self.xinit)
+            self.simidx = self.simidx + 1
+            return z_current_temp, info_dic, all_parameters_temp
 
         self.simidx = self.simidx + 1
-        info_dic = [info.solvetime, info.res_ineq, info.it, exitflag]
+        info_dic = [info.solvetime, info.res_ineq,
+                    info.it, exitflag, info.pobj]
 
         # type_time = type(time)
         # f_posx = self.z_current[0, 7]

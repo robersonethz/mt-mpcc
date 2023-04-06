@@ -3,52 +3,52 @@
 %   OUTPUT = FORCESNLPsolver(PARAMS) solves a multistage problem
 %   subject to the parameters supplied in the following struct:
 %       PARAMS.xinit - matrix of size [9x1]
-%       PARAMS.x0 - matrix of size [520x1]
+%       PARAMS.x0 - matrix of size [640x1]
 %       PARAMS.all_parameters - matrix of size [1040x1]
 %       PARAMS.num_of_threads - scalar
 %       PARAMS.receive_floating_license - scalar
 %
 %   OUTPUT returns the values of the last iteration of the solver where
-%       OUTPUT.x01 - column vector of length 13
-%       OUTPUT.x02 - column vector of length 13
-%       OUTPUT.x03 - column vector of length 13
-%       OUTPUT.x04 - column vector of length 13
-%       OUTPUT.x05 - column vector of length 13
-%       OUTPUT.x06 - column vector of length 13
-%       OUTPUT.x07 - column vector of length 13
-%       OUTPUT.x08 - column vector of length 13
-%       OUTPUT.x09 - column vector of length 13
-%       OUTPUT.x10 - column vector of length 13
-%       OUTPUT.x11 - column vector of length 13
-%       OUTPUT.x12 - column vector of length 13
-%       OUTPUT.x13 - column vector of length 13
-%       OUTPUT.x14 - column vector of length 13
-%       OUTPUT.x15 - column vector of length 13
-%       OUTPUT.x16 - column vector of length 13
-%       OUTPUT.x17 - column vector of length 13
-%       OUTPUT.x18 - column vector of length 13
-%       OUTPUT.x19 - column vector of length 13
-%       OUTPUT.x20 - column vector of length 13
-%       OUTPUT.x21 - column vector of length 13
-%       OUTPUT.x22 - column vector of length 13
-%       OUTPUT.x23 - column vector of length 13
-%       OUTPUT.x24 - column vector of length 13
-%       OUTPUT.x25 - column vector of length 13
-%       OUTPUT.x26 - column vector of length 13
-%       OUTPUT.x27 - column vector of length 13
-%       OUTPUT.x28 - column vector of length 13
-%       OUTPUT.x29 - column vector of length 13
-%       OUTPUT.x30 - column vector of length 13
-%       OUTPUT.x31 - column vector of length 13
-%       OUTPUT.x32 - column vector of length 13
-%       OUTPUT.x33 - column vector of length 13
-%       OUTPUT.x34 - column vector of length 13
-%       OUTPUT.x35 - column vector of length 13
-%       OUTPUT.x36 - column vector of length 13
-%       OUTPUT.x37 - column vector of length 13
-%       OUTPUT.x38 - column vector of length 13
-%       OUTPUT.x39 - column vector of length 13
-%       OUTPUT.x40 - column vector of length 13
+%       OUTPUT.x01 - column vector of length 16
+%       OUTPUT.x02 - column vector of length 16
+%       OUTPUT.x03 - column vector of length 16
+%       OUTPUT.x04 - column vector of length 16
+%       OUTPUT.x05 - column vector of length 16
+%       OUTPUT.x06 - column vector of length 16
+%       OUTPUT.x07 - column vector of length 16
+%       OUTPUT.x08 - column vector of length 16
+%       OUTPUT.x09 - column vector of length 16
+%       OUTPUT.x10 - column vector of length 16
+%       OUTPUT.x11 - column vector of length 16
+%       OUTPUT.x12 - column vector of length 16
+%       OUTPUT.x13 - column vector of length 16
+%       OUTPUT.x14 - column vector of length 16
+%       OUTPUT.x15 - column vector of length 16
+%       OUTPUT.x16 - column vector of length 16
+%       OUTPUT.x17 - column vector of length 16
+%       OUTPUT.x18 - column vector of length 16
+%       OUTPUT.x19 - column vector of length 16
+%       OUTPUT.x20 - column vector of length 16
+%       OUTPUT.x21 - column vector of length 16
+%       OUTPUT.x22 - column vector of length 16
+%       OUTPUT.x23 - column vector of length 16
+%       OUTPUT.x24 - column vector of length 16
+%       OUTPUT.x25 - column vector of length 16
+%       OUTPUT.x26 - column vector of length 16
+%       OUTPUT.x27 - column vector of length 16
+%       OUTPUT.x28 - column vector of length 16
+%       OUTPUT.x29 - column vector of length 16
+%       OUTPUT.x30 - column vector of length 16
+%       OUTPUT.x31 - column vector of length 16
+%       OUTPUT.x32 - column vector of length 16
+%       OUTPUT.x33 - column vector of length 16
+%       OUTPUT.x34 - column vector of length 16
+%       OUTPUT.x35 - column vector of length 16
+%       OUTPUT.x36 - column vector of length 16
+%       OUTPUT.x37 - column vector of length 16
+%       OUTPUT.x38 - column vector of length 16
+%       OUTPUT.x39 - column vector of length 16
+%       OUTPUT.x40 - column vector of length 16
 %
 %   [OUTPUT, EXITFLAG] = FORCESNLPsolver(PARAMS) returns additionally
 %   the integer EXITFLAG indicating the state of the solution with 

@@ -34,7 +34,7 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     npar = 26  # number of parameters per stage
     nstates = 9
     ninputs = 3
-    nslack = 1
+    nslack = 4
     nvar = nslack+ninputs+nstates
     car_dim = 0.00  # move to config?
     half_track_width = 0.46/2  # move to config?
@@ -93,30 +93,51 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     #         model.hl[i] = [-100, 0]
 
     # inequalities
+    constraints = cfg["model_bounds"]
+
     car_dim = 0.00  # move to config?
     half_track_width = 0.46/2  # move to config?
     hu_car = (half_track_width-car_dim)**2
-    model.nh = 1
+    model.nh = 7
     model.ineq = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-    model.hu = [hu_car]
-    model.hl = [0]
+    model.hu = [hu_car,
+                constraints["dT_max"],
+                np.inf,
+                constraints["ddelta_max"],
+                np.inf,
+                constraints["dtheta_max"],
+                np.inf,
+                ]
+    model.hl = [0,
+                -np.inf,
+                constraints["dT_min"],
+                -np.inf,
+                constraints["ddelta_min"],
+                -np.inf,
+                constraints["dtheta_min"],
+                ]
 
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)
 
     # inequalities lower and upper bounds for state vector defined at head of
     # this subscript
-    constraints = cfg["model_bounds"]
 
     model.lb = np.array([
         0,  # slack_var TODO: move to config
+        0,  # slack_ddot TODO: move to config
+        0,  # slack_deltadot TODO: move to config
+        0,  # slack_thetadot TODO: move to config
         # constraints["dT_min"],
         # constraints["ddelta_min"],
         # constraints["dtheta_min"],
 
-        constraints["dT_min"],
-        constraints["ddelta_min"],
-        constraints["dtheta_min"],
+        # constraints["dT_min"],
+        # constraints["ddelta_min"],
+        # constraints["dtheta_min"],
+        -10e5,  # ddot
+        -10e5,  # deltadot
+        -10e5,  # thetadot
 
         # constraints["x_min"],
         # constraints["y_min"],
@@ -141,14 +162,21 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     ])
 
     model.ub = np.array([
-        1000,  # slack_var TODO: move to config
+        10e5,  # slack_var TODO: move to config
+        10e5,  # slack_ddot TODO: move to config
+        10e5,  # slack_deltadot TODO: move to config
+        10e5,  # slack_thetadot TODO: move to config
+
         # constraints["dT_max"],
         # constraints["ddelta_max"],
         # constraints["dtheta_max"],
 
-        constraints["dT_max"],
-        constraints["ddelta_max"],
-        constraints["dtheta_max"],
+        # constraints["dT_max"],
+        # constraints["ddelta_max"],
+        # constraints["dtheta_max"],
+        10e5,  # ddot
+        10e5,  # deltadot
+        10e5,  # thetadot
 
         # constraints["x_max"],
         # constraints["y_max"],

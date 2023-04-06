@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "4/6/2023 6:48:46 AM"
+  Created		  "4/6/2023 1:18:45 PM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "4/6/2023 6:48:46 AM"
+  LastModifiedDate	  "4/6/2023 1:18:45 PM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -805,13 +805,13 @@ Model {
 	"\nOUTPUTS = FORCESNLPsolver(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
 	" - xinit - matrix of size [9x1]\n  "
-" - x0 - matrix of size [520x1]\n  "
+" - x0 - matrix of size [640x1]\n  "
 " - all_parameters - matrix of size [1040x1]\n  "
 " - num_of_threads - scalar\n  "
 " - receive_floating_license - scalar\n  "
 
 	"\nOUTPUTS:\n"
-	" - outputs - column vector of length 520\n  "
+	" - outputs - column vector of length 640\n  "
 
 	"\n For more information, see https://forces.embotech.com/Documentation/simulink_interface/index.html \n "
 
