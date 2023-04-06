@@ -5,23 +5,27 @@ import numpy as np
 from casadi import atan, sin, cos
 
 xvars = ['c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-         'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
+         # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
+         ]
 
-uvars = ['c1_s_slack',
-         'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-         'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot']
+uvars = [  # 'c1_s_slack',
+    'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
+    # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
+]
 
 
 pvars = ['c1_f_xd', 'c1_f_yd', 'c1_f_grad_xd', 'c1_f_grad_yd', 'c1_f_theta_hat', 'c1_f_phi_d',
-         'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
-         'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll', 'c1_s0_x', 'c1_s0_y']
-
-zvars = ['c1_s_slack',
-         'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-         'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-         'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-         'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
+         # 'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
+         'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll',
+         # 'c1_s0_x', 'c1_s0_y'
          ]
+
+zvars = [  # 'c1_s_slack',
+    'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
+    # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
+    'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
+    # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
+]
 
 
 car_dim = 0.07  # move to config?
@@ -63,21 +67,6 @@ def continuous_dynamics(x, u, p):
     c1_f_deltadot = u[uvars.index('c1_f_deltadot')]
     c1_f_thetadot = u[uvars.index('c1_f_thetadot')]
 
-    # SAFE
-    c1_s_posx = x[xvars.index('c1_s_posx')]
-    c1_s_posy = x[xvars.index('c1_s_posy')]
-    c1_s_phi = x[xvars.index('c1_s_phi')]
-    c1_s_vx = x[xvars.index('c1_s_vx')]
-    c1_s_vy = x[xvars.index('c1_s_vy')]
-    c1_s_omega = x[xvars.index('c1_s_omega')]
-    c1_s_d = x[xvars.index('c1_s_d')]
-    c1_s_delta = x[xvars.index('c1_s_delta')]
-    c1_s_theta = x[xvars.index('c1_s_theta')]
-
-    c1_s_ddot = u[uvars.index('c1_s_ddot')]
-    c1_s_deltadot = u[uvars.index('c1_s_deltadot')]
-    c1_s_thetadot = u[uvars.index('c1_s_thetadot')]
-
     # build CasADi expressions for dynamic model
     # front lateral tireforce
     c1_f_alphaf = -np.arctan2((c1_f_omega*lf + c1_f_vy), c1_f_vx) + c1_f_delta
@@ -90,15 +79,30 @@ def continuous_dynamics(x, u, p):
     # rear longitudinal forces
     c1_f_Frx = (Cm1-Cm2*c1_f_vx) * c1_f_d - Croll - Cd*c1_f_vx*c1_f_vx
 
-    c1_s_alphaf = -np.arctan2((c1_s_omega*lf + c1_s_vy), c1_s_vx) + c1_s_delta
-    c1_s_Ffy = Df*np.sin(Cf*np.arctan(Bf*c1_s_alphaf))
+    # # SAFE
+    # c1_s_posx = x[xvars.index('c1_s_posx')]
+    # c1_s_posy = x[xvars.index('c1_s_posy')]
+    # c1_s_phi = x[xvars.index('c1_s_phi')]
+    # c1_s_vx = x[xvars.index('c1_s_vx')]
+    # c1_s_vy = x[xvars.index('c1_s_vy')]
+    # c1_s_omega = x[xvars.index('c1_s_omega')]
+    # c1_s_d = x[xvars.index('c1_s_d')]
+    # c1_s_delta = x[xvars.index('c1_s_delta')]
+    # c1_s_theta = x[xvars.index('c1_s_theta')]
 
-    # rear lateral tireforce
-    c1_s_alphar = np.arctan2((c1_s_omega*lr - c1_s_vy), c1_s_vx)
-    c1_s_Fry = Dr*np.sin(Cr*np.arctan(Br*c1_s_alphar))
+    # c1_s_ddot = u[uvars.index('c1_s_ddot')]
+    # c1_s_deltadot = u[uvars.index('c1_s_deltadot')]
+    # c1_s_thetadot = u[uvars.index('c1_s_thetadot')]
 
-    # rear longitudinal forces
-    c1_s_Frx = (Cm1-Cm2*c1_s_vx) * c1_s_d - Croll - Cd*c1_s_vx*c1_s_vx
+    # c1_s_alphaf = -np.arctan2((c1_s_omega*lf + c1_s_vy), c1_s_vx) + c1_s_delta
+    # c1_s_Ffy = Df*np.sin(Cf*np.arctan(Bf*c1_s_alphaf))
+
+    # # rear lateral tireforce
+    # c1_s_alphar = np.arctan2((c1_s_omega*lr - c1_s_vy), c1_s_vx)
+    # c1_s_Fry = Dr*np.sin(Cr*np.arctan(Br*c1_s_alphar))
+
+    # # rear longitudinal forces
+    # c1_s_Frx = (Cm1-Cm2*c1_s_vx) * c1_s_d - Croll - Cd*c1_s_vx*c1_s_vx
 
     statedot = casadi.vertcat(
         # FAST
@@ -113,20 +117,18 @@ def continuous_dynamics(x, u, p):
         c1_f_ddot,
         c1_f_deltadot,
         c1_f_thetadot,
-        # SAFE
-        c1_s_vx * np.cos(c1_s_phi) - c1_s_vy * np.sin(c1_s_phi),  # posxdot
-        c1_s_vx * np.sin(c1_s_phi) + c1_s_vy * np.cos(c1_s_phi),  # posydot
-        c1_s_omega,  # phidot
-        1/m * (c1_s_Frx - c1_s_Ffy*np.sin(c1_s_delta) + \
-               m*c1_s_vy*c1_s_omega),  # vxdot
-        1/m * (c1_s_Fry + c1_s_Ffy*np.cos(c1_s_delta) - \
-               m*c1_s_vx*c1_s_omega),  # vydot
-        1/I * (c1_s_Ffy*lf*np.cos(c1_s_delta) - c1_s_Fry*lr),  # omegadot
-        c1_s_ddot,
-        c1_s_deltadot,
-        c1_s_thetadot
-
-
+        # # SAFE
+        # c1_s_vx * np.cos(c1_s_phi) - c1_s_vy * np.sin(c1_s_phi),  # posxdot
+        # c1_s_vx * np.sin(c1_s_phi) + c1_s_vy * np.cos(c1_s_phi),  # posydot
+        # c1_s_omega,  # phidot
+        # 1/m * (c1_s_Frx - c1_s_Ffy*np.sin(c1_s_delta) + \
+        #        m*c1_s_vy*c1_s_omega),  # vxdot
+        # 1/m * (c1_s_Fry + c1_s_Ffy*np.cos(c1_s_delta) - \
+        #        m*c1_s_vx*c1_s_omega),  # vydot
+        # 1/I * (c1_s_Ffy*lf*np.cos(c1_s_delta) - c1_s_Fry*lr),  # omegadot
+        # c1_s_ddot,
+        # c1_s_deltadot,
+        # c1_s_thetadot
     )
     return statedot
 
@@ -151,13 +153,13 @@ def stage_cost(z, p):
     c1_theta = z[zvars.index('c1_f_theta')]
 
     # extract inputs
-    c1_s_slack = z[zvars.index('c1_s_slack')]
+    # c1_s_slack = z[zvars.index('c1_s_slack')]
     c1_ddot = z[zvars.index('c1_f_ddot')]
     c1_deltadot = z[zvars.index('c1_f_deltadot')]
     c1_thetadot = z[zvars.index('c1_f_thetadot')]
 
-    c1_s_vx = z[zvars.index('c1_s_vx')]
-    Q_s = 10  # TODO move to config
+    # c1_s_vx = z[zvars.index('c1_s_vx')]
+    # Q_s = 10  # TODO move to config
 
     # compute approximate linearized contouring and lag error
     c1_xt_hat = c1_xd + c1_cos_phit * (c1_theta - c1_theta_hat)
@@ -170,7 +172,7 @@ def stage_cost(z, p):
 
     c1_cost = c1_e_cont * Q1 * c1_e_cont + c1_e_lag * Q2 * c1_e_lag - q * \
         c1_thetadot + c1_ddot * R1 * c1_ddot + c1_deltadot * R2 * \
-        c1_deltadot + c1_s_slack*100 + c1_s_slack**2*100
+        c1_deltadot  # + c1_s_slack*100 + c1_s_slack**2*100
 
     return c1_cost
 
@@ -450,25 +452,26 @@ def nonlinear_ineq_standard_v2(z, p):
     c1_f_tval = (c1_f_posx-c1_f_xd)*(c1_f_posx-c1_f_xd) + \
         (c1_f_posy-c1_f_yd)*(c1_f_posy-c1_f_yd)
 
-    c1_s_posx = z[zvars.index('c1_s_posx')]
-    c1_s_posy = z[zvars.index('c1_s_posy')]
-    c1_s_xd = p[pvars.index('c1_s_xd')]
-    c1_s_yd = p[pvars.index('c1_s_yd')]
+    # c1_s_posx = z[zvars.index('c1_s_posx')]
+    # c1_s_posy = z[zvars.index('c1_s_posy')]
+    # c1_s_xd = p[pvars.index('c1_s_xd')]
+    # c1_s_yd = p[pvars.index('c1_s_yd')]
 
-    c1_s_slack = z[zvars.index('c1_s_slack')]
+    # c1_s_slack = z[zvars.index('c1_s_slack')]
 
-    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy -
-                                          c1_s_yd)**2 - (hu_car+c1_s_slack)**2
+    # c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy -
+    #                                       c1_s_yd)**2 - (hu_car+c1_s_slack)**2
 
-    c1_s0_x = p[pvars.index('c1_s0_x')]
-    c1_s0_y = p[pvars.index('c1_s0_y')]
+    # c1_s0_x = p[pvars.index('c1_s0_x')]
+    # c1_s0_y = p[pvars.index('c1_s0_y')]
 
-    c1_s_antena = (c1_s0_x-c1_s_posx)**2 + (c1_s0_y-c1_s_posy)**2
+    # c1_s_antena = (c1_s0_x-c1_s_posx)**2 + (c1_s0_y-c1_s_posy)**2
 
     # Do not return c1_f_tval : cost should be enough
     return casadi.vertcat(  # c1_f_tval,
-        c1_s_tval,
-        c1_s_antena
+        c1_f_tval
+        # c1_s_tval,
+        # c1_s_antena
     )
 
 

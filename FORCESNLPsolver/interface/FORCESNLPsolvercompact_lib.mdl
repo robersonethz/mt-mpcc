@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "4/5/2023 6:53:55 PM"
+  Created		  "4/6/2023 5:00:42 AM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "4/5/2023 6:53:55 PM"
+  LastModifiedDate	  "4/6/2023 5:00:42 AM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -804,14 +804,14 @@ Model {
 	Help			"FORCESNLPsolver_simulinkBlockcompact provides an easy Simulink interface for simulating your customized solver.  \n"
 	"\nOUTPUTS = FORCESNLPsolver(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
-	" - xinit - matrix of size [18x1]\n  "
-" - x0 - matrix of size [1000x1]\n  "
-" - all_parameters - matrix of size [1360x1]\n  "
+	" - xinit - matrix of size [9x1]\n  "
+" - x0 - matrix of size [480x1]\n  "
+" - all_parameters - matrix of size [1040x1]\n  "
 " - num_of_threads - scalar\n  "
 " - receive_floating_license - scalar\n  "
 
 	"\nOUTPUTS:\n"
-	" - outputs - column vector of length 1000\n  "
+	" - outputs - column vector of length 480\n  "
 
 	"\n For more information, see https://forces.embotech.com/Documentation/simulink_interface/index.html \n "
 

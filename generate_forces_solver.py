@@ -31,10 +31,10 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     -------
     None
     """
-    npar = (6*2)+22  # number of parameters per stage
-    nstates = 9*2
-    ninputs = 3*2
-    nslack = 1
+    npar = 26  # number of parameters per stage
+    nstates = 9
+    ninputs = 3
+    nslack = 0
     nvar = nslack+ninputs+nstates
     car_dim = 0.07  # move to config?
     half_track_width = 0.46/2 - 0.1  # move to config?
@@ -74,23 +74,26 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     #         model.hl[i] = [-10]
 
     # inequalities
-    for i in range(0, model.N):
-        if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
-            model.nh[i] = 5       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
-                z, p)
-            model.hu[i] = [0, 0.001, 0.001, 0.001, r_antena**2]
-            model.hl[i] = [-100, -0.001, -0.001, -0.001, 0]
-        elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
-            model.nh[i] = 3       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
-            model.hu[i] = [0, 0.01, r_antena**2]
-            model.hl[i] = [-100, -0.01, 0]
-        else:  # usual constraints : contained inside track
-            model.nh[i] = 2       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-            model.hu[i] = [0, r_antena**2]
-            model.hl[i] = [-100, 0]
+    # for i in range(0, model.N):
+    #     if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
+    #         model.nh[i] = 5       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
+    #             z, p)
+    #         model.hu[i] = [0, 0.001, 0.001, 0.001, r_antena**2]
+    #         model.hl[i] = [-100, -0.001, -0.001, -0.001, 0]
+    #     elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
+    #         model.nh[i] = 3       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
+    #         model.hu[i] = [0, 0.01, r_antena**2]
+    #         model.hl[i] = [-100, -0.01, 0]
+    #     else:  # usual constraints : contained inside track
+    #         model.nh[i] = 2       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
+    #         model.hu[i] = [0, r_antena**2]
+    #         model.hl[i] = [-100, 0]
+
+    # inequalities
+    model.nh = 0
 
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)
@@ -100,24 +103,24 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     constraints = cfg["model_bounds"]
 
     model.lb = np.array([
-        0,  # slack_var TODO: move to config
-        constraints["dT_min"],
-        constraints["ddelta_min"],
-        constraints["dtheta_min"],
+        # 0,  # slack_var TODO: move to config
+        # constraints["dT_min"],
+        # constraints["ddelta_min"],
+        # constraints["dtheta_min"],
 
         constraints["dT_min"],
         constraints["ddelta_min"],
         constraints["dtheta_min"],
 
-        constraints["x_min"],
-        constraints["y_min"],
-        constraints["yaw_min"],
-        constraints["vx_min"],
-        constraints["vy_min"],
-        constraints["dyaw_min"],
-        constraints["T_min"],
-        constraints["delta_min"],
-        constraints["theta_min"],
+        # constraints["x_min"],
+        # constraints["y_min"],
+        # constraints["yaw_min"],
+        # constraints["vx_min"],
+        # constraints["vy_min"],
+        # constraints["dyaw_min"],
+        # constraints["T_min"],
+        # constraints["delta_min"],
+        # constraints["theta_min"],
 
         constraints["x_min"],
         constraints["y_min"],
@@ -132,24 +135,24 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     ])
 
     model.ub = np.array([
-        100,  # slack_var TODO: move to config
-        constraints["dT_max"],
-        constraints["ddelta_max"],
-        constraints["dtheta_max"],
+        # 100,  # slack_var TODO: move to config
+        # constraints["dT_max"],
+        # constraints["ddelta_max"],
+        # constraints["dtheta_max"],
 
         constraints["dT_max"],
         constraints["ddelta_max"],
         constraints["dtheta_max"],
 
-        constraints["x_max"],
-        constraints["y_max"],
-        constraints["yaw_max"],
-        constraints["vx_max"],
-        constraints["vy_max"],
-        constraints["dyaw_max"],
-        constraints["T_max"],
-        constraints["delta_max"],
-        constraints["theta_max"],
+        # constraints["x_max"],
+        # constraints["y_max"],
+        # constraints["yaw_max"],
+        # constraints["vx_max"],
+        # constraints["vy_max"],
+        # constraints["dyaw_max"],
+        # constraints["T_max"],
+        # constraints["delta_max"],
+        # constraints["theta_max"],
 
         constraints["x_max"],
         constraints["y_max"],
@@ -202,4 +205,4 @@ if __name__ == "__main__":
     with open('solver.yaml') as stream:
         config = yaml.safe_load(stream)
 
-    solver = build_solver(N=20, Ts=0.3333, cfg=config)
+    solver = build_solver(N=20, Ts=0.3333, cfg=config, max_it_solver=100)

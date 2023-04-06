@@ -71,21 +71,21 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumInputPorts(S, 5)) return;
     	
 	/* Input Port 0 */
-    ssSetInputPortMatrixDimensions(S,  0, 18, 1);
+    ssSetInputPortMatrixDimensions(S,  0, 9, 1);
     ssSetInputPortDataType(S, 0, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 0, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 1000, 1);
+    ssSetInputPortMatrixDimensions(S,  1, 480, 1);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 1, 1); /*direct input signal access*/
 	
 	/* Input Port 2 */
-    ssSetInputPortMatrixDimensions(S,  2, 1360, 1);
+    ssSetInputPortMatrixDimensions(S,  2, 1040, 1);
     ssSetInputPortDataType(S, 2, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 2, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 2, 1); /* Feedthrough enabled */
@@ -111,7 +111,7 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumOutputPorts(S, 1)) return;    
 		
 	/* Output Port 0 */
-    ssSetOutputPortMatrixDimensions(S,  0, 1000, 1);
+    ssSetOutputPortMatrixDimensions(S,  0, 480, 1);
     ssSetOutputPortDataType(S, 0, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
 
@@ -216,17 +216,17 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	solver_int32_default solver_exitflag;
 
 	/* Copy inputs */
-	for(i = 0; i < 18; i++)
+	for(i = 0; i < 9; i++)
 	{
 		params.xinit[i] = (double) xinit[i];
 	}
 
-	for(i = 0; i < 1000; i++)
+	for(i = 0; i < 480; i++)
 	{
 		params.x0[i] = (double) x0[i];
 	}
 
-	for(i = 0; i < 1360; i++)
+	for(i = 0; i < 1040; i++)
 	{
 		params.all_parameters[i] = (double) all_parameters[i];
 	}
@@ -266,204 +266,204 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	#endif
 
 	/* Copy outputs */
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		outputs[i] = (real_T) output.x01[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[25 + i] = (real_T) output.x02[i];
+		outputs[12 + i] = (real_T) output.x02[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[50 + i] = (real_T) output.x03[i];
+		outputs[24 + i] = (real_T) output.x03[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[75 + i] = (real_T) output.x04[i];
+		outputs[36 + i] = (real_T) output.x04[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[100 + i] = (real_T) output.x05[i];
+		outputs[48 + i] = (real_T) output.x05[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[125 + i] = (real_T) output.x06[i];
+		outputs[60 + i] = (real_T) output.x06[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[150 + i] = (real_T) output.x07[i];
+		outputs[72 + i] = (real_T) output.x07[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[175 + i] = (real_T) output.x08[i];
+		outputs[84 + i] = (real_T) output.x08[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[200 + i] = (real_T) output.x09[i];
+		outputs[96 + i] = (real_T) output.x09[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[225 + i] = (real_T) output.x10[i];
+		outputs[108 + i] = (real_T) output.x10[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[250 + i] = (real_T) output.x11[i];
+		outputs[120 + i] = (real_T) output.x11[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[275 + i] = (real_T) output.x12[i];
+		outputs[132 + i] = (real_T) output.x12[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[300 + i] = (real_T) output.x13[i];
+		outputs[144 + i] = (real_T) output.x13[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[325 + i] = (real_T) output.x14[i];
+		outputs[156 + i] = (real_T) output.x14[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[350 + i] = (real_T) output.x15[i];
+		outputs[168 + i] = (real_T) output.x15[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[375 + i] = (real_T) output.x16[i];
+		outputs[180 + i] = (real_T) output.x16[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[400 + i] = (real_T) output.x17[i];
+		outputs[192 + i] = (real_T) output.x17[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[425 + i] = (real_T) output.x18[i];
+		outputs[204 + i] = (real_T) output.x18[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[450 + i] = (real_T) output.x19[i];
+		outputs[216 + i] = (real_T) output.x19[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[475 + i] = (real_T) output.x20[i];
+		outputs[228 + i] = (real_T) output.x20[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[500 + i] = (real_T) output.x21[i];
+		outputs[240 + i] = (real_T) output.x21[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[525 + i] = (real_T) output.x22[i];
+		outputs[252 + i] = (real_T) output.x22[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[550 + i] = (real_T) output.x23[i];
+		outputs[264 + i] = (real_T) output.x23[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[575 + i] = (real_T) output.x24[i];
+		outputs[276 + i] = (real_T) output.x24[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[600 + i] = (real_T) output.x25[i];
+		outputs[288 + i] = (real_T) output.x25[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[625 + i] = (real_T) output.x26[i];
+		outputs[300 + i] = (real_T) output.x26[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[650 + i] = (real_T) output.x27[i];
+		outputs[312 + i] = (real_T) output.x27[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[675 + i] = (real_T) output.x28[i];
+		outputs[324 + i] = (real_T) output.x28[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[700 + i] = (real_T) output.x29[i];
+		outputs[336 + i] = (real_T) output.x29[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[725 + i] = (real_T) output.x30[i];
+		outputs[348 + i] = (real_T) output.x30[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[750 + i] = (real_T) output.x31[i];
+		outputs[360 + i] = (real_T) output.x31[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[775 + i] = (real_T) output.x32[i];
+		outputs[372 + i] = (real_T) output.x32[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[800 + i] = (real_T) output.x33[i];
+		outputs[384 + i] = (real_T) output.x33[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[825 + i] = (real_T) output.x34[i];
+		outputs[396 + i] = (real_T) output.x34[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[850 + i] = (real_T) output.x35[i];
+		outputs[408 + i] = (real_T) output.x35[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[875 + i] = (real_T) output.x36[i];
+		outputs[420 + i] = (real_T) output.x36[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[900 + i] = (real_T) output.x37[i];
+		outputs[432 + i] = (real_T) output.x37[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[925 + i] = (real_T) output.x38[i];
+		outputs[444 + i] = (real_T) output.x38[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[950 + i] = (real_T) output.x39[i];
+		outputs[456 + i] = (real_T) output.x39[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
-		outputs[975 + i] = (real_T) output.x40[i];
+		outputs[468 + i] = (real_T) output.x40[i];
 	}
 
 	

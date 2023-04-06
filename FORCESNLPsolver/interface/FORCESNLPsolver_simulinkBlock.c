@@ -71,21 +71,21 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumInputPorts(S, 5)) return;
     	
 	/* Input Port 0 */
-    ssSetInputPortMatrixDimensions(S,  0, 18, 1);
+    ssSetInputPortMatrixDimensions(S,  0, 9, 1);
     ssSetInputPortDataType(S, 0, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 0, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 1000, 1);
+    ssSetInputPortMatrixDimensions(S,  1, 480, 1);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 1, 1); /*direct input signal access*/
 	
 	/* Input Port 2 */
-    ssSetInputPortMatrixDimensions(S,  2, 1360, 1);
+    ssSetInputPortMatrixDimensions(S,  2, 1040, 1);
     ssSetInputPortDataType(S, 2, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 2, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 2, 1); /* Feedthrough enabled */
@@ -111,202 +111,202 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumOutputPorts(S, 40)) return;    
 		
 	/* Output Port 0 */
-    ssSetOutputPortMatrixDimensions(S,  0, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  0, 12, 1);
     ssSetOutputPortDataType(S, 0, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 1 */
-    ssSetOutputPortMatrixDimensions(S,  1, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  1, 12, 1);
     ssSetOutputPortDataType(S, 1, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 2 */
-    ssSetOutputPortMatrixDimensions(S,  2, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  2, 12, 1);
     ssSetOutputPortDataType(S, 2, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 2, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 3 */
-    ssSetOutputPortMatrixDimensions(S,  3, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  3, 12, 1);
     ssSetOutputPortDataType(S, 3, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 3, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 4 */
-    ssSetOutputPortMatrixDimensions(S,  4, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  4, 12, 1);
     ssSetOutputPortDataType(S, 4, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 4, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 5 */
-    ssSetOutputPortMatrixDimensions(S,  5, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  5, 12, 1);
     ssSetOutputPortDataType(S, 5, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 5, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 6 */
-    ssSetOutputPortMatrixDimensions(S,  6, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  6, 12, 1);
     ssSetOutputPortDataType(S, 6, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 6, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 7 */
-    ssSetOutputPortMatrixDimensions(S,  7, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  7, 12, 1);
     ssSetOutputPortDataType(S, 7, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 7, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 8 */
-    ssSetOutputPortMatrixDimensions(S,  8, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  8, 12, 1);
     ssSetOutputPortDataType(S, 8, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 8, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 9 */
-    ssSetOutputPortMatrixDimensions(S,  9, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  9, 12, 1);
     ssSetOutputPortDataType(S, 9, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 9, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 10 */
-    ssSetOutputPortMatrixDimensions(S,  10, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  10, 12, 1);
     ssSetOutputPortDataType(S, 10, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 10, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 11 */
-    ssSetOutputPortMatrixDimensions(S,  11, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  11, 12, 1);
     ssSetOutputPortDataType(S, 11, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 11, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 12 */
-    ssSetOutputPortMatrixDimensions(S,  12, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  12, 12, 1);
     ssSetOutputPortDataType(S, 12, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 12, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 13 */
-    ssSetOutputPortMatrixDimensions(S,  13, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  13, 12, 1);
     ssSetOutputPortDataType(S, 13, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 13, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 14 */
-    ssSetOutputPortMatrixDimensions(S,  14, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  14, 12, 1);
     ssSetOutputPortDataType(S, 14, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 14, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 15 */
-    ssSetOutputPortMatrixDimensions(S,  15, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  15, 12, 1);
     ssSetOutputPortDataType(S, 15, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 15, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 16 */
-    ssSetOutputPortMatrixDimensions(S,  16, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  16, 12, 1);
     ssSetOutputPortDataType(S, 16, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 16, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 17 */
-    ssSetOutputPortMatrixDimensions(S,  17, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  17, 12, 1);
     ssSetOutputPortDataType(S, 17, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 17, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 18 */
-    ssSetOutputPortMatrixDimensions(S,  18, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  18, 12, 1);
     ssSetOutputPortDataType(S, 18, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 18, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 19 */
-    ssSetOutputPortMatrixDimensions(S,  19, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  19, 12, 1);
     ssSetOutputPortDataType(S, 19, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 19, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 20 */
-    ssSetOutputPortMatrixDimensions(S,  20, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  20, 12, 1);
     ssSetOutputPortDataType(S, 20, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 20, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 21 */
-    ssSetOutputPortMatrixDimensions(S,  21, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  21, 12, 1);
     ssSetOutputPortDataType(S, 21, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 21, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 22 */
-    ssSetOutputPortMatrixDimensions(S,  22, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  22, 12, 1);
     ssSetOutputPortDataType(S, 22, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 22, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 23 */
-    ssSetOutputPortMatrixDimensions(S,  23, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  23, 12, 1);
     ssSetOutputPortDataType(S, 23, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 23, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 24 */
-    ssSetOutputPortMatrixDimensions(S,  24, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  24, 12, 1);
     ssSetOutputPortDataType(S, 24, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 24, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 25 */
-    ssSetOutputPortMatrixDimensions(S,  25, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  25, 12, 1);
     ssSetOutputPortDataType(S, 25, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 25, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 26 */
-    ssSetOutputPortMatrixDimensions(S,  26, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  26, 12, 1);
     ssSetOutputPortDataType(S, 26, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 26, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 27 */
-    ssSetOutputPortMatrixDimensions(S,  27, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  27, 12, 1);
     ssSetOutputPortDataType(S, 27, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 27, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 28 */
-    ssSetOutputPortMatrixDimensions(S,  28, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  28, 12, 1);
     ssSetOutputPortDataType(S, 28, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 28, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 29 */
-    ssSetOutputPortMatrixDimensions(S,  29, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  29, 12, 1);
     ssSetOutputPortDataType(S, 29, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 29, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 30 */
-    ssSetOutputPortMatrixDimensions(S,  30, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  30, 12, 1);
     ssSetOutputPortDataType(S, 30, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 30, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 31 */
-    ssSetOutputPortMatrixDimensions(S,  31, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  31, 12, 1);
     ssSetOutputPortDataType(S, 31, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 31, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 32 */
-    ssSetOutputPortMatrixDimensions(S,  32, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  32, 12, 1);
     ssSetOutputPortDataType(S, 32, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 32, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 33 */
-    ssSetOutputPortMatrixDimensions(S,  33, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  33, 12, 1);
     ssSetOutputPortDataType(S, 33, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 33, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 34 */
-    ssSetOutputPortMatrixDimensions(S,  34, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  34, 12, 1);
     ssSetOutputPortDataType(S, 34, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 34, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 35 */
-    ssSetOutputPortMatrixDimensions(S,  35, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  35, 12, 1);
     ssSetOutputPortDataType(S, 35, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 35, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 36 */
-    ssSetOutputPortMatrixDimensions(S,  36, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  36, 12, 1);
     ssSetOutputPortDataType(S, 36, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 36, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 37 */
-    ssSetOutputPortMatrixDimensions(S,  37, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  37, 12, 1);
     ssSetOutputPortDataType(S, 37, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 37, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 38 */
-    ssSetOutputPortMatrixDimensions(S,  38, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  38, 12, 1);
     ssSetOutputPortDataType(S, 38, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 38, COMPLEX_NO); /* no complex signals suppported */
 	
 	/* Output Port 39 */
-    ssSetOutputPortMatrixDimensions(S,  39, 25, 1);
+    ssSetOutputPortMatrixDimensions(S,  39, 12, 1);
     ssSetOutputPortDataType(S, 39, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 39, COMPLEX_NO); /* no complex signals suppported */
 
@@ -450,17 +450,17 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	solver_int32_default solver_exitflag;
 
 	/* Copy inputs */
-	for(i = 0; i < 18; i++)
+	for(i = 0; i < 9; i++)
 	{
 		params.xinit[i] = (double) xinit[i];
 	}
 
-	for(i = 0; i < 1000; i++)
+	for(i = 0; i < 480; i++)
 	{
 		params.x0[i] = (double) x0[i];
 	}
 
-	for(i = 0; i < 1360; i++)
+	for(i = 0; i < 1040; i++)
 	{
 		params.all_parameters[i] = (double) all_parameters[i];
 	}
@@ -500,202 +500,202 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	#endif
 
 	/* Copy outputs */
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x01[i] = (real_T) output.x01[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x02[i] = (real_T) output.x02[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x03[i] = (real_T) output.x03[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x04[i] = (real_T) output.x04[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x05[i] = (real_T) output.x05[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x06[i] = (real_T) output.x06[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x07[i] = (real_T) output.x07[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x08[i] = (real_T) output.x08[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x09[i] = (real_T) output.x09[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x10[i] = (real_T) output.x10[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x11[i] = (real_T) output.x11[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x12[i] = (real_T) output.x12[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x13[i] = (real_T) output.x13[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x14[i] = (real_T) output.x14[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x15[i] = (real_T) output.x15[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x16[i] = (real_T) output.x16[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x17[i] = (real_T) output.x17[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x18[i] = (real_T) output.x18[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x19[i] = (real_T) output.x19[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x20[i] = (real_T) output.x20[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x21[i] = (real_T) output.x21[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x22[i] = (real_T) output.x22[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x23[i] = (real_T) output.x23[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x24[i] = (real_T) output.x24[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x25[i] = (real_T) output.x25[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x26[i] = (real_T) output.x26[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x27[i] = (real_T) output.x27[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x28[i] = (real_T) output.x28[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x29[i] = (real_T) output.x29[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x30[i] = (real_T) output.x30[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x31[i] = (real_T) output.x31[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x32[i] = (real_T) output.x32[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x33[i] = (real_T) output.x33[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x34[i] = (real_T) output.x34[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x35[i] = (real_T) output.x35[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x36[i] = (real_T) output.x36[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x37[i] = (real_T) output.x37[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x38[i] = (real_T) output.x38[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x39[i] = (real_T) output.x39[i];
 	}
 
-	for(i = 0; i < 25; i++)
+	for(i = 0; i < 12; i++)
 	{
 		x40[i] = (real_T) output.x40[i];
 	}

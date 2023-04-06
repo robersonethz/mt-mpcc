@@ -82,22 +82,26 @@ class racer():
         # theta = advancement on track
 
         self.xvars = ['c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-                      'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
+                      # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
+                      ]
 
-        self.uvars = ['c1_s_slack',
-                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-                      'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot']
+        self.uvars = [  # 'c1_s_slack',
+            'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
+            # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
+        ]
 
         self.pvars = ['c1_f_xd', 'c1_f_yd', 'c1_f_grad_xd', 'c1_f_grad_yd', 'c1_f_theta_hat', 'c1_f_phi_d',
-                      'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
-                      'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll', 'c1_s0_x', 'c1_s0_y']
+                      # 'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
+                      'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll',
+                      # 'c1_s0_x', 'c1_s0_y'
+                      ]
 
-        self.zvars = ['c1_s_slack',
-                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-                      'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-                      'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-                      'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
-
+        self.zvars = [  # 'c1_s_slack',
+            'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
+            # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
+            'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
+            # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
+        ]
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.c1_f_theta_current = np.zeros((self.N,))
 
@@ -114,8 +118,8 @@ class racer():
         self.dynamics = dynamics.dynamics_simulator(self.modelparams, xinit)
 
         # retain init position for antena constraint
-        self.c1_s0_x = xinit[self.xvars.index('c1_f_posx')]
-        self.c1_s0_y = xinit[self.xvars.index('c1_f_posy')]
+        # self.c1_s0_x = xinit[self.xvars.index('c1_f_posx')]
+        # self.c1_s0_y = xinit[self.xvars.index('c1_f_posy')]
 
         # warmstart init
         self.zinit = np.concatenate([np.zeros(len(self.uvars)), xinit])
@@ -127,19 +131,16 @@ class racer():
             'c1_f_theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
         self.z_current[:, self.zvars.index('c1_f_theta')] = c1_f_theta_old
 
-        c1_s_theta_old = self.zinit[self.zvars.index(
-            'c1_s_theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
-        self.z_current[:, self.zvars.index('c1_s_theta')] = c1_s_theta_old
+        # c1_s_theta_old = self.zinit[self.zvars.index(
+        #     'c1_s_theta')]*np.ones((self.N,)) + 0.1*np.arange(self.N)
+        # self.z_current[:, self.zvars.index('c1_s_theta')] = c1_s_theta_old
 
-        # TODO initialize values on track (x,y,phi=yaw) for first iteration
-        # for theta in theta_old:
-        # idx = utils.get_trackDataIdx_from_theta(theta, self.arcLength)
         for stageidx in range(self.N):
             # get index on track linearization relative to theta
             c1_f_track_idx = utils.get_trackDataIdx_from_theta(
                 c1_f_theta_old[stageidx], self.c1_arcLength)
-            c1_s_track_idx = utils.get_trackDataIdx_from_theta(
-                c1_s_theta_old[stageidx], self.c1_arcLength)
+            # c1_s_track_idx = utils.get_trackDataIdx_from_theta(
+            #     c1_s_theta_old[stageidx], self.c1_arcLength)
 
             self.z_current[stageidx, self.zvars.index(
                 'c1_f_posx')] = self.c1_xtrack[c1_f_track_idx]
@@ -148,12 +149,12 @@ class racer():
             self.z_current[stageidx, self.zvars.index(
                 'c1_f_phi')] = self.c1_tangentAngle[c1_f_track_idx]
 
-            self.z_current[stageidx, self.zvars.index(
-                'c1_s_posx')] = self.c1_xtrack[c1_s_track_idx]
-            self.z_current[stageidx, self.zvars.index(
-                'c1_s_posy')] = self.c1_ytrack[c1_s_track_idx]
-            self.z_current[stageidx, self.zvars.index(
-                'c1_s_phi')] = self.c1_tangentAngle[c1_s_track_idx]
+            # self.z_current[stageidx, self.zvars.index(
+            #     'c1_s_posx')] = self.c1_xtrack[c1_s_track_idx]
+            # self.z_current[stageidx, self.zvars.index(
+            #     'c1_s_posy')] = self.c1_ytrack[c1_s_track_idx]
+            # self.z_current[stageidx, self.zvars.index(
+            #     'c1_s_phi')] = self.c1_tangentAngle[c1_s_track_idx]
         # get a convergent Theta
         for index in range(iter):
             # init parameters for each stage of the horizon
@@ -165,8 +166,8 @@ class racer():
                 # get index on track linearization relative to theta
                 c1_f_track_idx = utils.get_trackDataIdx_from_theta(
                     c1_f_theta_old[stageidx], self.c1_arcLength)
-                c1_s_track_idx = utils.get_trackDataIdx_from_theta(
-                    c1_s_theta_old[stageidx], self.c1_arcLength)
+                # c1_s_track_idx = utils.get_trackDataIdx_from_theta(
+                #     c1_s_theta_old[stageidx], self.c1_arcLength)
 
                 # store the according parameters
                 p_val = np.array([  # fast
@@ -177,12 +178,12 @@ class racer():
                                  self.c1_arcLength[c1_f_track_idx],
                                  self.c1_tangentAngle[c1_f_track_idx],
                                  # safe
-                                 self.c1_xtrack[c1_s_track_idx],
-                                 self.c1_ytrack[c1_s_track_idx],
-                                 self.c1_xrate[c1_s_track_idx],
-                                 self.c1_yrate[c1_s_track_idx],
-                                 self.c1_arcLength[c1_s_track_idx],
-                                 self.c1_tangentAngle[c1_s_track_idx],
+                                 #  self.c1_xtrack[c1_s_track_idx],
+                                 #  self.c1_ytrack[c1_s_track_idx],
+                                 #  self.c1_xrate[c1_s_track_idx],
+                                 #  self.c1_yrate[c1_s_track_idx],
+                                 #  self.c1_arcLength[c1_s_track_idx],
+                                 #  self.c1_tangentAngle[c1_s_track_idx],
                                  # other params
                                  self.Q1,
                                  self.Q2,
@@ -204,8 +205,9 @@ class racer():
                                  self.Cm2,
                                  self.Cd,
                                  self.Croll,
-                                 self.c1_s0_x,
-                                 self.c1_s0_y])
+                                 #  self.c1_s0_x,
+                                 #  self.c1_s0_y
+                                 ])
 
                 all_parameters.append(p_val)
 
@@ -233,18 +235,18 @@ class racer():
 
             self.c1_f_theta_current = self.z_current[:, self.zvars.index(
                 'c1_f_theta')]
-            self.c1_s_theta_current = self.z_current[:, self.zvars.index(
-                'c1_s_theta')]
+            # self.c1_s_theta_current = self.z_current[:, self.zvars.index(
+            #     'c1_s_theta')]
 
             # # compute difference
             # theta_diff = np.sum(np.abs(self.theta_current-theta_old))
             # print(f": theta init difference: {theta_diff}")
             # print("theta values", self.theta_current)
             c1_f_theta_old = self.c1_f_theta_current
-            c1_s_theta_old = self.c1_s_theta_current
+            # c1_s_theta_old = self.c1_s_theta_current
 
             self.xinit = self.z_current[0,
-                                        self.uvars.index('c1_s_thetadot')+1:]
+                                        len(self.uvars):]  # look online
 
         return self.z_current
 
@@ -252,17 +254,17 @@ class racer():
         all_parameters = []
 
         c1_f_theta_old = self.c1_f_theta_current
-        c1_s_theta_old = self.c1_s_theta_current
+        # c1_s_theta_old = self.c1_s_theta_current
 
-        self.c1_s0_x = self.xinit[self.xvars.index('c1_f_posx')]
-        self.c1_s0_y = self.xinit[self.xvars.index('c1_f_posy')]
+        # self.c1_s0_x = self.xinit[self.xvars.index('c1_f_posx')]
+        # self.c1_s0_y = self.xinit[self.xvars.index('c1_f_posy')]
 
         for stageidx in range(self.N):
             # get index on track linearization relative to theta
             c1_f_track_idx = utils.get_trackDataIdx_from_theta(
                 c1_f_theta_old[stageidx], self.c1_arcLength)
-            c1_s_track_idx = utils.get_trackDataIdx_from_theta(
-                c1_s_theta_old[stageidx], self.c1_arcLength)
+            # c1_s_track_idx = utils.get_trackDataIdx_from_theta(
+            #     c1_s_theta_old[stageidx], self.c1_arcLength)
 
             # store the according parameters
             p_val = np.array([  # fast
@@ -273,12 +275,12 @@ class racer():
                 self.c1_arcLength[c1_f_track_idx],
                 self.c1_tangentAngle[c1_f_track_idx],
                 # safe
-                self.c1_xtrack[c1_s_track_idx],
-                self.c1_ytrack[c1_s_track_idx],
-                self.c1_xrate[c1_s_track_idx],
-                self.c1_yrate[c1_s_track_idx],
-                self.c1_arcLength[c1_s_track_idx],
-                self.c1_tangentAngle[c1_s_track_idx],
+                # self.c1_xtrack[c1_s_track_idx],
+                # self.c1_ytrack[c1_s_track_idx],
+                # self.c1_xrate[c1_s_track_idx],
+                # self.c1_yrate[c1_s_track_idx],
+                # self.c1_arcLength[c1_s_track_idx],
+                # self.c1_tangentAngle[c1_s_track_idx],
                 # other params
                 self.Q1,
                 self.Q2,
@@ -300,8 +302,9 @@ class racer():
                 self.Cm2,
                 self.Cd,
                 self.Croll,
-                self.c1_s0_x,
-                self.c1_s0_y])
+                # self.c1_s0_x,
+                # self.c1_s0_y
+            ])
 
             all_parameters.append(p_val)
 
@@ -323,32 +326,31 @@ class racer():
             idx_sol = idx_sol+1
 
         # #simulate dynamics
-        u = self.z_current[0, self.uvars.index(
-            'c1_s_slack'):self.uvars.index('c1_s_thetadot')+1]
+        u = self.z_current[0, :len(self.uvars)]  # look online
         xtrue = self.dynamics.tick(u, all_parameters[0, :], self.freq)
 
         # #shift horizon for next warmstart and insert the new "measured position"
-        self.z_current[1, self.uvars.index('c1_s_thetadot')+1:] = xtrue
+        self.z_current[1, len(self.uvars):] = xtrue
         # Shift all stages
         self.z_current = np.roll(self.z_current, -1, axis=0)
         # copy last state to be the same as antestage
         self.z_current[-1, :] = self.z_current[-2, :]
         # advance the last prediction for theta
         self.z_current[-1, self.zvars.index('c1_f_theta')] += 0.1
-        self.z_current[-1, self.zvars.index('c1_s_theta')] += 0.1
+        # self.z_current[-1, self.zvars.index('c1_s_theta')] += 0.1
 
         # log solution
         # self.z_data[self.simidx, :, :] = self.z_current
         self.zinit = self.z_current[0, :]
-        self.xinit = self.zinit[self.uvars.index('c1_s_thetadot')+1:]
+        self.xinit = self.zinit[len(self.uvars):]
 
         # self.zinit_vals[self.simidx, :] = self.zinit
 
         # update theta
         self.c1_f_theta_current = self.z_current[:, self.zvars.index(
             'c1_f_theta')]
-        self.c1_s_theta_current = self.z_current[:, self.zvars.index(
-            'c1_s_theta')]
+        # self.c1_s_theta_current = self.z_current[:, self.zvars.index(
+        #     'c1_s_theta')]
 
         if self.c1_f_theta_current[0] > self.c1_theta_max/2:
             print("#################################LAP###############################")
@@ -357,7 +359,7 @@ class racer():
             print("c1 lap:", self.c1_laps)
             # reset theta
             self.c1_f_theta_current = self.c1_f_theta_current - self.c1_theta_max/2
-            self.c1_s_theta_current = self.c1_s_theta_current - self.c1_theta_max/2
+            # self.c1_s_theta_current = self.c1_s_theta_current - self.c1_theta_max/2
             # set theta to z_current for correspondance
             self.z_current[:, self.zvars.index(
                 'c1_f_theta')] = self.c1_f_theta_current
@@ -365,15 +367,15 @@ class racer():
             # reset phi to origininal
             self.z_current[:, self.zvars.index(
                 'c1_f_phi')] = self.z_current[:, self.zvars.index('c1_f_phi')] - (wrapdir)*2*3.14159
-            self.z_current[:, self.zvars.index(
-                'c1_s_phi')] = self.z_current[:, self.zvars.index('c1_f_phi')] - (wrapdir)*2*3.14159
+            # self.z_current[:, self.zvars.index(
+            #     'c1_s_phi')] = self.z_current[:, self.zvars.index('c1_f_phi')] - (wrapdir)*2*3.14159
             # reset theta to dynamics object for correspondance
             self.dynamics.set_theta(
                 self.c1_f_theta_current[0])
             # # reset safe traj to have the same state as fast traj
             # self.z_current[:, self.zvars.index('s_posx'):self.zvars.index(
             #     's_theta')] = self.z_current[:, self.zvars.index('f_posx'):self.zvars.index('f_theta')]
-            print(f'zcurrent = {self.z_current[2,:]}')
+            # print(f'zcurrent = {self.z_current[2,:]}')
 
         if exitflag == -7:
             print("#################################################reinitialize#######################################################")
@@ -381,10 +383,7 @@ class racer():
             # TODO still to implement
 
         self.simidx = self.simidx + 1
-        info_dic = {}
-        info_dic['solvetime'] = info.solvetime
-        info_dic['res_ineq'] = info.res_ineq
-        info_dic['exitflag'] = exitflag
+        info_dic = [info.solvetime, info.res_ineq, info.it, exitflag]
 
         # type_time = type(time)
         # f_posx = self.z_current[0, 7]
