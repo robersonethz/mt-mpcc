@@ -93,7 +93,13 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     #         model.hl[i] = [-100, 0]
 
     # inequalities
-    model.nh = 0
+    car_dim = 0.00  # move to config?
+    half_track_width = 0.46/2  # move to config?
+    hu_car = (half_track_width-car_dim)**2
+    model.nh = 1
+    model.ineq = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
+    model.hu = [hu_car]
+    model.hl = [0]
 
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)

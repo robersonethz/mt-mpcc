@@ -449,8 +449,7 @@ def nonlinear_ineq_standard_v2(z, p):
     c1_f_posy = z[zvars.index('c1_f_posy')]
     c1_f_xd = p[pvars.index('c1_f_xd')]
     c1_f_yd = p[pvars.index('c1_f_yd')]
-    c1_f_tval = (c1_f_posx-c1_f_xd)*(c1_f_posx-c1_f_xd) + \
-        (c1_f_posy-c1_f_yd)*(c1_f_posy-c1_f_yd)
+    c1_f_tval = (c1_f_posx-c1_f_xd)**2 + (c1_f_posy-c1_f_yd)**2
 
     # c1_s_posx = z[zvars.index('c1_s_posx')]
     # c1_s_posy = z[zvars.index('c1_s_posy')]
@@ -466,6 +465,14 @@ def nonlinear_ineq_standard_v2(z, p):
     # c1_s0_y = p[pvars.index('c1_s0_y')]
 
     # c1_s_antena = (c1_s0_x-c1_s_posx)**2 + (c1_s0_y-c1_s_posy)**2
+
+    # f_posx = z[zvars.index('f_posx')]
+    # f_posy = z[zvars.index('f_posy')]
+    # f_xd = p[pvars.index('f_xd')]
+    # f_yd = p[pvars.index('f_yd')]
+    # f_tval = (f_posx-f_xd)**2 + (f_posy-f_yd)**2
+
+    # return f_tval
 
     # Do not return c1_f_tval : cost should be enough
     return casadi.vertcat(  # c1_f_tval,

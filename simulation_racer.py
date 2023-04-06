@@ -9,7 +9,7 @@ import ploting
 sim_length = 80
 init_it = 80
 # solver
-generate_new_solver = False
+generate_new_solver = True
 max_it_solver = 500
 
 
