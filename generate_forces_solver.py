@@ -34,11 +34,11 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     npar = 26  # number of parameters per stage
     nstates = 9
     ninputs = 3
-    nslack = 0
+    nslack = 1
     nvar = nslack+ninputs+nstates
-    car_dim = 0.07  # move to config?
-    half_track_width = 0.46/2 - 0.1  # move to config?
-    hu_car = (half_track_width-car_dim)*(half_track_width-car_dim)
+    car_dim = 0.00  # move to config?
+    half_track_width = 0.46/2  # move to config?
+    hu_car = (half_track_width-car_dim)**2
     r_antena = 0.8
 
     # dimensions
@@ -109,7 +109,7 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     constraints = cfg["model_bounds"]
 
     model.lb = np.array([
-        # 0,  # slack_var TODO: move to config
+        0,  # slack_var TODO: move to config
         # constraints["dT_min"],
         # constraints["ddelta_min"],
         # constraints["dtheta_min"],
@@ -141,7 +141,7 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     ])
 
     model.ub = np.array([
-        # 100,  # slack_var TODO: move to config
+        1000,  # slack_var TODO: move to config
         # constraints["dT_max"],
         # constraints["ddelta_max"],
         # constraints["dtheta_max"],

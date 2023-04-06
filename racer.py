@@ -85,10 +85,10 @@ class racer():
                       # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
                       ]
 
-        self.uvars = [  # 'c1_s_slack',
-            'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-            # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
-        ]
+        self.uvars = ['c1_s_slack',
+                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
+                      # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot'
+                      ]
 
         self.pvars = ['c1_f_xd', 'c1_f_yd', 'c1_f_grad_xd', 'c1_f_grad_yd', 'c1_f_theta_hat', 'c1_f_phi_d',
                       # 'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
@@ -96,12 +96,12 @@ class racer():
                       # 'c1_s0_x', 'c1_s0_y'
                       ]
 
-        self.zvars = [  # 'c1_s_slack',
-            'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-            # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-            'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-            # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
-        ]
+        self.zvars = ['c1_s_slack',
+                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
+                      # 'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
+                      'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
+                      # 'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
+                      ]
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.c1_f_theta_current = np.zeros((self.N,))
 

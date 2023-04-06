@@ -19,7 +19,7 @@ racer_agent = rc.racer(
     generate_new_solver=generate_new_solver, init_iter=init_it, max_it_solver=max_it_solver)
 c1_xinit = np.array([0.15, -1.05, np.pi, 1, 0, 0, 0, 0, 0])
 
-nvar = 12  # 25
+nvar = 13  # 25
 horizon = 40
 
 z_log = np.zeros((sim_length, horizon, nvar))
@@ -56,7 +56,7 @@ print(f'Saving data')
 list_log = [z_log, info_log, parameters_log]
 
 
-with open('log_data/log_data_new.pickle', 'wb') as f:
+with open('log_data/log_data_new1.pickle', 'wb') as f:
     pickle.dump(list_log, f)
 print('Begin plotting')
 ploting.plot_results('log_data/animation.gif')
