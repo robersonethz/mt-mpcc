@@ -22,54 +22,54 @@
 % [OUTPUTS] = FORCESNLPsolver(INPUTS) solves an optimization problem where:
 % Inputs:
 % - xinit - matrix of size [18x1]
-% - x0 - matrix of size [1000x1]
+% - x0 - matrix of size [1120x1]
 % - all_parameters - matrix of size [1360x1]
 % - num_of_threads - scalar
 % - receive_floating_license - scalar
 % Outputs:
-% - outputs - column vector of length 1000
+% - outputs - column vector of length 1120
 function [outputs] = FORCESNLPsolver(xinit, x0, all_parameters, num_of_threads, receive_floating_license)
     
     [output, ~, ~] = FORCESNLPsolverBuildable.forcesCall(xinit, x0, all_parameters, num_of_threads, receive_floating_license);
-    outputs = coder.nullcopy(zeros(1000,1));
-    outputs(1:25) = output.x01;
-    outputs(26:50) = output.x02;
-    outputs(51:75) = output.x03;
-    outputs(76:100) = output.x04;
-    outputs(101:125) = output.x05;
-    outputs(126:150) = output.x06;
-    outputs(151:175) = output.x07;
-    outputs(176:200) = output.x08;
-    outputs(201:225) = output.x09;
-    outputs(226:250) = output.x10;
-    outputs(251:275) = output.x11;
-    outputs(276:300) = output.x12;
-    outputs(301:325) = output.x13;
-    outputs(326:350) = output.x14;
-    outputs(351:375) = output.x15;
-    outputs(376:400) = output.x16;
-    outputs(401:425) = output.x17;
-    outputs(426:450) = output.x18;
-    outputs(451:475) = output.x19;
-    outputs(476:500) = output.x20;
-    outputs(501:525) = output.x21;
-    outputs(526:550) = output.x22;
-    outputs(551:575) = output.x23;
-    outputs(576:600) = output.x24;
-    outputs(601:625) = output.x25;
-    outputs(626:650) = output.x26;
-    outputs(651:675) = output.x27;
-    outputs(676:700) = output.x28;
-    outputs(701:725) = output.x29;
-    outputs(726:750) = output.x30;
-    outputs(751:775) = output.x31;
-    outputs(776:800) = output.x32;
-    outputs(801:825) = output.x33;
-    outputs(826:850) = output.x34;
-    outputs(851:875) = output.x35;
-    outputs(876:900) = output.x36;
-    outputs(901:925) = output.x37;
-    outputs(926:950) = output.x38;
-    outputs(951:975) = output.x39;
-    outputs(976:1000) = output.x40;
+    outputs = coder.nullcopy(zeros(1120,1));
+    outputs(1:28) = output.x01;
+    outputs(29:56) = output.x02;
+    outputs(57:84) = output.x03;
+    outputs(85:112) = output.x04;
+    outputs(113:140) = output.x05;
+    outputs(141:168) = output.x06;
+    outputs(169:196) = output.x07;
+    outputs(197:224) = output.x08;
+    outputs(225:252) = output.x09;
+    outputs(253:280) = output.x10;
+    outputs(281:308) = output.x11;
+    outputs(309:336) = output.x12;
+    outputs(337:364) = output.x13;
+    outputs(365:392) = output.x14;
+    outputs(393:420) = output.x15;
+    outputs(421:448) = output.x16;
+    outputs(449:476) = output.x17;
+    outputs(477:504) = output.x18;
+    outputs(505:532) = output.x19;
+    outputs(533:560) = output.x20;
+    outputs(561:588) = output.x21;
+    outputs(589:616) = output.x22;
+    outputs(617:644) = output.x23;
+    outputs(645:672) = output.x24;
+    outputs(673:700) = output.x25;
+    outputs(701:728) = output.x26;
+    outputs(729:756) = output.x27;
+    outputs(757:784) = output.x28;
+    outputs(785:812) = output.x29;
+    outputs(813:840) = output.x30;
+    outputs(841:868) = output.x31;
+    outputs(869:896) = output.x32;
+    outputs(897:924) = output.x33;
+    outputs(925:952) = output.x34;
+    outputs(953:980) = output.x35;
+    outputs(981:1008) = output.x36;
+    outputs(1009:1036) = output.x37;
+    outputs(1037:1064) = output.x38;
+    outputs(1065:1092) = output.x39;
+    outputs(1093:1120) = output.x40;
 end

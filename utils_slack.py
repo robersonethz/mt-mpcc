@@ -3,26 +3,14 @@ import casadi
 import math
 import numpy as np
 from casadi import atan, sin, cos
+from helperObj import helperObj
 
-xvars = ['c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-         'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
+helper = helperObj()
 
-uvars = ['c1_s_slack',
-         'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-         'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot']
-
-
-pvars = ['c1_f_xd', 'c1_f_yd', 'c1_f_grad_xd', 'c1_f_grad_yd', 'c1_f_theta_hat', 'c1_f_phi_d',
-         'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
-         'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll', 'c1_s0_x', 'c1_s0_y']
-
-zvars = ['c1_s_slack',
-         'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-         'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-         'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-         'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta'
-         ]
-
+pvars = helper.pvars
+uvars = helper.uvars
+xvars = helper.xvars
+zvars = helper.zvars
 
 car_dim = 0.07  # move to config?
 half_track_width = 0.46/2 - 0.1  # move to config?
@@ -80,6 +68,9 @@ def continuous_dynamics(x, u, p):
 
     # build CasADi expressions for dynamic model
     # front lateral tireforce
+    # if c1_f_vx < 10e6:
+    #     c1_f_vx += 0.001
+
     c1_f_alphaf = -np.arctan2((c1_f_omega*lf + c1_f_vy), c1_f_vx) + c1_f_delta
     c1_f_Ffy = Df*np.sin(Cf*np.arctan(Bf*c1_f_alphaf))
 
@@ -90,6 +81,9 @@ def continuous_dynamics(x, u, p):
     # rear longitudinal forces
     c1_f_Frx = (Cm1-Cm2*c1_f_vx) * c1_f_d - Croll - Cd*c1_f_vx*c1_f_vx
 
+    # Safe
+    # if c1_s_vx < 10e6:
+    #     c1_s_vx += 0.001
     c1_s_alphaf = -np.arctan2((c1_s_omega*lf + c1_s_vy), c1_s_vx) + c1_s_delta
     c1_s_Ffy = Df*np.sin(Cf*np.arctan(Bf*c1_s_alphaf))
 
@@ -192,6 +186,10 @@ def stage_cost(z, p):
 
     # extract inputs
     c1_s_slack = z[zvars.index('c1_s_slack')]
+    c1_f_slack_ddot = z[zvars.index('c1_f_slack_ddot')]
+    c1_f_slack_deltadot = z[zvars.index('c1_f_slack_deltadot')]
+    c1_f_slack_thetadot = z[zvars.index('c1_f_slack_thetadot')]
+
     c1_s_ddot = z[zvars.index('c1_s_ddot')]
     c1_s_deltadot = z[zvars.index('c1_s_deltadot')]
     c1_s_thetadot = z[zvars.index('c1_s_thetadot')]
@@ -212,7 +210,10 @@ def stage_cost(z, p):
         c1_s_thetadot + c1_s_ddot * R1 * c1_s_ddot + c1_s_deltadot * R2 * \
         c1_s_deltadot
 
-    return c1_f_cost + 0.1*c1_s_cost + c1_s_slack*10e-5
+    slack_cost = c1_s_slack + c1_f_slack_ddot + \
+        c1_f_slack_deltadot + c1_f_slack_thetadot
+
+    return c1_f_cost + 10e5 * slack_cost + 0.1*c1_s_cost  # + c1_s_slack*10e-5
 
 
 def dynamics_RK4(z, p, freq):
@@ -559,12 +560,14 @@ def nonlinear_ineq_final_v2(z, p):
 
 
 def get_trackDataIdx_from_theta(theta, arcLength):
-
+    index_max = len(arcLength)
     idx = 0
     temp = 100
     while abs(arcLength[idx] - theta) < temp:
         temp = abs(arcLength[idx] - theta)
         idx = idx + 1
+        if idx == index_max:
+            break
 
     if idx != 0:
         idx = idx-1

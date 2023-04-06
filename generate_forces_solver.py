@@ -34,7 +34,7 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     npar = (6*2)+22  # number of parameters per stage
     nstates = 9*2
     ninputs = 3*2
-    nslack = 1
+    nslack = 4
     nvar = nslack+ninputs+nstates
     car_dim = 0.00  # move to config?
     half_track_width = 0.46/2  # move to config?
@@ -74,28 +74,29 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     #         model.hl[i] = [-10]
 
     # inequalities
-    for i in range(0, model.N):
-        if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
-            model.nh[i] = 5       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
-                z, p)
-            model.hu[i] = [hu_car, 0.001, 0.001, 0.001, r_antena**2]
-            model.hl[i] = [0, -0.001, -0.001, -0.001, 0]
-        elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
-            model.nh[i] = 3       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
-            model.hu[i] = [hu_car, 0.01, r_antena**2]
-            model.hl[i] = [0, -0.01, 0]
-        else:  # usual constraints : contained inside track
-            model.nh[i] = 2       # number of nonlinear inequality constraints
-            model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-            model.hu[i] = [hu_car, r_antena**2]
-            model.hl[i] = [0, 0]
+    # for i in range(0, model.N):
+    #     if i == 0:  # Initial constraints, inputs must be the same for safe and fast, inside track
+    #         model.nh[i] = 5       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
+    #             z, p)
+    #         model.hu[i] = [hu_car, 0.001, 0.001, 0.001, r_antena**2]
+    #         model.hl[i] = [0, -0.001, -0.001, -0.001, 0]
+    #     elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
+    #         model.nh[i] = 3       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
+    #         model.hu[i] = [hu_car, 0.01, r_antena**2]
+    #         model.hl[i] = [0, -0.01, 0]
+    #     else:  # usual constraints : contained inside track
+    #         model.nh[i] = 2       # number of nonlinear inequality constraints
+    #         model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
+    #         model.hu[i] = [hu_car, r_antena**2]
+    #         model.hl[i] = [0, 0]
 
-    # model.nh = 1
-    # model.ineq = lambda z, p: utils.nonlinear_ineq_standard_ONTRACK_v2(z, p)
-    # model.hu = [hu_car]
-    # model.hl = [0]
+    model.nh = 1
+    model.ineq = lambda z, p: utils.nonlinear_ineq_standard_ONTRACK_v2(z, p)
+    model.hu = [hu_car]
+    model.hl = [0]
+
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)
 
@@ -105,13 +106,23 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
 
     model.lb = np.array([
         0,  # slack_var TODO: move to config
-        constraints["dT_min"],
-        constraints["ddelta_min"],
-        constraints["dtheta_min"],
+        0,  # slack_ddot TODO: move to config
+        0,  # slack_deltadot TODO: move to config
+        0,  # slack_thetadot TODO: move to config
+        # constraints["dT_min"],
+        # constraints["ddelta_min"],
+        # constraints["dtheta_min"],
 
-        constraints["dT_min"],
-        constraints["ddelta_min"],
-        constraints["dtheta_min"],
+        # constraints["dT_min"],
+        # constraints["ddelta_min"],
+        # constraints["dtheta_min"],
+        -10e5,  # ddot
+        -10e5,  # deltadot
+        -10e5,  # thetadot
+
+        -10e5,  # ddot
+        -10e5,  # deltadot
+        -10e5,  # thetadot
 
         constraints["x_min"],
         constraints["y_min"],
@@ -136,14 +147,22 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     ])
 
     model.ub = np.array([
-        100,  # slack_var TODO: move to config
-        constraints["dT_max"],
-        constraints["ddelta_max"],
-        constraints["dtheta_max"],
+        10e5,  # slack_var TODO: move to config
+        10e5,  # slack_ddot TODO: move to config
+        10e5,  # slack_deltadot TODO: move to config
+        10e5,  # slack_thetadot TODO: move to config
 
-        constraints["dT_max"],
-        constraints["ddelta_max"],
-        constraints["dtheta_max"],
+        # constraints["dT_max"],
+        # constraints["ddelta_max"],
+        # constraints["dtheta_max"],
+
+        10e5,  # ddot
+        10e5,  # deltadot
+        10e5,  # thetadot
+
+        10e5,  # ddot
+        10e5,  # deltadot
+        10e5,  # thetadot
 
         constraints["x_max"],
         constraints["y_max"],

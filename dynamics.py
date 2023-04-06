@@ -2,6 +2,7 @@ import casadi
 import numpy as np
 import yaml
 import utils_slack as utils
+from helperObj import helperObj
 
 
 class dynamics_simulator():
@@ -10,21 +11,25 @@ class dynamics_simulator():
         with open(modelparams) as file:
             params = yaml.load(file, Loader=yaml.FullLoader)
 
-        self.xvars = ['c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-                      'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
+        helper = helperObj()
 
-        self.uvars = ['c1_s_slack',
-                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-                      'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot']
+        self.pvars = helper.pvars
+        self.uvars = helper.uvars
+        self.xvars = helper.xvars
+        self.zvars = helper.zvars
 
         # state of system
         self.x = x0
 
     def tick(self, u, all_parameters, freq):
-        slack = u[self.uvars.index('c1_s_slack')]
+        # helper to construct the correct z vector:
+        slacks = u[self.uvars.index('c1_s_slack')
+                                    :self.uvars.index('c1_f_slack_thetadot')+1]
         c1_f_u = u[self.uvars.index(
             'c1_f_ddot'):self.uvars.index('c1_f_thetadot')+1]
-        z = np.hstack((np.array([slack]), c1_f_u, c1_f_u, self.x))
+        # initialize z vector
+        z = np.hstack((slacks, c1_f_u, c1_f_u, self.x))
+        # update x
         self.x = utils.dynamics_RK4(
             z, all_parameters, freq).full().transpose().reshape(-1)
         # make sure xtrue is the same for safe and fast traj
@@ -39,7 +44,7 @@ class dynamics_simulator():
         self.x[self.xvars.index('c1_f_theta')] = c1_f_theta
         self.x[self.xvars.index('c1_s_theta')] = c1_f_theta
 
-    def wrap_phi(self):
+    def wrap_phi_c1(self):
         if self.x[self.xvars.index('c1_f_phi')] > 2 * 3.14159:
             self.x[self.xvars.index('c1_f_phi')] -= 2 * 3.14159
             wrapdir = 1

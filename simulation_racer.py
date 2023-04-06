@@ -3,13 +3,14 @@ import matplotlib.pyplot as plt
 import pickle
 import racer as rc
 import ploting
+from helperObj import helperObj
 
 ### PARAMETERS FOR SIMULATION ###
 
-sim_length = 80
-init_it = 80
+sim_length = 8
+init_it = 8
 # solver
-generate_new_solver = False
+generate_new_solver = True
 max_it_solver = 500
 
 
@@ -19,7 +20,7 @@ racer_agent = rc.racer(
     generate_new_solver=generate_new_solver, init_iter=init_it, max_it_solver=max_it_solver)
 c1_xinit = np.array([0.15, -1.05, np.pi, 1, 0, 0, 0, 0, 0])
 
-nvar = 25
+nvar = 28
 horizon = 40
 
 z_log = np.zeros((sim_length, horizon, nvar))

@@ -7,6 +7,7 @@ import utils_slack as utils
 import matplotlib.pyplot as plt
 import pickle
 import dynamics
+from helperObj import helperObj
 
 
 class racer():
@@ -81,22 +82,12 @@ class racer():
         # delta = steering angle
         # theta = advancement on track
 
-        self.xvars = ['c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-                      'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
+        helper = helperObj()
 
-        self.uvars = ['c1_s_slack',
-                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-                      'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot']
-
-        self.pvars = ['c1_f_xd', 'c1_f_yd', 'c1_f_grad_xd', 'c1_f_grad_yd', 'c1_f_theta_hat', 'c1_f_phi_d',
-                      'c1_s_xd', 'c1_s_yd', 'c1_s_grad_xd', 'c1_s_grad_yd', 'c1_s_theta_hat', 'c1_s_phi_d',
-                      'Q1', 'Q2', 'R1', 'R2', 'R3', 'q', 'lr', 'lf', 'm', 'I', 'Df', 'Cf', 'Bf', 'Dr', 'Cr', 'Br', 'Cm1', 'Cm2', 'Cd', 'Croll', 'c1_s0_x', 'c1_s0_y']
-
-        self.zvars = ['c1_s_slack',
-                      'c1_f_ddot', 'c1_f_deltadot', 'c1_f_thetadot',
-                      'c1_s_ddot', 'c1_s_deltadot', 'c1_s_thetadot',
-                      'c1_f_posx', 'c1_f_posy', 'c1_f_phi', 'c1_f_vx', 'c1_f_vy', 'c1_f_omega', 'c1_f_d', 'c1_f_delta', 'c1_f_theta',
-                      'c1_s_posx', 'c1_s_posy', 'c1_s_phi', 'c1_s_vx', 'c1_s_vy', 'c1_s_omega', 'c1_s_d', 'c1_s_delta', 'c1_s_theta']
+        self.pvars = helper.pvars
+        self.uvars = helper.uvars
+        self.xvars = helper.xvars
+        self.zvars = helper.zvars
 
         self.z_current = np.zeros((self.N, len(self.zvars)))
         self.c1_f_theta_current = np.zeros((self.N,))
@@ -249,6 +240,10 @@ class racer():
         return self.z_current
 
     def update(self):
+        # set all slack variables to 0
+        self.z_current[:, self.zvars.index('c1_s_slack'):self.zvars.index(
+            'c1_f_slack_thetadot')+1] = np.zeros((self.N, 4))
+
         all_parameters = []
 
         c1_f_theta_old = self.c1_f_theta_current
@@ -377,16 +372,24 @@ class racer():
 
         if exitflag == -7:
             print("#################################################reinitialize#######################################################")
+            info_dic = [info.solvetime, info.res_ineq,
+                        info.it, exitflag, info.pobj]
+            z_current_temp = self.z_current
+            all_parameters_temp = all_parameters
             self.initialize_trajectory(self.xinit)
-            # TODO still to implement
+            self.simidx = self.simidx + 1
+
+            return z_current_temp, info_dic, all_parameters_temp
+
+        # copy safe traj to fast traj for recursive feasibility
+
+        self.z_current[:, self.zvars.index('c1_f_posx'):self.zvars.index(
+            'c1_f_theta')+1] = self.z_current[:, self.zvars.index('c1_s_posx'):self.zvars.index('c1_s_theta')+1]
+
+        # Increment simidx and return log data
 
         self.simidx = self.simidx + 1
         info_dic = [info.solvetime, info.res_ineq,
                     info.it, exitflag, info.pobj]
 
-        # type_time = type(time)
-        # f_posx = self.z_current[0, 7]
-        # s_posx = self.z_current[0, 16]
-
-        # print(f'f_posx : {f_posx:.2f}, s_posx : {s_posx:.2f}')
         return self.z_current, info_dic, all_parameters
