@@ -10,7 +10,7 @@ sim_length = 80
 init_it = 80
 # solver
 generate_new_solver = False
-max_it_solver = 100
+max_it_solver = 500
 
 
 # SIMULATION
@@ -23,37 +23,37 @@ nvar = 25
 horizon = 40
 
 z_log = np.zeros((sim_length, horizon, nvar))
+info_log = np.zeros((sim_length, 5))
+parameters_log = np.zeros((sim_length, horizon, 34))
 
 print('Init traj')
 
 z_curr = racer_agent.initialize_trajectory(
     np.tile(c1_xinit, 2))
 
-log_info = []
-all_parameters_output = []
-
-print(f'Begin simulation')
 
 for i in range(sim_length):
     z_return, info, all_parameters = racer_agent.update()
 
     z_log[i, :, :] = z_return
+    info_log[i, :] = info
+    parameters_log[i, :, :] = all_parameters
 
     if i % 10 == 0:
         print(f'Simulation index: {i}')
 
-    f_posx = z_log[i, 0, 7]
-    s_posx = z_log[i, 0, 16]
-    if abs(f_posx-s_posx) > 0.001:
-        print("Not the same position, problem!")
+    # f_posx = z_log[i, 0, 7]
+    # s_posx = z_log[i, 0, 16]
+    # if abs(f_posx-s_posx) > 0.001:
+    #     print("Not the same position, problem!")
 
     # print(f'from log : f_posx : {f_posx:.2f}, s_posx : {s_posx:.2f}')
 
 print(f'Saving data')
-list_log = [z_log, log_info, all_parameters_output]
+list_log = [z_log, info_log, parameters_log]
 
 
-with open('log_data/log_data_new.pickle', 'wb') as f:
+with open('log_data/log_data_new_cost.pickle', 'wb') as f:
     pickle.dump(list_log, f)
 print('Begin plotting')
-ploting.plot_results('log_data/animation.gif')
+ploting.plot_results('log_data/animation_new_cost.gif')

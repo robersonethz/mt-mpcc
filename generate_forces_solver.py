@@ -36,9 +36,9 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
     ninputs = 3*2
     nslack = 1
     nvar = nslack+ninputs+nstates
-    car_dim = 0.07  # move to config?
-    half_track_width = 0.46/2 - 0.1  # move to config?
-    hu_car = (half_track_width-car_dim)*(half_track_width-car_dim)
+    car_dim = 0.00  # move to config?
+    half_track_width = 0.46/2  # move to config?
+    hu_car = (half_track_width-car_dim)**2
     r_antena = 0.8
 
     # dimensions
@@ -79,19 +79,23 @@ def build_solver(N: int, Ts: float, cfg: dict, max_it_solver):
             model.nh[i] = 5       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_sameInput_v2(
                 z, p)
-            model.hu[i] = [0, 0.001, 0.001, 0.001, r_antena**2]
-            model.hl[i] = [-100, -0.001, -0.001, -0.001, 0]
+            model.hu[i] = [hu_car, 0.001, 0.001, 0.001, r_antena**2]
+            model.hl[i] = [0, -0.001, -0.001, -0.001, 0]
         elif i == model.N-1:  # Final constraints : final safe speed == 0, inside track
             model.nh[i] = 3       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_final_v2(z, p)
-            model.hu[i] = [0, 0.01, r_antena**2]
-            model.hl[i] = [-100, -0.01, 0]
+            model.hu[i] = [hu_car, 0.01, r_antena**2]
+            model.hl[i] = [0, -0.01, 0]
         else:  # usual constraints : contained inside track
             model.nh[i] = 2       # number of nonlinear inequality constraints
             model.ineq[i] = lambda z, p: utils.nonlinear_ineq_standard_v2(z, p)
-            model.hu[i] = [0, r_antena**2]
-            model.hl[i] = [-100, 0]
+            model.hu[i] = [hu_car, r_antena**2]
+            model.hl[i] = [0, 0]
 
+    # model.nh = 1
+    # model.ineq = lambda z, p: utils.nonlinear_ineq_standard_ONTRACK_v2(z, p)
+    # model.hu = [hu_car]
+    # model.hl = [0]
     # initial state indeces
     model.xinitidx = np.arange(nslack+ninputs, nvar)
 

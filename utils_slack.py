@@ -133,12 +133,12 @@ def continuous_dynamics(x, u, p):
 
 def stage_cost(z, p):
     # extract parameters
-    c1_xd = p[pvars.index('c1_f_xd')]
-    c1_yd = p[pvars.index('c1_f_yd')]
-    c1_phi_d = p[pvars.index('c1_f_phi_d')]
-    c1_sin_phit = np.sin(c1_phi_d)
-    c1_cos_phit = np.cos(c1_phi_d)
-    c1_theta_hat = p[pvars.index('c1_f_theta_hat')]
+    c1_f_xd = p[pvars.index('c1_f_xd')]
+    c1_f_yd = p[pvars.index('c1_f_yd')]
+    c1_f_phi_d = p[pvars.index('c1_f_phi_d')]
+    c1_f_sin_phit = np.sin(c1_f_phi_d)
+    c1_f_cos_phit = np.cos(c1_f_phi_d)
+    c1_f_theta_hat = p[pvars.index('c1_f_theta_hat')]
     Q1 = p[pvars.index('Q1')]
     Q2 = p[pvars.index('Q2')]
     q = p[pvars.index('q')]
@@ -146,33 +146,73 @@ def stage_cost(z, p):
     R2 = p[pvars.index('R2')]
 
     # extract states
-    c1_posx = z[zvars.index('c1_f_posx')]
-    c1_posy = z[zvars.index('c1_f_posy')]
-    c1_theta = z[zvars.index('c1_f_theta')]
+    c1_f_posx = z[zvars.index('c1_f_posx')]
+    c1_f_posy = z[zvars.index('c1_f_posy')]
+    c1_f_theta = z[zvars.index('c1_f_theta')]
 
     # extract inputs
     c1_s_slack = z[zvars.index('c1_s_slack')]
-    c1_ddot = z[zvars.index('c1_f_ddot')]
-    c1_deltadot = z[zvars.index('c1_f_deltadot')]
-    c1_thetadot = z[zvars.index('c1_f_thetadot')]
+    c1_f_ddot = z[zvars.index('c1_f_ddot')]
+    c1_f_deltadot = z[zvars.index('c1_f_deltadot')]
+    c1_f_thetadot = z[zvars.index('c1_f_thetadot')]
 
     c1_s_vx = z[zvars.index('c1_s_vx')]
     Q_s = 10  # TODO move to config
 
     # compute approximate linearized contouring and lag error
-    c1_xt_hat = c1_xd + c1_cos_phit * (c1_theta - c1_theta_hat)
-    c1_yt_hat = c1_yd + c1_sin_phit * (c1_theta - c1_theta_hat)
+    c1_xt_hat = c1_f_xd + c1_f_cos_phit * (c1_f_theta - c1_f_theta_hat)
+    c1_yt_hat = c1_f_yd + c1_f_sin_phit * (c1_f_theta - c1_f_theta_hat)
 
-    c1_e_cont = c1_sin_phit * (c1_xt_hat - c1_posx) - \
-        c1_cos_phit * (c1_yt_hat - c1_posy)
-    c1_e_lag = c1_cos_phit * (c1_xt_hat - c1_posx) + \
-        c1_sin_phit * (c1_yt_hat - c1_posy)
+    c1_e_cont = c1_f_sin_phit * (c1_xt_hat - c1_f_posx) - \
+        c1_f_cos_phit * (c1_yt_hat - c1_f_posy)
+    c1_e_lag = c1_f_cos_phit * (c1_xt_hat - c1_f_posx) + \
+        c1_f_sin_phit * (c1_yt_hat - c1_f_posy)
 
-    c1_cost = c1_e_cont * Q1 * c1_e_cont + c1_e_lag * Q2 * c1_e_lag - q * \
-        c1_thetadot + c1_ddot * R1 * c1_ddot + c1_deltadot * R2 * \
-        c1_deltadot + c1_s_slack*100 + c1_s_slack**2*100
+    c1_f_cost = c1_e_cont * Q1 * c1_e_cont + c1_e_lag * Q2 * c1_e_lag - q * \
+        c1_f_thetadot + c1_f_ddot * R1 * c1_f_ddot + c1_f_deltadot * R2 * \
+        c1_f_deltadot
 
-    return c1_cost
+    # SAFE
+    c1_s_xd = p[pvars.index('c1_s_xd')]
+    c1_s_yd = p[pvars.index('c1_s_yd')]
+    c1_s_phi_d = p[pvars.index('c1_s_phi_d')]
+    c1_s_sin_phit = np.sin(c1_s_phi_d)
+    c1_s_cos_phit = np.cos(c1_s_phi_d)
+    c1_s_theta_hat = p[pvars.index('c1_s_theta_hat')]
+    Q1 = p[pvars.index('Q1')]
+    Q2 = p[pvars.index('Q2')]
+    q = p[pvars.index('q')]
+    R1 = p[pvars.index('R1')]
+    R2 = p[pvars.index('R2')]
+
+    # extract states
+    c1_s_posx = z[zvars.index('c1_s_posx')]
+    c1_s_posy = z[zvars.index('c1_s_posy')]
+    c1_s_theta = z[zvars.index('c1_s_theta')]
+
+    # extract inputs
+    c1_s_slack = z[zvars.index('c1_s_slack')]
+    c1_s_ddot = z[zvars.index('c1_s_ddot')]
+    c1_s_deltadot = z[zvars.index('c1_s_deltadot')]
+    c1_s_thetadot = z[zvars.index('c1_s_thetadot')]
+
+    c1_s_vx = z[zvars.index('c1_s_vx')]
+    Q_s = 10  # TODO move to config
+
+    # compute approximate linearized contouring and lag error
+    c1_xt_hat = c1_s_xd + c1_s_cos_phit * (c1_s_theta - c1_s_theta_hat)
+    c1_yt_hat = c1_s_yd + c1_s_sin_phit * (c1_s_theta - c1_s_theta_hat)
+
+    c1_e_cont = c1_s_sin_phit * (c1_xt_hat - c1_s_posx) - \
+        c1_s_cos_phit * (c1_yt_hat - c1_s_posy)
+    c1_e_lag = c1_s_cos_phit * (c1_xt_hat - c1_s_posx) + \
+        c1_s_sin_phit * (c1_yt_hat - c1_s_posy)
+
+    c1_s_cost = c1_e_cont * Q1 * c1_e_cont + c1_e_lag * Q2 * c1_e_lag - q * \
+        c1_s_thetadot + c1_s_ddot * R1 * c1_s_ddot + c1_s_deltadot * R2 * \
+        c1_s_deltadot
+
+    return c1_f_cost + 0.1*c1_s_cost + c1_s_slack*10e-5
 
 
 def dynamics_RK4(z, p, freq):
@@ -413,8 +453,7 @@ def nonlinear_ineq_sameInput_v2(z, p):
 
     c1_s_slack = z[zvars.index('c1_s_slack')]
 
-    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy -
-                                          c1_s_yd)**2 - (hu_car+c1_s_slack)**2
+    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy - c1_s_yd)**2 - c1_s_slack
 
     # Same input
     c1_f_ddot = z[zvars.index('c1_f_ddot')]
@@ -457,8 +496,7 @@ def nonlinear_ineq_standard_v2(z, p):
 
     c1_s_slack = z[zvars.index('c1_s_slack')]
 
-    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy -
-                                          c1_s_yd)**2 - (hu_car+c1_s_slack)**2
+    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy - c1_s_yd)**2 - c1_s_slack
 
     c1_s0_x = p[pvars.index('c1_s0_x')]
     c1_s0_y = p[pvars.index('c1_s0_y')]
@@ -469,6 +507,22 @@ def nonlinear_ineq_standard_v2(z, p):
     return casadi.vertcat(  # c1_f_tval,
         c1_s_tval,
         c1_s_antena
+    )
+
+
+def nonlinear_ineq_standard_ONTRACK_v2(z, p):
+
+    c1_s_posx = z[zvars.index('c1_s_posx')]
+    c1_s_posy = z[zvars.index('c1_s_posy')]
+    c1_s_xd = p[pvars.index('c1_s_xd')]
+    c1_s_yd = p[pvars.index('c1_s_yd')]
+
+    c1_s_slack = z[zvars.index('c1_s_slack')]
+
+    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy - c1_s_yd)**2 - c1_s_slack
+
+    return casadi.vertcat(  # c1_f_tval,
+        c1_s_tval
     )
 
 
@@ -487,8 +541,7 @@ def nonlinear_ineq_final_v2(z, p):
 
     c1_s_slack = z[zvars.index('c1_s_slack')]
 
-    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy -
-                                          c1_s_yd)**2 - (hu_car+c1_s_slack)**2
+    c1_s_tval = (c1_s_posx-c1_s_xd)**2 + (c1_s_posy - c1_s_yd)**2 - c1_s_slack
 
     c1_s_vx = z[zvars.index('c1_s_vx')]
     # Do not return c1_f_tval : cost should be enough

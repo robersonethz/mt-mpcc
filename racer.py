@@ -47,7 +47,7 @@ class racer():
         self.R1 = 0.01
         self.R2 = 0.01
         self.R3 = 0.01
-        self.q = 10
+        self.q = 0.1
         self.half_track_width = 0.46/2
 
         # Simulation params /!\ MUST BE THE SAME AS generate_forces_solver.py
@@ -118,7 +118,7 @@ class racer():
         self.c1_s0_y = xinit[self.xvars.index('c1_f_posy')]
 
         # warmstart init
-        self.zinit = np.concatenate([np.zeros(len(self.uvars)), xinit])
+        self.zinit = np.concatenate([[1], np.zeros(len(self.uvars)-1), xinit])
         # will be reshaped after
         self.z_current = np.tile(self.zinit, (self.N, 1))
 
@@ -381,10 +381,8 @@ class racer():
             # TODO still to implement
 
         self.simidx = self.simidx + 1
-        info_dic = {}
-        info_dic['solvetime'] = info.solvetime
-        info_dic['res_ineq'] = info.res_ineq
-        info_dic['exitflag'] = exitflag
+        info_dic = [info.solvetime, info.res_ineq,
+                    info.it, exitflag, info.pobj]
 
         # type_time = type(time)
         # f_posx = self.z_current[0, 7]
